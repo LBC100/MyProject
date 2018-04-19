@@ -1,0 +1,84 @@
+.reg{
+    background: rgba(255,255,255,0.88);
+    width: 412px;
+    padding: 30PX 17px 42px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%,-65%);
+    transform: translate(-50%,-45%);
+    border-radius: 4px;
+    display: inline-block;
+    a{
+        &:hover{
+            text-decoration: underline;
+        }
+    }
+    
+    .regTitle_Tabs{
+        >li{
+            font-size: 22px;
+            float: left;
+            text-align: center;
+            width: 50%;
+            font-size: 22px;
+            color: #94abc2;
+            cursor: pointer;
+        }
+        .active{
+            color: #138cff;
+        }
+    }
+
+    .regTitle_Tabs:before {
+        content: "";
+        width: 2px;
+        height: 25px;
+        background: #138cff;
+        position: absolute;
+        display: block;
+        left: 50%;
+        top: 5px;
+    }
+    
+    .reg-title {
+        display: flex;
+        justify-content: center;
+        
+        color: #138cff;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+    .reg_pass{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    input{
+        margin: 10px 0;
+        background-color: transparent;
+        border: 0;
+        border-bottom: 1px solid #c5cad0;
+        font-size: 14px;
+    }
+    :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+        color: #75737f; opacity:1; 
+    }
+    
+    ::-moz-placeholder { /* Mozilla Firefox 19+ */
+        color: #75737f;opacity:1;
+    }
+    
+    input:-ms-input-placeholder{
+        color: #75737f;opacity:1;
+    }
+    
+    input::-webkit-input-placeholder{
+        color: #75737f;opacity:1;
+    }
+    button{
+        width: 100%;
+        margin: 10px 0;
+    }
+}

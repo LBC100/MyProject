@@ -1,0 +1,35 @@
+.download {
+  background-color: #eae9e6;
+  height: 343px;
+  color: #323534;
+}
+.download .container {
+  padding-top: 54px;
+  width: 1140px;
+  margin: 0 auto;
+  height: 343px;
+  background: url('http://www.hurongbi.cn/static/dist/lib/view_v1/dist/images/index_doqnload.png') no-repeat right 23px;
+}
+.download h3 {
+  font-size: 20px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+.download li {
+  position: relative;
+  float: left;
+  width: 375px;
+}
+.download dl {
+  width: 207px;
+  height: 94px;
+  margin-left: 10px;
+  display: inline-block;
+  position: absolute;
+  top: 6px;
+}
+.download dt {
+  color: #0f132c;
+  line-height: 30px;
+  font-weight: 700;
+}
