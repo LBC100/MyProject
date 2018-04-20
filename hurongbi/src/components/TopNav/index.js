@@ -34,15 +34,18 @@ class TopNav extends Component {
 
         //如果路由是登录/注册页则隐藏登录注册
         let hideClass = '';
+        //隐藏log图片
+        let hideLog = '';
         if(pathname == '/login' || pathname == '/reg') {
             hideClass = 'hide'
+            hideLog = 'none'
         }
         return (
             <div>
                 <Row className='top_nav' >
                     <Col span={24}>
                         <div className="logo" >
-                            <img src={ require('../../img/logo.png') } /> 
+                            <img src={ require('../../img/logo.png') } style={{ display: hideLog }} /> 
                         </div>
                         <ul className="top_nav_link" >
                             {linkHtml}

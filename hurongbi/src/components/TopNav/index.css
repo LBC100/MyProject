@@ -8,6 +8,8 @@
   z-index: 999;
 }
 .top_nav .logo {
+  height: 60px;
+  width: 60px;
   float: left;
 }
 .top_nav .logo > img {

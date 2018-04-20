@@ -29,6 +29,7 @@ ul {
 body {
   font-family: "微软雅黑";
 }
+html,body{height:100%}
 a {
   color: inherit;
   text-decoration: none;
