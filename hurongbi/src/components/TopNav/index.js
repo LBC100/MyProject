@@ -16,6 +16,7 @@ const TopNanLink = ({ text, topNavActive, i, cTopNavActive }) => {
 
 class TopNav extends Component {
     render() {
+        console.log(this.props.newsData);
         const { 
             topNavData:{ topNavActive, a_text, langOnoff, langData }, 
             cTopNavActive, 
