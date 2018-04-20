@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom';
 import {BrowserRouter as Router} from 'react-router-dom';
 import { Provider } from 'react-redux';
 import './css/base.css'
+import './css/bootstrap.min.css'
 import './css/fonts/font-awesome.min.css'
+import './css/app.css'
 
 import store from '../src/store/store'
 import App from './App';

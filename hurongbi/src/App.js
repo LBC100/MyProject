@@ -18,7 +18,7 @@ import Reg from './routes/Reg'
 class App extends Component {
   render() {
     return (
-      <div>
+      <div id="app" >
         <Route path='/' render={ () => <Spin spinning={false} /> } />
         <Route path='/' component={TopNav} />
         <Route path='/' exact component={Bar} />

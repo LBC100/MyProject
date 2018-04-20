@@ -82,3 +82,9 @@
   background-color: #115f88;
   cursor: pointer;
 }
+@media screen and (max-width: 768px) and (min-width: 320px) {
+  .login {
+    width: 87%;
+    padding: 21PX 2% 2px;
+  }
+}
