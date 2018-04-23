@@ -4,19 +4,24 @@ const initState = {
     langData: 'CN',
     a_text: [
         {
-            text: '首页'
+            text: '首页',
+            path: '/'
         },
         {
-            text: '交易中心'
+            text: '交易中心',
+            path: '/market'
         },
         {
-            text: 'C2C交易'
+            text: 'C2C交易',
+            path: '/c2c'
         },
         {
-            text: '新闻资讯'
+            text: '新闻资讯',
+            path: '/news'
         },
         {
-            text: '个人中心'
+            text: '个人中心',
+            path: '/me'
         }
     ]
 };

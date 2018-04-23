@@ -11,6 +11,7 @@ import Download from './components/Download'
 import FooterLinks from './components/FooterLinks'
 import Login from './routes/login'
 import Reg from './routes/Reg'
+import News from './routes/News'
 
 // import axios from 'axios';
 
@@ -26,9 +27,14 @@ class App extends Component {
         <Route path='/' exact component={Introduce} />
         <Route path='/' exact component={Information} />
         <Route path='/' exact component={Download} />
-        <Route path='/' exact component={FooterLinks} />
-        <Route path='/login' component={Login} />
-        <Route path='/reg' component={Reg} />
+
+        <Switch>
+          <Route path='/login' component={Login} />
+          <Route path='/reg' component={Reg} />
+          <Route path='/'  component={FooterLinks} />
+        </Switch>
+        
+        <Route path='/news' component={News} />
       </div>
     );
   }

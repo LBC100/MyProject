@@ -8,9 +8,17 @@ import './index.css'
 
 class FooterLinks extends Component {
     render() {
+        console.log(this.props)
+        const { pathname } = this.props.location
+        let diplay;
+        if(pathname == '/') {
+            diplay = 'block'
+        }else{
+            diplay = 'none'
+        }
         return (
             <div className='footer_links' >
-                    <Row>
+                    <Row style={{ display: diplay }} >
                         <Col span={24}>
                             <div className="footer_links_title" >
                                 <h3>友情链接</h3>

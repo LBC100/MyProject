@@ -7,10 +7,10 @@ import { Row, Col } from 'antd';
 import './index.css'
 
 //导航栏链接
-const TopNanLink = ({ text, topNavActive, i, cTopNavActive }) => {
+const TopNanLink = ({ text, path, topNavActive, i, cTopNavActive }) => {
     const linkClassName = topNavActive == i ? 'active' : '' ;
     return (
-        <li onClick={ () => { cTopNavActive(i) } } ><Link to='/' className={linkClassName} >{text}</Link></li>
+        <li onClick={ () => { cTopNavActive(i) } } ><Link to={path} className={linkClassName} >{text}</Link></li>
     )
 }
 
