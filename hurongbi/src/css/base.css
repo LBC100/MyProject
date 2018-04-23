@@ -22,7 +22,8 @@ pre,
 td,
 textarea,
 th,
-ul {
+ul,
+dl {
   margin: 0;
   padding: 0;
 }

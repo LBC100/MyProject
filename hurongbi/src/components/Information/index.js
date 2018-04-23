@@ -26,6 +26,7 @@ class News extends Component {
         const listHtml = obj.map((e, i) => {
             return <NesList {...e} i={i} key={i} />
         })
+        console.log(this);
         return (
             <div className="news" >
                 <ul>
