@@ -1,0 +1,50 @@
+.lang {
+  display: inline-block;
+  height: 35px;
+  width: 60px;
+  position: relative;
+  line-height: 0;
+  overflow: hidden;
+}
+.lang a {
+  text-decoration: none;
+  color: #fff;
+}
+.lang a:hover {
+  color: #fff;
+}
+.lang_icon {
+  width: 16px;
+  height: 11px;
+  background: url('langcn.png') no-repeat;
+  display: inline-block;
+  margin-right: 4px;
+}
+.lang_en {
+  position: absolute;
+  top: 7px;
+  height: 0px;
+  overflow: hidden;
+  transition: 0.5s;
+  position: relative;
+}
+.lang_en span {
+  position: absolute;
+  top: 7px;
+  left: 20px;
+}
+.lang_icon_cnAen {
+  background-position: 0 -15px;
+}
+.show {
+  height: 15px;
+}
+.sanjiao {
+  background: url('sanjiao.png') no-repeat 6px 6px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: -3px;
+  left: 41px;
+}

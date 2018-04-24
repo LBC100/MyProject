@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
+import {Route, Switch} from 'react-router-dom'
+
+import TopNav from '../../components/TopNav'
 
 class Index extends Component {
     render() {
         return (
             <div>
-                234
+                <Route path='/' component={TopNav} />
             </div>
         );
     }

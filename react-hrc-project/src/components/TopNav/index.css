@@ -1,0 +1,29 @@
+.top_nav {
+  background: #061f52;
+  line-height: 63px;
+  font-size: 15px;
+  color: #e5e5e5;
+  position: relative;
+  padding-left: 72px;
+}
+.top_nav h1 {
+  position: absolute;
+  font-size: 25px;
+  line-height: 63px;
+  font-weight: bold;
+}
+.top_nav_l {
+  padding-left: 70px;
+}
+.top_nav_l li {
+  float: left;
+  width: 7%;
+  text-align: center;
+}
+.top_nav_l a {
+  text-decoration: none;
+  color: #e5e5e5;
+}
+.top_nav_l a:hover {
+  color: #fff;
+}
