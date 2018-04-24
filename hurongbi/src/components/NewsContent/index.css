@@ -1,0 +1,27 @@
+.new_content {
+  color: #474747;
+  margin: 0px;
+  padding-top: 73px;
+  min-height: 800px;
+  background: #f6f5f4;
+}
+.new_content li {
+  line-height: 56px;
+  text-align: left;
+  padding: 0 30px;
+}
+.new_content a {
+  font-size: 16px;
+  padding-left: 20px;
+  color: #474747;
+}
+.new_content i {
+  line-height: 56px;
+  display: none;
+}
+.new_content .active {
+  background-color: #cacaca;
+}
+.new_content .active i {
+  display: block;
+}

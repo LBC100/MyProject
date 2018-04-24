@@ -6,6 +6,11 @@
   width: 100%;
   z-index: 999;
 }
+.top_nav ul,
+.top_nav dl,
+.top_nav ol {
+  margin-bottom: 0;
+}
 .top_nav .logo {
   height: 60px;
   width: 60px;
