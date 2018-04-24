@@ -1,0 +1,66 @@
+.trade_area a {
+  text-decoration: none;
+}
+.trade_area_t {
+  height: 86px;
+  border-bottom: 1px solid #e0dedb;
+}
+.trade_area_t li {
+  float: left;
+  margin-left: 55px;
+  margin-top: 48px;
+  font-size: 16px;
+  position: relative;
+}
+.trade_area_t .active {
+  color: #f4753f;
+}
+.trade_area_t a {
+  color: #232323;
+  text-decoration: none;
+}
+.trade_area_t span {
+  margin-right: 5px;
+  color: transparent;
+}
+.trade_area_t .angle-up {
+  position: absolute;
+  top: 26px;
+  left: 46px;
+  color: transparent;
+}
+.trade_area_b {
+  text-align: center;
+  font-size: 14px;
+}
+.trade_area_b a:hover {
+  text-decoration: underline;
+}
+.trade_area_b table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.trade_area_b th {
+  color: #333;
+  height: 30px;
+}
+.trade_area_b tbody {
+  height: 49px;
+}
+.trade_area_b td {
+  text-align: center;
+  line-height: 48px;
+  display: table-cell;
+  vertical-align: inherit;
+  color: #f25c5c;
+  height: 49px;
+}
+.trade_area_b .star {
+  color: #333;
+  margin-right: 7px;
+  font-size: 10px;
+}
+.trade_area_b .trade_area_b_img {
+  height: 20px;
+  margin: 0 11px;
+}

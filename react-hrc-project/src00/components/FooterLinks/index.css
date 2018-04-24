@@ -1,0 +1,43 @@
+.footer_links .container {
+  width: 1140px;
+  margin: 0 auto;
+  padding-top: 46px;
+}
+.footer_links .container > div {
+  float: left;
+  margin-right: 57px;
+}
+.footer_links .container .footer_links_tips {
+  float: right;
+  margin: 0;
+}
+.footer_links .links {
+  overflow: hidden;
+  background-color: #303232;
+  line-height: 30px;
+  color: #a6a6a6;
+}
+.footer_links .links h3 {
+  font-size: 14px;
+  color: #a6a6a6;
+  line-height: 50px;
+}
+.footer_links .links a {
+  color: #a6a6a6;
+  text-decoration: none;
+}
+.footer_links .links a:hover {
+  text-decoration: underline;
+}
+.footer_links_title {
+  text-align: center;
+  height: 209px;
+  padding-top: 56px;
+}
+.footer_links_title h3 {
+  font-size: 24px;
+  font-family: inherit;
+  font-weight: 500;
+  line-height: 1.1;
+  color: #323534;
+}

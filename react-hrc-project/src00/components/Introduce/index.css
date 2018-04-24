@@ -1,0 +1,41 @@
+.introduce {
+  color: #fff;
+  background: url('http://www.hurongbi.cn/static/dist/lib/view_v1/dist/images/index_top2.jpg') #1d1d2b;
+  background-position: center;
+  text-align: left;
+  padding-bottom: 55px;
+}
+.introduce .container {
+  width: 80%;
+  margin: 0 auto;
+}
+.introduce .introduce_i2 {
+  background-position: 0 -58px;
+}
+.introduce .introduce_i3 {
+  background-position: 0 -120px;
+}
+.introduce .introduce_i4 {
+  background-position: 0 -179px;
+}
+.introduce dl {
+  margin: 81px 0 0 0;
+  position: relative;
+}
+.introduce dl i {
+  width: 50px;
+  display: inline-block;
+  position: absolute;
+  top: 17px;
+  left: -57px;
+  background: url('http://www.hurongbi.cn/static/dist/lib/view_v1/dist/images/introduce.png');
+}
+.introduce dt {
+  font-size: 22px;
+  line-height: 52px;
+  font-weight: 700;
+}
+.introduce dd {
+  font-size: 14px;
+  line-height: 25px;
+}

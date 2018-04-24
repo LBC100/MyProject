@@ -1,0 +1,104 @@
+.top_nav {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 0 15px;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 999;
+}
+.top_nav ul,
+.top_nav dl,
+.top_nav ol {
+  margin-bottom: 0;
+}
+.top_nav .logo {
+  height: 60px;
+  width: 60px;
+  float: left;
+}
+.top_nav .logo > img {
+  height: 60px;
+  margin-top: 3px;
+}
+.top_nav_link {
+  float: left;
+}
+.top_nav_link > li {
+  float: left;
+}
+.top_nav_link > li a {
+  font-size: 16px;
+  height: 73px;
+  line-height: 73px;
+  margin: 0 18px;
+  color: #bababa;
+}
+.top_nav_link > li a:hover {
+  text-decoration: underline;
+}
+.top_nav_link .active {
+  color: #fff;
+}
+.logIn_Register {
+  float: right;
+}
+.logIn_Register .hide {
+  display: none;
+}
+.logIn_Register > li {
+  float: left;
+  margin: 0 18px;
+  height: 73px;
+  line-height: 73px;
+}
+.logIn_Register a {
+  font-size: 14px;
+  color: #fff;
+}
+.logIn_Register a:hover {
+  text-decoration: underline;
+}
+.logIn_Register .lang {
+  margin-top: 30px;
+  position: relative;
+  height: 0;
+  line-height: 0;
+}
+.logIn_Register .lang > a {
+  float: left;
+}
+.logIn_Register .lang_icon {
+  width: 16px;
+  height: 11px;
+  background: url('../../img/langcn.png') no-repeat;
+  display: inline-block;
+  margin-right: 4px;
+}
+.logIn_Register .lang_en {
+  position: absolute;
+  top: 7px;
+  height: 0px;
+  overflow: hidden;
+  transition: 0.5s;
+  position: relative;
+}
+.logIn_Register .lang_en span {
+  position: absolute;
+  top: 7px;
+  left: 20px;
+}
+.logIn_Register .lang_icon_cnAen {
+  background-position: 0 -15px;
+}
+.logIn_Register .show {
+  height: 15px;
+}
+.logIn_Register .sanjiao {
+  background: url('../../img/sanjiao.png') no-repeat 6px 6px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: -3px;
+  left: 41px;
+}

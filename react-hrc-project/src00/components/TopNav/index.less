@@ -1,0 +1,109 @@
+.top_nav{
+    ul,dl,ol {
+        margin-bottom: 0;
+    }
+    // height: 73px;
+    background: rgba(0,0,0,.5);
+    padding: 0 15px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 999;
+    .logo{
+        height: 60px;
+        width: 60px;
+        float: left;
+        >img{
+            height: 60px;
+            margin-top: 3px;
+        }
+    }
+}
+.top_nav_link{
+    float: left;
+    >li{
+        float: left;
+        a{
+            font-size: 16px;
+            height: 73px;
+            line-height: 73px;
+            margin: 0 18px;
+            color: #bababa;
+            &:hover{
+                text-decoration:underline;
+            }
+        }
+    }
+    .active{
+        color: #fff;
+    }
+}
+
+//登录
+.logIn_Register{
+    //注册/登录页隐藏
+    .hide{
+        display: none;
+    }
+    float: right;
+    >li{
+        float: left;
+        margin: 0 18px;
+        height: 73px;
+        line-height: 73px;
+    }
+    a{
+        font-size: 14px;
+        color: #fff;
+        &:hover{
+            text-decoration:underline;
+        }
+    }
+
+    //翻译
+    .lang{
+        margin-top: 30px;
+        >a{
+            float: left;
+        }
+        position: relative;
+        height: 0;
+        line-height: 0;
+    }
+    .lang_icon{
+        width: 16px;
+        height: 11px;
+        background: url('../../img/langcn.png') no-repeat;
+        display: inline-block;
+        margin-right: 4px;
+    }
+    //上下过渡
+    .lang_en{
+        position: absolute;
+        top: 7px;
+        height: 0px;
+        overflow: hidden;
+        transition: 0.5s;
+        position: relative;
+        span{
+            position: absolute;
+            top: 7px;
+            left: 20px;
+        }
+    }
+    .lang_icon_cnAen{
+        background-position: 0 -15px;
+    }
+    .show{
+        height: 15px;
+    }
+    .sanjiao{
+        background: url('../../img/sanjiao.png') no-repeat 6px 6px;
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        top: -3px;
+        left: 41px;
+    }
+}
