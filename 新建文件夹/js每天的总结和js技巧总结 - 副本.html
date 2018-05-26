@@ -498,6 +498,21 @@ flex 居中并两端对齐
     justify-content: space-between;
 
 
+原生js更改CSS样式的两种方式：
+    1通过在javascript代码中的node.style.cssText="css表达式1；css表达式2；css表达式3  "的方式直接更改CSS样式。
+    
+    2先在CSS样式表中对特定的类如“active类”设置样式（这里的active类是假定的，暂时不存在），然后再在javascript代码中通过node.classname="active"使得CSS样式表中对active类的样式设置附加到该node节点上来。
+
+鼠标样式
+    小手
+        cursor: pointer;
+
+chrome下记住密码后去掉黄色背景的方法
+    把颜色换成背景颜色，#xxx
+    input:-webkit-autofill {
+        -webkit-box-shadow : 0 0 0px 1000px #f2faff inset ; 
+    }
+
 js技巧结束
 
 
@@ -1491,6 +1506,7 @@ while
     onscroll
         当滚动条滚动的时候触发这个事件
 
+    window.onresize
     onresize:
         窗口缩放的时候触发
 
@@ -3077,6 +3093,14 @@ es5 和 es6 继承的区别。
     }
     <A1.Head />
 
+2018-5-21号
+    Ant Design Mobile如何配置browserHistory?
+    import browserHistory from 'history/createBrowserHistory';
+    
+    // 1. Initialize
+    const app = dva({
+        history: browserHistory(),
+    });
 
 
 
