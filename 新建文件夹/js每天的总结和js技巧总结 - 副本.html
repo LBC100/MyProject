@@ -460,13 +460,14 @@ react全家桶
 
     dva安装antd
         npm install antd --save
-        npm install babel-plugin-import --save-dev
-
-        {
-            "extraBabelPlugins": [
-                ["import", { "libraryName": "antd", "style": "css" }]
-            ]
-        }
+        yarn add babel-plugin-import --dev
+        在.webpackrc 文件添加
+            {
+                "extraBabelPlugins": [
+                    ["import", { "libraryName": "antd", "style": "css" }]
+                ]
+            }
+        
 
 多个组件导出、导入
     导出：export { A1, A2 }
@@ -498,20 +499,32 @@ flex 居中并两端对齐
     justify-content: space-between;
 
 
-原生js更改CSS样式的两种方式：
-    1通过在javascript代码中的node.style.cssText="css表达式1；css表达式2；css表达式3  "的方式直接更改CSS样式。
-    
-    2先在CSS样式表中对特定的类如“active类”设置样式（这里的active类是假定的，暂时不存在），然后再在javascript代码中通过node.classname="active"使得CSS样式表中对active类的样式设置附加到该node节点上来。
+chrom input输入框黄色背景去除?
+    input:-webkit-autofill, 
+    textarea:-webkit-autofill, 
+    select:-webkit-autofill { 
+          -webkit-box-shadow: 0 0 0 1000px white inset; 
+   }
+    input[type=text]:focus, input[type=password]:focus, textarea:focus {
+         -webkit-box-shadow: 0 0 0 1000px white inset; 
+   }
+   
+css提升权重
+    !important
 
-鼠标样式
-    小手
-        cursor: pointer;
+transform translate
 
-chrome下记住密码后去掉黄色背景的方法
-    把颜色换成背景颜色，#xxx
-    input:-webkit-autofill {
-        -webkit-box-shadow : 0 0 0px 1000px #f2faff inset ; 
-    }
+变小手 cursor:pointer;
+
+获取浏览器窗口宽高兼容代码，高度、宽度
+        var w = document.documentElement.offsetWidth || document.body.offsetWidth;
+        var h = document.documentElement.offsetHeight || document.body.offsetHeight;
+
+input和文字上下对齐
+    vertical-align: middle; 
+
+bootstrap清浮动
+    clearfix
 
 js技巧结束
 
@@ -885,6 +898,7 @@ while
         console.log(Math.min.apply(null,arr));//借方法来用
 
 12-12号
+    字符串截取 
     字符串的length:只可读不可写。
 
     string.charAt(索引)。动态方法
@@ -919,6 +933,9 @@ while
         找指定字符的索引(下标)
             从右往左找，找到指定位置的下标(返回值)。string.lastIndexOf(指定字符,起始的位置);
             设置本身的位置只能找到本身。如果要往后找，那么要在本身后 - num
+    
+    保留2位小数        
+        parseFloat(num.toFixed(2))
 
     str.slice()
         如果只传一个参数,第几位开始截取直到整个字符串截完。
@@ -1506,7 +1523,6 @@ while
     onscroll
         当滚动条滚动的时候触发这个事件
 
-    window.onresize
     onresize:
         窗口缩放的时候触发
 
@@ -3067,8 +3083,8 @@ es5 和 es6 继承的区别。
 
 2018-4-19号
     获取浏览器窗口宽高兼容代码
-        var w = document.documentElement.offsetWidth || document.body.offsetWidth ;
-        var h = document.documentElement.offsetHeight || document.body.offsetHeight ;
+        var w = document.documentElement.offsetWidth || document.body.offsetWidth;
+        var h = document.documentElement.offsetHeight || document.body.offsetHeight;
 
 2018-4-20号
     requestAnimationFrame
@@ -3093,16 +3109,23 @@ es5 和 es6 继承的区别。
     }
     <A1.Head />
 
-2018-5-21号
-    Ant Design Mobile如何配置browserHistory?
-    import browserHistory from 'history/createBrowserHistory';
-    
-    // 1. Initialize
-    const app = dva({
-        history: browserHistory(),
-    });
+2018-5-31号
+    npm init
+    npm install --save-dev webpack
+    同时安装React和React-DOM
+        npm install --save-dev react react-dom
+    npm install --save react-router-dom
 
-
+2018-6-11号
+    //字符串/替换
+        strRepl = (str) => {
+            if(str == '/') {
+                return str.replace('/', '')
+            }else {
+                console.log(123)
+                return str.replace(/\//g, '_')
+            }
+        } 
 
                 
             
