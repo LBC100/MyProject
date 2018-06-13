@@ -459,14 +459,13 @@ react全家桶
     dva new
 
     dva安装antd
-        npm install antd --save
-        yarn add babel-plugin-import --dev
+        npm install antd babel-plugin-import --save
+            npm install antd --save
+            yarn add babel-plugin-import --dev
         在.webpackrc 文件添加
-            {
-                "extraBabelPlugins": [
-                    ["import", { "libraryName": "antd", "style": "css" }]
-                ]
-            }
+            "extraBabelPlugins": [
+                ["import", { "libraryName": "antd", "libraryDirectory": "es", "style": "css" }]
+            ]
         
 
 多个组件导出、导入
@@ -475,7 +474,7 @@ react全家桶
 
 安装react-bootstrap
     npm install -g bower
-    npm install react-bootstrap --save
+    npm install --save react-bootstrap
     bower install react-bootstrap
 
     使用以下css否则有bug
@@ -3073,6 +3072,10 @@ es5 和 es6 继承的区别。
     字体图标
         npm install react-fontawesome --save
 
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+        import FontAwesome from 'react-fontawesome'
+        <FontAwesome name="star" />
+    
     简单响应式
         容器组件用百分比
             .container{
