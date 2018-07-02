@@ -37,6 +37,9 @@ a:hover {
   text-decoration: none;
   outline: none;
 }
+a:focus{
+  text-decoration: none;
+}
 img {
   vertical-align: middle;
   border: 0;
@@ -55,4 +58,11 @@ i {
 }
 input {
   border: 0;
+}
+.clearfix:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
 }

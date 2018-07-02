@@ -319,6 +319,23 @@ react生命周期
     组件将要卸载时调用，一些事件监听和定时器需要在此时清除。
 以上可以看出来react总共有10个周期函数（render重复一次），这个10个函数可以满足我们所有对组件操作的需求，利用的好可以提高开发效率和组件性能。
 
+为什么需要重新渲染组件？实质上，你想要的只是当路由变化，请求对应路由的数据而已。
+
+那么考虑一下React组件的生命周期钩子。第一次加载时:
+
+"constructor"
+"componentWillMount"
+"render"
+"componentDidMount"
+当组件的props发生改变时，组件更新，会调用如下的生命周期钩子
+
+"componentWillReceiveProps"
+"shouldComponentUpdate"
+"componentWillUpdate"
+"render"
+"componentDidUpdate"
+当路由变化时，即组件的props发生了变化，会调用componentWillReceiveProps等生命周期钩子
+
 to=对象，带参数跳转（pathname, query, hash, state(额外数据）），注意:这些参数都被存放到this.props.location中
 
 <li>
@@ -450,23 +467,28 @@ react全家桶
 
     安装axios
         npm install axios --save
+        import axios from 'axios';
+        data = yield call(axios, action.payload.url);
 
     
 
     npm i dva-cli -g
     react脚手架安装antd
-        yarn add antd babel-plugin-import --dev
+        npm install antd babel-plugin-import --save
     dva new
 
     dva安装antd
         npm install antd babel-plugin-import --save
-            npm install antd --save
-            yarn add babel-plugin-import --dev
-        在.webpackrc 文件添加
-            "extraBabelPlugins": [
-                ["import", { "libraryName": "antd", "libraryDirectory": "es", "style": "css" }]
-            ]
-        
+        "extraBabelPlugins": [
+            ["import", { "libraryName": "antd", "libraryDirectory": "es", "style": "css" }]
+        ]
+
+        "extraBabelPlugins": [
+            ["import", { "libraryName": "antd", "style": "css" }]
+        ]
+
+            
+
 
 多个组件导出、导入
     导出：export { A1, A2 }
@@ -474,7 +496,7 @@ react全家桶
 
 安装react-bootstrap
     npm install -g bower
-    npm install --save react-bootstrap
+    npm install react-bootstrap --save
     bower install react-bootstrap
 
     使用以下css否则有bug
@@ -522,8 +544,43 @@ transform translate
 input和文字上下对齐
     vertical-align: middle; 
 
-bootstrap清浮动
-    clearfix
+
+添加:节点.classList.add("类名"); 删除:节点.classList.remove("类名"); 
+
+git跳过代码检查
+    git commit --no-verify -m "2018-6-21-7"
+
+bootstrap 清浮动 clearfix
+
+上下居中
+    display: flex;
+    align-items:center; 
+    justify-content:center;
+    flex-direction:column;
+
+    -webkit-display:flex;
+    display:flex;
+    -webkit-align-items:center;
+    align-items:center;
+    -webkit-justify-content:center;
+    justify-content:center;
+
+水平两端对齐
+    display: flex;
+    justify-content: space-between;
+    -webkit-display: flex;
+    -webkit-justify-content: space-between;
+
+清除下拉框样式
+    /*很关键：将默认的select选择框样式清除*/
+    appearance:none;
+    -moz-appearance:none;
+    -webkit-appearance:none;
+
+    /*清除ie的默认选择框样式清除，隐藏下拉箭头*/
+    select::-ms-expand { display: none; 
+
+
 
 js技巧结束
 
@@ -1690,6 +1747,7 @@ while
     滚轮事件函数封装，返回布尔值。true 上滚。false,下滚。
 
 18-1-3号
+    正常 移入、移出onmouseover、onmouseout
     onmouseenter
         移入
 
@@ -2452,6 +2510,18 @@ while
             key=val; users={"name":"王硕"}
             cookie与cookie之间是通过; （分号+空格）来分割的
 
+    document.cookie = 'jguc_nav_li_index=1';
+    function getCookie(key){
+            var attr1=document.cookie.split('; ');//通过分号+空格把获取的cookie拆分；attr1存储cookie数组；
+            for(var i=0;i<attr1.length;i++){	//分别获取每一个cookie。cookie是由“名字=值”组成的；
+                var attr2=attr1[i].split('=');	//把名字与值拆分
+                if(attr2[0]==key){	//如果名字=参数（想要获取的cookie），则返回其值；
+                    return attr2[1];
+                }
+            }
+        }
+    alert(getCookie('jguc_nav_li_index'));
+
     localStorage--- 本地存储
         localStorage还提供了一些监听事件
             还提供了一些监听事件（onstorage）:当localStorage中的数据发生变化的时候，**兄弟**页面触发
@@ -3063,19 +3133,46 @@ es5 和 es6 继承的区别。
             }
 
 2018-4-17号
+    import { connect } from 'dva';
+    
+        
+    model可以有很多个只要app.model方法运行了store里就有数据
+        app.model(require('./models/login').default);
+    
+    组件取数据。在组件的上面写：
+        @connect(({ index }) => ({
+            index,
+        }))
+        
+        传入的index就是model的数据。
+
+
     @connect(
         state=>state.main,
         dispatch=>bindActionCreators(action,dispatch)
     )
 
+触发reducers
+    dispatch({ 
+        type: 'Floa_window/hide_fl_win', //要执行的action，模块名/要执行的reducer
+        payload: 1                      //附带的数据
+    })
+
+    //参数1：state是原来的数据。参数2：action是传进来的action(有时附带数据，有时不附带)
+    reducers: {
+        hide_fl_win (state, action) {
+            console.log(state, action)
+            return {
+                show: false
+            }
+        } 
+    },
+
 2018-4-18号
     字体图标
-        npm install react-fontawesome --save
-
+        npm install --save react-fontawesome
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
-        import FontAwesome from 'react-fontawesome'
-        <FontAwesome name="star" />
-    
+
     简单响应式
         容器组件用百分比
             .container{
@@ -3129,6 +3226,10 @@ es5 和 es6 继承的区别。
                 return str.replace(/\//g, '_')
             }
         } 
+
+2018-6-21号
+    浏览器地址跳转
+        window.location.href    
 
                 
             
