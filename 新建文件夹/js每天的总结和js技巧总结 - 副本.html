@@ -469,6 +469,7 @@ react全家桶
         npm install axios --save
         import axios from 'axios';
         data = yield call(axios, action.payload.url);
+    
 
     
 
@@ -476,6 +477,9 @@ react全家桶
     react脚手架安装antd
         npm install antd babel-plugin-import --save
     dva new
+    
+    安装dva-loading
+        npm i dva-loading --save
 
     dva安装antd
         npm install antd babel-plugin-import --save
@@ -571,6 +575,15 @@ bootstrap 清浮动 clearfix
     -webkit-display: flex;
     -webkit-justify-content: space-between;
 
+平分nav
+   父元素
+        display: flex;
+        justify-content: space-between;
+        -webkit-display: flex;
+        -webkit-justify-content: space-between;
+    子元素
+        flex: 1;
+
 清除下拉框样式
     /*很关键：将默认的select选择框样式清除*/
     appearance:none;
@@ -579,6 +592,48 @@ bootstrap 清浮动 clearfix
 
     /*清除ie的默认选择框样式清除，隐藏下拉箭头*/
     select::-ms-expand { display: none; 
+
+改变input标签中placeholder显示的颜色
+    ::-webkit-input-placeholder { /* WebKit browsers */
+        color:    #A9A9A9;
+    }
+    :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    color:    #A9A9A9;
+    opacity:  1;
+    }
+    ::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color:    #A9A9A9;
+    opacity:  1;
+    }
+    :-ms-input-placeholder { /* Internet Explorer 10+ */
+    color:    #A9A9A9;
+    }
+
+CSS设置滚动条样式（兼容IE）
+    在父元素加scroll类名
+        .scroll{
+            height: 254px;
+            overflow: auto;
+            padding-right: 8px;
+        }
+        .scroll::-webkit-scrollbar{
+            width:4px;
+            height:4px;
+        }
+        .scroll::-webkit-scrollbar-track{
+            background: #f6f6f6;
+            border-radius:2px;
+        }
+        .scroll::-webkit-scrollbar-thumb{
+            background: #aaa;
+            border-radius:2px;
+        }
+        .scroll::-webkit-scrollbar-thumb:hover{
+            background: #747474;
+        }
+        .scroll::-webkit-scrollbar-corner{
+            background: #f6f6f6;
+        }
 
 
 
