@@ -243,10 +243,11 @@ classList.contains
 
 要渲染4*4的格子的话，有一个数值要取余 i%
 
-el.classList.contains(class)
-    返回布尔值，判断指定的类名是否存在。
-    true - 元素包已经包含了该类名
-    false - 元素中不存在该类名
+包不包含某个class名
+    el.classList.contains(class)
+        返回布尔值，判断指定的类名是否存在。
+        true - 元素包已经包含了该类名
+        false - 元素中不存在该类名
 
 失焦失效
     $('.title a')[0].style.outline = 'none'; //关闭聚焦样式
@@ -451,7 +452,7 @@ ref技巧
 
 react全家桶
     安装react脚手架
-        npm i create-react-app -g 
+        npm i create-react-app -g
     创建项目： 
         create-react-app 项目名
 
@@ -470,7 +471,16 @@ react全家桶
         import axios from 'axios';
         data = yield call(axios, action.payload.url);
     
+    兼容ie
+        npm install --save babel-polyfill
+        入口文件***第一行***添加 import "babel-polyfill";
 
+    npm install --save react-router-config
+
+    开启css modules
+    npm install react-app-rewired --save-dev        https://github.com/timarney/react-app-rewired
+    npm install --save-dev less-loader less   
+    yarn add react-app-rewire-less-with-modules -D  https://github.com/LBC100/react-app-rewire-less-with-modules
     
 
     npm i dva-cli -g
@@ -491,24 +501,62 @@ react全家桶
             ["import", { "libraryName": "antd", "style": "css" }]
         ]
 
-            
+    安装react-bootstrap
+    npm install -g bower
+    npm install react-bootstrap --save
+    bower install react-bootstrap
+        使用以下css否则有bug
+            <!-- Latest compiled and minified CSS -->
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+            <!-- Optional theme -->
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">          
+
+简化actions
+    npm install --save redux-actions
+
+@装饰器
+    $ npm install --save-dev babel-plugin-transform-decorators-legacy
+
+    {
+        "plugins": ["transform-decorators-legacy"]
+    }
+
+import { delay } from 'redux-saga';
+    yield delay(1000); //延迟一秒
+
+takeEvery会在接到相应的action之后不断产生新的副作用。 比如，做一个计数器按钮，用户需要不断的点击按钮，对后台数据更新，这里可以使用takeEvery来触发。
+
+takeLatest在相同的action被触发多次的时候，之前的副作用如果没有执行完，会被取消掉，只有最后一次action触发的副作用可以执行完。比如，我们需要一个刷新按钮， 让用户可以手动的从后台刷新数据， 当用户不停单机刷新的时候， 应该最新一次的请求数据被刷新在页面上，这里可以使用takeLatest。
+
 
 
 多个组件导出、导入
     导出：export { A1, A2 }
     放在顶行导入：import  { A1, A2 }  from '../../components/aaa';
 
-安装react-bootstrap
-    npm install -g bower
-    npm install react-bootstrap --save
-    bower install react-bootstrap
+bindActionCreators 用来包装绑定Actions
+    import { bindActionCreators } from 'redux';
+    import * as actions from '../../actionCeators/actionCeators.js'; //action的集合，不推荐
+    import { INCREMENT, DECREMENT } from '../../actionCeators/actionCeators.js'; //推荐
+    没用之前
+    const mapDispatchToProps = (dispatch, ownProps) => {
+        return {
+            increment: (...args) => dispatch(actions.increment(...args)),
+            decrement: (...args) => dispatch(actions.decrement(...args))
+        }
+    };
+    使用后
+    const mapDispatchToProps = { } = (dispatch, ownProps) => {
+        return bindActionCreators({
+          increase: action.increase,
+          decrease: action.decrease
+        }, dispatch);
+      }
 
-    使用以下css否则有bug
-        <!-- Latest compiled and minified CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+简化actions
+    npm install --save redux-actions
 
-        <!-- Optional theme -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
 
 
@@ -539,7 +587,8 @@ css提升权重
 
 transform translate
 
-变小手 cursor:pointer;
+变小手   cursor:pointer;
+默认箭头 cursor:default;
 
 获取浏览器窗口宽高兼容代码，高度、宽度
         var w = document.documentElement.offsetWidth || document.body.offsetWidth;
@@ -556,16 +605,23 @@ git跳过代码检查
 
 bootstrap 清浮动 clearfix
 
-上下居中
-    display: flex;
-    align-items:center; 
-    justify-content:center;
-    flex-direction:column;
-
+上下、左右居中
     -webkit-display:flex;
     display:flex;
     -webkit-align-items:center;
     align-items:center;
+    -webkit-justify-content:center;
+    justify-content:center;
+
+上下居中
+    -webkit-display:flex;
+    display:flex;
+    -webkit-align-items:center;
+    align-items:center;
+
+左右居中
+    -webkit-display:flex;
+    display:flex;
     -webkit-justify-content:center;
     justify-content:center;
 
@@ -635,6 +691,55 @@ CSS设置滚动条样式（兼容IE）
             background: #f6f6f6;
         }
 
+react 添加自定义属性
+    data_index={'index'}
+获取 自定义属性
+    console.log(ev.target.getAttribute("data_index"));
+
+react 更新数据时属性名为变量
+    this.setState({[name]:  e.target.value})
+
+导出函数集合(对象)
+    export function a1(text) {
+
+    }
+    export function a2(text) {
+
+    }
+
+    import * as actionCreators from './actionCreators' //不推荐
+    import { INCREMENT, DECREMENT } from '../../actionCeators/actionCeators.js'; //推荐
+
+导出、引入单个函数
+    导出
+        export default function dynamicWrapper () {
+            console.log('dynamicWrapper');
+        }
+    引入
+        import dynamicWrapper from '../../utils/dynamicWrapper'
+
+阴影
+    box-shadow: 0px 0 20px #e4e3e3;
+
+旋转
+    -moz-transform:rotate(180deg); 
+    -webkit-transform:rotate(180deg);
+   transform:rotate(180deg);
+   filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+
+react-router-config
+    key相同则不会重新渲染组件
+    {
+        path: '/',
+        exact: true,
+        component: Basic_layout,
+        key: 'Basic'
+      }, 
+      {
+        path: '/c2c',
+        component: Basic_layout,
+        key: 'Basic',
+      }
 
 
 js技巧结束
@@ -1631,10 +1736,10 @@ while
             document.documentElement.scrollLeft
             window.pageXOffset
 
-    onscroll
+    window.onscroll
         当滚动条滚动的时候触发这个事件
 
-    onresize:
+    window.onresize
         窗口缩放的时候触发
 
 12-28号
@@ -1802,7 +1907,7 @@ while
     滚轮事件函数封装，返回布尔值。true 上滚。false,下滚。
 
 18-1-3号
-    正常 移入、移出onmouseover、onmouseout
+    正常 移入、移出onmouseover;onmouseout
     onmouseenter
         移入
 
@@ -3006,8 +3111,9 @@ es5 和 es6 继承的区别。
                   text
                 };
               }
-              
-            import * as actionCreators from './actionCreators'
+            //一起导出函数
+            import * as actionCreators from './actionCreators' //不推荐
+            import { INCREMENT, DECREMENT } from '../../actionCeators/actionCeators.js'; //推荐
             import { bindActionCreators } from 'redux'
 
             function mapStateToProps(state) {
@@ -3285,6 +3391,64 @@ es5 和 es6 继承的区别。
 2018-6-21号
     浏览器地址跳转
         window.location.href    
+
+2018-7-11号
+    dva
+    react Route Config
+    组件按需加载
+    Model绑定组件
+
+    import dynamic from 'dva/dynamic';
+    //把函数放router.js下，修改路径。否则会出现路径不一致的错误
+    //参数一：app对象。参数二：所需model。参数三：需要绑定model的组件。
+    function dynamicWrapper (app, models, component) {
+        return dynamic({
+            app,
+            models: () => models.map(m => import(`./models/${m}.js`)),
+            component,
+        })
+    }
+
+2018-8-3号
+    判断是否为微信浏览器
+        function is_weixn(){  
+            var ua = navigator.userAgent.toLowerCase();  
+            if(ua.match(/MicroMessenger/i)=="micromessenger") {  
+                return true;  
+            } else {  
+                return false;  
+            }  
+        }
+
+2018-8-6号
+    判断ios端和安卓端
+    var mm_userAgent = navigator.userAgent, app = navigator.appVersion;
+    var isAndroid = mm_userAgent.indexOf('Android') > -1 || mm_userAgent.indexOf('Linux') > -1; //g
+    var isIOS = !!mm_userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+    if (isAndroid) {
+        console.log('安卓')
+        //这个是安卓操作系统
+    }
+    if (isIOS) {
+        console.log('ios')
+　　　　//这个是ios操作系统
+    }
+
+强制不换行 
+    p { white-space:nowrap; }
+    
+自动换行 
+    p { word-wrap:break-word; }
+    
+强制英文单词断行 
+    p { word-break:break-all; }
+
+2018-8-7号
+    rem布局
+        <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
+        <script src="./lib-flexible.js"></script>
+    
+
 
                 
             
