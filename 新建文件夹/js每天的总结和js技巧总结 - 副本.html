@@ -529,7 +529,8 @@ takeEvery会在接到相应的action之后不断产生新的副作用。 比如�
 
 takeLatest在相同的action被触发多次的时候，之前的副作用如果没有执行完，会被取消掉，只有最后一次action触发的副作用可以执行完。比如，我们需要一个刷新按钮， 让用户可以手动的从后台刷新数据， 当用户不停单机刷新的时候， 应该最新一次的请求数据被刷新在页面上，这里可以使用takeLatest。
 
-
+react naative环境搭建
+    npm install -g react-native
 
 多个组件导出、导入
     导出：export { A1, A2 }
@@ -627,8 +628,8 @@ bootstrap 清浮动 clearfix
 
 水平两端对齐
     display: flex;
-    justify-content: space-between;
     -webkit-display: flex;
+    justify-content: space-between;
     -webkit-justify-content: space-between;
 
 平分nav
@@ -741,6 +742,11 @@ react-router-config
         key: 'Basic',
       }
 
+vue全家桶
+    安装vue脚手架
+        npm install -g @vue/cli
+    启动
+        npm run serve
 
 js技巧结束
 
@@ -1103,7 +1109,7 @@ while
 
         如：//20-40之间   Math.round(Math.random()*(40-20)+20);
 
-    toFixed()
+    toFixed()。四舍五入
         保留几位小数？返回值是个string(字符串)
         3.14.toFixed(num); num为几就保留几位。3.141596.toFixed(2)  保留2位小数->返回值是个string(字符串)
 
@@ -2672,14 +2678,14 @@ while
 
     document.cookie = 'jguc_nav_li_index=1';
     function getCookie(key){
-            var attr1=document.cookie.split('; ');//通过分号+空格把获取的cookie拆分；attr1存储cookie数组；
-            for(var i=0;i<attr1.length;i++){	//分别获取每一个cookie。cookie是由“名字=值”组成的；
-                var attr2=attr1[i].split('=');	//把名字与值拆分
-                if(attr2[0]==key){	//如果名字=参数（想要获取的cookie），则返回其值；
-                    return attr2[1];
-                }
+        var attr1=document.cookie.split('; ');//通过分号+空格把获取的cookie拆分；attr1存储cookie数组；
+        for(var i=0;i<attr1.length;i++){	//分别获取每一个cookie。cookie是由“名字=值”组成的；
+            var attr2=attr1[i].split('=');	//把名字与值拆分
+            if(attr2[0]==key){	//如果名字=参数（想要获取的cookie），则返回其值；
+                return attr2[1];
             }
         }
+    }
     alert(getCookie('jguc_nav_li_index'));
 
     localStorage--- 本地存储
@@ -3434,6 +3440,74 @@ es5 和 es6 继承的区别。
 　　　　//这个是ios操作系统
     }
 
+    <script type="text/javascript">
+        /*智能机浏览器版本信息:*/
+        var browser={
+          versions:function(){
+            var u = navigator.userAgent, app = navigator.appVersion;
+            return {//移动终端浏览器版本信息
+              trident: u.indexOf('Trident') > -1, //IE内核
+              presto: u.indexOf('Presto') > -1, //opera内核
+              webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+              gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+              mobile: !!u.match(/AppleWebKit.*Mobile.*/)||u.indexOf('iPad') > -1, //是否为移动终端
+              ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+              android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+              iPhone: u.indexOf('iPhone') > -1, //是否为iPhone或者QQHD浏览器
+              iPad: u.indexOf('iPad') > -1, //是否iPad
+              webApp: u.indexOf('Safari') == -1 //是否web应该程序，没有头部与底部
+            };
+          }(),
+          language:(navigator.browserLanguage || navigator.language).toLowerCase()
+        }
+          
+        document.writeln("语言版本: "+browser.language+"<br/>");
+        document.writeln("是否为移动终端: "+browser.versions.mobile+"<br/>");
+        document.writeln("ios终端: "+browser.versions.ios+"<br/>");
+        document.writeln("android终端: "+browser.versions.android+"<br/>");
+        document.writeln("是否为iPhone: "+browser.versions.iPhone+"<br/>");
+        document.writeln("是否iPad: "+browser.versions.iPad+"<br/>");
+        document.writeln(navigator.userAgent);
+
+        //是否为移动端
+        if (mobile_bs.versions.mobile) {
+            if (mobile_bs.versions.android || mobile_bs.versions.iPhone || mobile_bs.versions.iPad || mobile_bs.versions.ios) {
+                window.location.href = "移动端网址";
+            }
+        };
+
+        if (browser.versions.mobile) {//判断是否是移动设备打开。browser代码在下面
+            var ua = navigator.userAgent.toLowerCase();//获取判断用的对象
+            if (ua.match(/MicroMessenger/i) == "micromessenger") {
+                //在微信中打开
+                setInterval(WeixinJSBridge.call('closeWindow'),2000);
+            }
+            if (ua.match(/WeiBo/i) == "weibo") {
+                //在新浪微博客户端打开
+            }
+            if (ua.match(/QQ/i) == "qq") {
+                //在QQ空间打开
+            }
+            if (browser.versions.ios) {
+                //是否在IOS浏览器打开
+            } 
+            if(browser.versions.android){
+                //是否在安卓浏览器打开
+            }
+        } else {
+            //否则就是PC浏览器打开
+            window.close();
+        }
+
+        if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
+            alert('客户端');
+        } else {
+            alert('PC端');
+            console.log('PC端');    
+        }
+    </script>          
+  
+
 强制不换行 
     p { white-space:nowrap; }
     
@@ -3447,6 +3521,60 @@ es5 和 es6 继承的区别。
     rem布局
         <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
         <script src="./lib-flexible.js"></script>
+    自适应布局
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+2018-8-13号
+    更改svg图片颜色
+        用记事本打开svg图片，在svg标签上添加style="fill: #17a7f3" 即可。
+
+2018-8-16号
+    react-cookie 的使用
+        name 值不能为中文。
+            import { withCookies, Cookies } from 'react-cookie';
+            import { instanceOf } from 'prop-types';
+
+        地址
+            https://github.com/reactivestack/cookies/tree/master/packages/react-cookie
+        安装
+            npm install react-cookie
+
+        用CookiesProvider 标签包根组件来传递 cookies 对象
+            import { CookiesProvider } from 'react-cookie';
+            <!-- 
+            <Provider store={store} >
+                <CookiesProvider>
+                    <App />
+                </CookiesProvider>
+            </Provider> 
+            -->
+        获取 cookies 的组件添加 static propTypes
+            class App extends Component {
+                static propTypes = {
+                    cookies: instanceOf(Cookies).isRequired
+                };
+            }
+        
+        用withCookies 方法包裹组件来获取 cookies 对象
+            import { withCookies, Cookies } from 'react-cookie';
+            export default withCookies(App);
+        
+        使用方法
+            const { cookies, allCookies } = this.props;
+            cookies.get()
+            cookies.set()
+                name（字符串）：cookie名称
+                value（string | object）：保存值并根据需要对对象进行字符串化
+                options（object）：支持RFC 6265中的所有cookie选项
+                    path（字符串）：cookie路径，/如果您希望在所有页面上都可以访问cookie，请将其用作路径
+                    expires（日期）：cookie的绝对到期日期
+                    maxAge（number）：客户端以秒为单位收到cookie时的相对最大年龄
+                    domain（字符串）：cookie的域（sub.domain.com或.allsubdomains.com）
+                    secure（boolean）：只能通过HTTPS访问吗？
+                    httpOnly（boolean）：只有服务器才能访问cookie吗？
+            cookies.remove()
+
+            
     
 
 
