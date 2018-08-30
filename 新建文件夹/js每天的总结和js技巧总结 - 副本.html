@@ -744,9 +744,31 @@ react-router-config
 
 vue全家桶
     安装vue脚手架
-        npm install -g @vue/cli
-    启动
-        npm run serve
+        npm install -g vue-cli
+            启动 npm run dev
+        npm install -g @vue/cli  //最新版
+            启动 npm run serve
+    添加“scoped”属性 CSS仅对此组件生效
+        <!-- <style scoped lang="less"> -->
+    父组件通过 v-bind:msg = 'msg' 传值给子组件
+        <!-- <Common_head v-bind:msg = 'msg' /> -->
+    子组件改变父组件数据
+        子组件定一个触发改变的函数，函数里写
+        this.$emit('change_f',"我是数据"); //参数1：事件名。父组件用得到。参数2：数据
+        父组件里的组件标签写上要触发的事件 v-on:change_f = 'jieshou($event)'
+        <!-- <Common_head v-bind:msg = 'msg' v-on:change_f = 'jieshou($event)' /> -->
+        在父组件里定一个接收的函数，并在函数里更新数据的逻辑。$event就是jieshou (msg) {}传入的参数(数据)
+        jieshou (msg) {
+            this.msg = msg;
+        }
+
+react组件获取history
+    withRouter高阶组件，提供了history让你使用~
+    import {withRouter} from "react-router-dom";
+    export default withRouter(MyComponent);
+
+
+
 
 js技巧结束
 

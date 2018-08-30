@@ -1,7 +1,7 @@
 <template>
-  <div class="home">
-    <Common_head />
-    home
+  <div class="C2c">
+    <Common_head bg_color='black' />
+    c2c
   </div>
 </template>
 
@@ -10,7 +10,7 @@
 import Common_head from '@/components/Common_head.vue';
 
 export default {
-  name: 'home',
+  name: 'c2c',
   data () {
     return {
       
