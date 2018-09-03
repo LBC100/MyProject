@@ -45,7 +45,7 @@ var MyTools = {
 };
 
 //函数自执行。tab选项卡
-(function (element1, activeNum, className, element2) {
+!function (element1, activeNum, className, element2) {
     //选项卡封装。参数一：类数组或数组。参数二：默认选中。参数三：类名。默认active。参数四：对应要显示的数组
 
     forArr(); //大清洗
@@ -66,5 +66,19 @@ var MyTools = {
             element2[j].classList.remove("show");
         }
     }
-})(help_left_menu, 0, className="active", gzg_help_right_list);
+}(help_left_menu, 0, className="active", gzg_help_right_list);
+
+// nav选中(路由选中)
+    //参数1：路由数据(数组)，如：var pathArr =  ['/index','//','//','/white_paper'];
+    // 参数2：需要active的元素(类数组 || 数组);
+    function router_activ(arr, nav_list) {
+        nav_list = [].slice.call(nav_list);
+        arr.forEach(function (e, i) {
+            nav_list[i].classList.remove('active'); //大清洗
+            //包含特定字符串的选中
+            if(window.location.pathname.indexOf(e) != -1) {
+                nav_list[i].classList.add('active');
+            }
+        });
+    }
 
