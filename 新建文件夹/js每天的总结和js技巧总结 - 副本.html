@@ -3601,13 +3601,17 @@ es5 和 es6 继承的区别。
             cookies.remove()
 
 2019-3-28
-	
 	fieldsValue.BeginDate = fieldsValue.ReceivingTime[0];
 	fieldsValue.EndDate = fieldsValue.ReceivingTime[1];
     delete fieldsValue.ReceivingTime;
     
 2019-3-30
-    测试
+    @符表示项目根目录. 使用@直接复制路径不用考虑路径层级
+        import intl from '@/common/locales';
+
+2019-4-1
+    只传一个参数, 在 effects: {} 里使用
+    import { delay } from 'dva/saga'
     
 
 
