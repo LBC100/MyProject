@@ -3600,18 +3600,27 @@ es5 和 es6 继承的区别。
                     httpOnly（boolean）：只有服务器才能访问cookie吗？
             cookies.remove()
 
-2019-3-28
+umi + dva + ant.design
 	fieldsValue.BeginDate = fieldsValue.ReceivingTime[0];
 	fieldsValue.EndDate = fieldsValue.ReceivingTime[1];
     delete fieldsValue.ReceivingTime;
-    
-2019-3-30
+
     @符表示项目根目录. 使用@直接复制路径不用考虑路径层级
         import intl from '@/common/locales';
-
-2019-4-1
+        
     只传一个参数, 在 effects: {} 里使用
     import { delay } from 'dva/saga'
+
+    roadhogrc.mock.js 优先级高于proxy. 要想proxy生效就要注销 roadhogrc.mock.js 里的数据
+        'POST /testApi/mock/5b28f17489429e74366fe562/example/upload': {"message": "测试数据123" },
+
+        proxy: {
+            '/testApi': {
+              target: 'https://www.easy-mock.com/',
+              changeOrigin: true,
+              pathRewrite: { '^/testApi': '' },
+            },
+          },
     
 
 
