@@ -3621,8 +3621,30 @@ umi + dva + ant.design
               pathRewrite: { '^/testApi': '' },
             },
           },
-    
 
+    PureComponent
+        import React from 'react';
+        React.PureComponent
+        原理
+        当组件更新时，如果组件的 props 和 state 都没发生改变， render 方法就不会触发，省去 Virtual DOM 的生成和比对过程，达到提升性能的目的。具体就是 React 自动帮我们做了一层浅比较：
+
+
+    关闭弹窗需要回调返回状态
+        if (callback) callback(response.status);
+
+    自定义校验规则
+        validator: (rule, value, callback)=>{ if(value == 0 && value != '') {callback(intl.formatMessage('OMS_Tips2', '必须大于0'))}; callback() }
+
+    getFieldsValue	获取一组输入控件的值，如不传入参数，则获取全部组件的值	Function([fieldNames: string[]])
+    getFieldValue	获取一个输入控件的值	Function(fieldName: string)
+
+    获取表单当前的全部值
+        handleChangeInventory = (e, text) => {
+            const { getFieldsValue, getFieldValue } = this.props.form;
+            this.setState({...this.state},()=>{
+                console.log('全部表单值=>', getFieldsValue(), '当前的值=>', e, '改变后实时的值')
+            });
+        }
 
                 
             
