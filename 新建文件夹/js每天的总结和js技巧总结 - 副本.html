@@ -3646,6 +3646,18 @@ umi + dva + ant.design
             });
         }
 
+    ant组件有时会出现缓存, 原本是提升性能, 但会造成bug, 可以在组件上加上样式来保证每次都刷新
+    <!-- 
+        <ExcelExport
+            operateCode='O2048'
+            exportType={ExportTypes.ExprortCustomerBalance}
+            extparam={this.state.formValues}
+            name={'导出当前余额'}
+            btstyle={{ marginLeft: 2 }}
+        />
+     -->
+    
+
                 
             
         
