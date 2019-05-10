@@ -1366,6 +1366,8 @@ while
             let arr = [1,2];
             let arr2 = [3,4];
             arr.concat(arr2,5,6,7,8) -> [1,2,3,4,5,6,7,8]
+    数组深拷贝
+        arrCopy = arr.concat();
 
     array.reverse()
         翻转数组
@@ -1516,6 +1518,10 @@ while
 
     关联远程库。切换(Clone with SSH)
         git remote add origin git@github.com:LBC000/Exercise.git
+
+    本地先提交版本
+        git commit -m “"2017-5-10-3" -n
+        git pull
 
     如果远程仓库有东西要先抓取下来
         git pull origin master --allow-unrelated-histories
@@ -3656,6 +3662,16 @@ umi + dva + ant.design
             btstyle={{ marginLeft: 2 }}
         />
      -->
+
+    npm start 开发环境
+        console.log(process.env.NODE_ENV, '环境'); // development 环境
+    npm run build 打包
+        console.log(process.env.NODE_ENV, '环境'); // production 环境
+    
+    if(process.env.NODE_ENV === 'production') {
+        // 打包后
+        console.log = function(){}
+    }
 装饰器
     https://edu.51cto.com//center/course/lesson/index?id=226195
     // 装饰函数
@@ -3700,9 +3716,96 @@ umi + dva + ant.design
 
                 
             
+    在新的标签页打开网页
+        handleOpenInNewTab = (url) => {
+            let win = window.open(url, '_blank');
+            win.focus();
+        }
+
+    dva loading
+        单个请求的loading
+            loading.effects['packingbox/getproductbycode']
+        模块的loading
+            loading.models.phxbrand
         
-                
+    修改数组的某个元素
+        const createParam = (arr) => {
+            let newDetails = [];
+            arr.Details.map((e, i)=>{
+            e.Details.map((ev, i) => {
+                const newBrands = ev.Brands.map((w, i) => {
+                return {
+                    ...w,
+                    OrderSourceId: ev.OrderSourceId,
+                }
+                })
+                newDetails.push({
+                OrderSourceId:ev.OrderSourceId,
+                OrderSourceName: ev.OrderSourceName,
+                OrderSourceCountry: e.OrderSourceCountry,
+                Details: newBrands
+                })
+            })
+            console.log('name', e)
+            })
+    
+            console.log(newDetails, '选中的1')
+            return {
+            Id: arr.Id,
+            GroupName: arr.GroupName,
+            OrderSources: newDetails
+            }
+        }
+
+    ↵ == '\n' // true
+
+ant form表单以对象提交
+    {getFieldDecorator('ShelfDays.MinValue', {
+        rules: getValidateRules({
+            intlKey: '发货方式',
+            intlDefault: '发货方式',
+        })
+    })(
         
+    )}
+    ShelfDays: {MinValue: 'xxx'}
+
+同步this.state
+    componentWillReceiveProps(nextProps){
+        if(OrderSource.length == 0 && OrderSourceId.length != 0) {}
+    }
+
+Checkbox 默认值需要initialValue和valuePropName配合使用. 因为Checkbox的默认属性不是'value'而是'checked'
+    {getFieldDecorator('ShelfDays.Checkbox', {
+        initialValue: ShelfDays.MinValue && true,
+        valuePropName: 'checked',
+    })(
+        <OneCheckbox />
+    )}
+
+隐藏
+    <InputExtend type='hidden'/>
+
+props 存在的时候更新
+    this.state = {
+        updateSign: true
+    };
+    if(updateSign && Details.length != 0) {
+        this.setState({
+            updateSign: false
+        });
+    }
+
+判断空对象
+    import isEmpty from 'lodash/isEmpty';
+
+输入框删除清空后默认的值
+    <InputNumberExtend 
+        onBlur={(e, text)=> {getFieldValue('SumDays') == undefined && setFieldsValue({SumDays: 0})}}
+        onChange={(e) => { e == '' && this.setState({},()=>setFieldsValue({SumDays: 0})) }} 
+        size="small" 
+    />
+
     
 
 
