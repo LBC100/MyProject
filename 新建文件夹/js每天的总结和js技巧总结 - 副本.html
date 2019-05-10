@@ -3668,6 +3668,31 @@ umi + dva + ant.design
         // 打包后
         console.log = function(){}
     }
+装饰器
+    https://edu.51cto.com//center/course/lesson/index?id=226195
+    // 装饰函数
+    const outer = (fun) => {
+        const inner = (age) => {
+
+            // 执行原函数前需要执行的逻辑
+            if(age < 0) {
+                age = 0
+            }
+        
+            // 原函数
+            fun(age); 
+        }
+    
+        return inner
+    }
+  
+    let say = (age) =>{
+        console.log('年龄', age)
+    }
+    
+    say = outer(say)
+    
+    say(-9)
 
     在新的标签页打开网页
         handleOpenInNewTab = (url) => {
