@@ -3682,6 +3682,22 @@ umi + dva + ant.design
     
     say(-9)
 
+父组件调用子组件的方法
+    子组件生命周期加上
+        componentDidMount() {
+            this.props.onRef(this)
+        }
+    使用自子组件
+        <NewForm1
+            onRef={(ref) => this.childNewForm1 = ref}
+            Form1Submit={this.handleSubmit}
+        />
+    父组件使用子组件方法
+        handleAdd = () => {
+            console.log(this.childNewForm1, 'childNewForm1')
+            this.childNewForm1.add()
+        }
+
                 
             
         
