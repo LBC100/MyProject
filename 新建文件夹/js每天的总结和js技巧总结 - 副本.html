@@ -3829,67 +3829,7 @@ vscode 代码回跳
         {...restProps}
     />
 
-// 显示字数文本域
-    export class TextAreaLimit extends React.Component {
-        constructor(props) {
-            super(props);
-            this.state = { 
-                length: 0,
-             }
-        }
-    
-        handleChange = (e) => {
-            const { onChange } = this.props
-            onChange && onChange(e);
-            this.setState({ length: e.target.value.length });
-        }
-    
-        // 合并style
-        handleMergeStyle = (propsStyle) => {
-            const localStyle = { marginTop: 10, minHeight: 80 }
-            let mergeStyle = {}
-            if(propsStyle) {
-                mergeStyle = {
-                    ...localStyle,
-                    ...propsStyle,
-                }
-            }else{
-                return localStyle
-            }
-            return mergeStyle
-        }
-    
-        componentDidMount() {
-            
-        }
-    
-        handleInitData = (value) => {
-            if(!this.state.updateSign && value.length != 0 ) {
-                this.setState({
-                    length: value.length,
-                    updateSign: true
-                });
-            }
-        }
-    
-        render() {
-            const { ...restProps } = this.props;
-            let style = this.props.style ? this.props.style : {}
-    
-            this.handleInitData(this.props.value)
-            return (
-                <React.Fragment>
-                    <Input.TextArea
-                        style={this.handleMergeStyle(this.props.style)}
-                        {...restProps}
-                        autosize={true}
-                        onChange={this.handleChange}
-                    />
-                    <span>剩余{this.props.maxlength - this.state.length}字</span>
-                </React.Fragment>
-            )
-        }
-    }
+
 
 
 
