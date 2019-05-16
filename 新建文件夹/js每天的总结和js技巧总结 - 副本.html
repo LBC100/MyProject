@@ -3788,10 +3788,13 @@ Checkbox 默认值需要initialValue和valuePropName配合使用. 因为Checkbox
     <InputExtend type='hidden'/>
 
 props 存在的时候更新
-    if(!updateSign && !isEmpty(GetServiceLogDetail)) {
-        this.setState({
-            updateSign: true
-        });
+    handleInitData = (value) => {
+        if(!this.state.updateSign && value.length != 0 ) {
+            this.setState({
+                length: value.length,
+                updateSign: true
+            });
+        }
     }
 
 判断空对象
@@ -3856,10 +3859,24 @@ vscode 代码回跳
             return mergeStyle
         }
     
+        componentDidMount() {
+            
+        }
+    
+        handleInitData = (value) => {
+            if(!this.state.updateSign && value.length != 0 ) {
+                this.setState({
+                    length: value.length,
+                    updateSign: true
+                });
+            }
+        }
+    
         render() {
             const { ...restProps } = this.props;
-    
             let style = this.props.style ? this.props.style : {}
+    
+            this.handleInitData(this.props.value)
             return (
                 <React.Fragment>
                     <Input.TextArea
