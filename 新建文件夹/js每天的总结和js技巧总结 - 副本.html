@@ -3787,12 +3787,9 @@ Checkbox 默认值需要initialValue和valuePropName配合使用. 因为Checkbox
     <InputExtend type='hidden'/>
 
 props 存在的时候更新
-    this.state = {
-        updateSign: true
-    };
-    if(updateSign && Details.length != 0) {
+    if(!updateSign && !isEmpty(GetServiceLogDetail)) {
         this.setState({
-            updateSign: false
+            updateSign: true
         });
     }
 
@@ -3811,6 +3808,70 @@ props 存在的时候更新
 
 vscode 代码回跳
     windows 下是 Alt + 左箭头
+
+把父组件的所有属性同步到子组件
+    const { ...restProps } = this.props;
+    <Input.TextArea
+        {...restProps}
+        autosize={true}
+        style={{ marginTop: 10, minHeight: 80 }}
+        onChange={this.handleChange}
+    />
+    {...restProps} 在下面会把上面的属性覆盖, 不推荐使用. {...restProps}放在第一位
+    <Input.TextArea
+        autosize={true}
+        style={{ marginTop: 10, minHeight: 80 }}
+        onChange={this.handleChange}
+        {...restProps}
+    />
+
+// 显示字数文本域
+    export class TextAreaLimit extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = { 
+                length: 0,
+             }
+        }
+    
+        handleChange = (e) => {
+            const { onChange } = this.props
+            onChange && onChange(e);
+            this.setState({ length: e.target.value.length });
+        }
+    
+        // 合并style
+        handleMergeStyle = (propsStyle) => {
+            const localStyle = { marginTop: 10, minHeight: 80 }
+            let mergeStyle = {}
+            if(propsStyle) {
+                mergeStyle = {
+                    ...localStyle,
+                    ...propsStyle,
+                }
+            }else{
+                return localStyle
+            }
+            return mergeStyle
+        }
+    
+        render() {
+            const { ...restProps } = this.props;
+    
+            let style = this.props.style ? this.props.style : {}
+            return (
+                <React.Fragment>
+                    <Input.TextArea
+                        style={this.handleMergeStyle(this.props.style)}
+                        {...restProps}
+                        autosize={true}
+                        onChange={this.handleChange}
+                    />
+                    <span>剩余{this.props.maxlength - this.state.length}字</span>
+                </React.Fragment>
+            )
+        }
+    }
 
 
 
