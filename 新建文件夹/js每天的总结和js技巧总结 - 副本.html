@@ -448,7 +448,7 @@ react 父级拿子集的数据。在父级定义一个函数，在子级的生�
 ref技巧
     ref={回调函数}。里边可以放一个回调函数，node就是它自己。
     把自己(node)赋给了this.inp
-    <input ref={ (node) => {this.inp = node} } />
+    <input ref={(node) => { this.inp = node }} />
 
 react全家桶
     安装react脚手架
@@ -3717,9 +3717,9 @@ umi + dva + ant.design
 
                 
             
-    在新的标签页打开网页
+    在新的标签页打开网页/新窗口/新标签页
         handleOpenInNewTab = (url) => {
-            let win = window.open(url, '_blank');
+            const win = window.open(url, '_blank');
             win.focus();
         }
 
@@ -3829,9 +3829,24 @@ vscode 代码回跳
         {...restProps}
     />
 
+国际化
+    验证传入变量
+    'sys.require': '{name}不能为空',
 
+ant 锚点
+    解决锚点显示不全BUG 加一个p标签
+    获取滚动条容器: getContainer={()=>document.getElementById('PhxListEditAnchor')} 
+        测滚动条: overflow-y: hidden;
+        // <div id={'PhxListEditAnchor'}></div>
+    锚点: 取最后# 后面的字符
 
-
+    <Col md={3} sm={3}>
+        <p style={{margin: 1}}></p>
+        <Anchor getContainer={()=>document.getElementById('PhxListEditAnchor')}>
+            <Link style={{width: 100}} href="#/Phx/List/#anchorBasic" title="基础信息" />
+        </Anchor>
+    </Col>
+    <a id='anchorBasic' title="锚点-执行内容"></a>
 
 
 

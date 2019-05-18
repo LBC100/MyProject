@@ -1,0 +1,646 @@
+
+import React from 'react';
+import Ellipsis from '@/components/Ellipsis';
+import moment from 'moment';
+import { Input, Button, Table, Popconfirm, InputNumber, DatePicker, Checkbox, Icon, Select, Dropdown, Menu, Radio } from 'antd';
+const RadioGroup = Radio.Group;
+
+//国际化
+import intl from '@/common/locales';
+
+//权限控制
+import { isHasAuthority } from '@/common/menutree';
+
+//分割符号
+export class SpiltSymbol extends React.Component {
+    render() {
+        return (
+            <Input style={{ width: 30, border: 0, pointerEvents: 'none', backgroundColor: '#fff' }} placeholder="-" disabled />
+        )
+    }
+}
+
+//html解码区域
+export class HtmlDecodeExtend extends React.Component {
+    render() {
+        const { html, ...restProps } = this.props;
+        return (
+            <div
+                className='modal-body'
+                dangerouslySetInnerHTML={{ __html: html }}
+                {...restProps}
+            >
+            </div>
+        )
+    }
+}
+
+//文本按钮
+export class ButtonText extends React.Component {
+    render() {
+        const {
+            children = intl.formatMessage('WMS_BS_Update'),
+            onClick,
+            operateCode,
+            disabled,
+            ...restProps
+        } = this.props;
+        let ishaspower = isHasAuthority(operateCode);
+        if (disabled) { ishaspower = false }
+        return (
+            <React.Fragment>
+                {
+                    ishaspower ?
+                        <a onClick={onClick} {...restProps}>{children}</a>
+                        :
+                        <a className='no-drop' {...restProps}>{children}</a>
+                }
+            </React.Fragment>
+        )
+    }
+}
+
+//编辑按钮
+export class ButtonTextUpdate extends React.Component {
+    render() {
+        const {
+            onClick,
+            operateCode,
+            disabled,
+            ...restProps
+        } = this.props;
+        let ishaspower = isHasAuthority(operateCode);
+        if (disabled) { ishaspower = false }
+        return (
+            <React.Fragment>
+                {
+                    ishaspower ?
+                        <a onClick={onClick} {...restProps}>{intl.formatMessage('WMS_BS_Update')}</a>
+                        :
+                        <a className='no-drop' {...restProps}>{intl.formatMessage('WMS_BS_Update')}</a>
+                }
+            </React.Fragment>
+        )
+    }
+}
+
+//删除按钮
+export class ButtonTextRemove extends React.Component {
+    render() {
+        const {
+            onClick,
+            operateCode,
+            disabled,
+            type = 0,
+            ...restProps
+        } = this.props;
+        let ishaspower = isHasAuthority(operateCode);
+        if (disabled) { ishaspower = false }
+        return (
+            <React.Fragment>
+                {
+                    (ishaspower && type != 1 && type != 2) ?
+                        <Popconfirm
+                            title={intl.formatMessage('WMS_BS_DeleteTip')}
+                            onConfirm={onClick}
+                        >
+                            <a {...restProps}>{intl.formatMessage('WMS_BS_Delete')}</a>
+                        </Popconfirm>
+                        :
+                        <a className='no-drop' {...restProps}>{intl.formatMessage('WMS_BS_Delete')}</a>
+                }
+            </React.Fragment>
+        )
+    }
+}
+
+//作废按钮
+export class ButtonTextInvalid extends React.Component {
+    render() {
+        const {
+            onClick,
+            operateCode,
+            disabled,
+            ...restProps
+        } = this.props;
+        let ishaspower = isHasAuthority(operateCode);
+        if (disabled) { ishaspower = false }
+        return (
+            <React.Fragment >
+                {
+                    ishaspower ?
+                        <Popconfirm
+                            title={intl.formatMessage('WMS_BS_InvalidTip')}
+                            onConfirm={onClick}
+                        >
+                            <a {...restProps}>{intl.formatMessage('WMS_Invalid')}</a>
+                        </Popconfirm>
+                        :
+                        <a className='no-drop' {...restProps}>{intl.formatMessage('WMS_Invalid')}</a>
+                }
+            </React.Fragment>
+        )
+    }
+}
+
+//启用按钮
+export class ButtonTextEnable extends React.Component {
+    render() {
+        const {
+            status,
+            onClick,
+            operateCode,
+            disabled,
+            ...restProps
+        } = this.props;
+        let ishaspower = isHasAuthority(operateCode);
+        if (disabled) { ishaspower = false }
+        return (
+            <React.Fragment>
+                {
+                    ishaspower ?
+                        <Popconfirm
+                            title={status ? intl.formatMessage('WMS_BS_StoptState') : intl.formatMessage('WMS_BS_StartState')}
+                            onConfirm={onClick}
+                        >
+                            <a {...restProps}>{status ? intl.formatMessage('WMS_BS_DisableStatus') : intl.formatMessage('WMS_BS_EnableStatus')}</a>
+                        </Popconfirm>
+                        :
+                        <a className='no-drop' {...restProps}>{status ? intl.formatMessage('WMS_BS_DisableStatus') : intl.formatMessage('WMS_BS_EnableStatus')}</a>
+                }
+            </React.Fragment>
+        )
+    }
+}
+
+//确认提交按钮 <ButtonTextSubmit confirmtip='确定强制收货？' onClick={() => this.handleUpdate(record)} children='强制收货' />
+export class ButtonTextSubmit extends React.Component {
+    render() {
+        const {
+            onClick,
+            operateCode,
+            disabled,
+            children,
+            confirmtip,
+            ...restProps
+        } = this.props;
+        let ishaspower = isHasAuthority(operateCode);
+        if (disabled) { ishaspower = false }
+        return (
+            <React.Fragment >
+                {
+                    ishaspower ?
+                        <Popconfirm
+                            title={confirmtip}
+                            onConfirm={onClick}
+                        >
+                            <a {...restProps}>{children}</a>
+                        </Popconfirm>
+                        :
+                        <a className='no-drop' {...restProps}>{children}</a>
+                }
+            </React.Fragment>
+        )
+    }
+}
+
+//复制按钮
+export class ButtonTextCopy extends React.Component {
+    render() {
+        const {
+            onClick,
+            operateCode,
+            type = 0,
+            ...restProps
+        } = this.props;
+        const ishaspower = isHasAuthority(operateCode);
+        return (
+            <React.Fragment >
+                {
+                    (ishaspower && type != 1) ?
+                        <a onClick={onClick} {...restProps}>{intl.formatMessage('WMS_BS_Copy')}</a>
+                        :
+                        <a className='no-drop' {...restProps}>{intl.formatMessage('WMS_BS_Copy')}</a>
+                }
+            </React.Fragment>
+        )
+    }
+}
+
+//Input输入框
+export class InputExtend extends React.Component {
+    render() {
+        const { placeholder = '请输入', ...restProps } = this.props;
+        return (
+            <Input placeholder={placeholder} {...restProps}
+                onBlur={this.handleChange}
+            />
+        )
+    }
+
+    handleChange = (e) => {
+        const { onChange } = this.props;
+        e.target.value = e.target.value.trim();
+        onChange && onChange(e);
+    }
+}
+
+//InputNumber输入框
+export class InputNumberExtend extends React.Component {
+    render() {
+        const { values, ...restProps } = this.props;
+        if (values) restProps.value = values;
+        return (
+            <InputNumber {...restProps} placeholder={'请输入'} />
+        )
+    }
+}
+
+//Table表格
+export class TableExtend extends React.Component {
+    render() {
+        const { isscroll = true, ...restProps } = this.props;
+        if (isscroll) {
+            //restProps.scroll = { x: 800 }
+        }
+        return (
+            <Table bordered {...restProps} />
+        )
+    }
+}
+
+//按钮
+export class ButtonExtend extends React.Component {
+    render() {
+        const { operateCode, children, isPopconfirm, onClick, onCancel, zindex, ...restProps } = this.props;
+        const ishaspower = isHasAuthority(operateCode);
+        if (!ishaspower) {
+            restProps.disabled = true;
+        }
+        return (
+            <React.Fragment>
+                {
+                    isPopconfirm ?
+                        <Popconfirm
+                            title={intl.formatMessage('WMS_ConfirmCreateTip', '确定操作吗？')}
+                            onConfirm={onClick}
+                            onCancel={onCancel}
+                        >
+                            <ButtonExtend
+                                type='primary'
+                                {...restProps}
+                            >
+                                {children}
+                            </ButtonExtend>
+                        </Popconfirm>
+                        :
+                        <Button
+                            type="primary"
+                            onClick={onClick}
+                            style={{ zIndex: zindex }}
+                            {...restProps}
+                        > {children}</Button>
+                }
+            </React.Fragment>
+        )
+    }
+}
+
+//搜索按钮
+export class ButtonSearch extends React.Component {
+    render() {
+        const {
+            children = '搜索',
+            ...restProps
+        } = this.props;
+        return (
+            <Button
+                type="primary"
+                htmlType="submit"
+                icon="search"
+                {...restProps}
+            >{children}</Button>
+        )
+    }
+}
+
+//刷新按钮
+export class ButtonRefresh extends React.Component {
+    render() {
+        const { onClick, ...restProps } = this.props;
+        return (
+            <Button
+                type="primary"
+                onClick={onClick}
+                icon="sync"
+                {...restProps}
+            >{intl.formatMessage('WMS_BS_Renovate')}</Button>
+        )
+    }
+}
+
+//重置按钮
+export class ButtonReset extends React.Component {
+    render() {
+        const { onClick, ...restProps } = this.props;
+        return (
+            <Button
+                style={{ margin: '0 8px' }}
+                onClick={onClick}
+                icon="sync"
+            >{'重置'}</Button>
+        )
+    }
+}
+
+//日期控件
+export class DatePickerExtend extends React.Component {
+    render() {
+        const { ...restProps } = this.props;
+        restProps.value = !!restProps.value ? moment(restProps.value) : undefined;
+        return (
+            <DatePicker {...restProps} onChange={this.handleChange} />
+        )
+    }
+
+    handleChange = (e) => {
+        const { onChange } = this.props;
+        onChange && onChange(e && e.endOf('day'));
+    }
+}
+
+//日期范围
+export class RangePickerExtend extends React.Component {
+    render() {
+        const { ...restProps } = this.props;
+        if (!restProps.showTime && restProps.value && restProps.value[0] && restProps.value[1]) {
+            restProps.value = [restProps.value[0].startOf('day'), restProps.value[1].endOf('day')];
+        }
+        return (
+            <DatePicker.RangePicker {...restProps} />
+        )
+    }
+}
+
+//TextArea文本域
+export class TextAreaExtend extends React.Component {
+    render() {
+        const { ...restProps } = this.props;
+        return (
+            <Input.TextArea
+                placeholder={intl.formatMessage('WMS_BS_TxtTip')}
+                style={{ marginBottom: 3 }}
+                onBlur={this.handleChange}
+                {...restProps}
+            />
+        )
+    }
+
+    handleChange = (e) => {
+        const { onChange } = this.props;
+        e.target.value = e.target.value.trim();
+        onChange && onChange(e);
+    }
+}
+
+// 显示字数文本域
+export class TextAreaLimit extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { 
+            length: 0,
+         }
+    }
+
+    handleChange = (e) => {
+        const { onChange } = this.props
+        onChange && onChange(e);
+        this.setState({ length: e.target.value.length });
+    }
+
+    // 合并style
+    handleMergeStyle = (propsStyle) => {
+        const localStyle = { marginTop: 10, minHeight: 80 }
+        let mergeStyle = {}
+        if(propsStyle) {
+            mergeStyle = {
+                ...localStyle,
+                ...propsStyle,
+            }
+        }else{
+            return localStyle
+        }
+        return mergeStyle
+    }
+
+    componentDidMount() {
+        
+    }
+
+    handleInitData = (value) => {
+        if(!this.state.updateSign && value.length != 0 ) {
+            this.setState({
+                length: value.length,
+                updateSign: true
+            });
+        }
+    }
+
+    render() {
+        const { ...restProps } = this.props;
+        let style = this.props.style ? this.props.style : {}
+
+        this.handleInitData(this.props.value)
+        return (
+            <React.Fragment>
+                <Input.TextArea
+                    style={this.handleMergeStyle(this.props.style)}
+                    {...restProps}
+                    autosize={true}
+                    onChange={this.handleChange}
+                />
+                <span>剩余{this.props.maxlength - this.state.length}字</span>
+            </React.Fragment>
+        )
+    }
+}
+
+//Checkbox选择框
+export class CheckboxExtend extends React.Component {
+    render() {
+        const { children, ...restProps } = this.props;
+        return (
+            <Checkbox {...restProps}>{children}</Checkbox>
+        )
+    }
+}
+
+// 单选框
+export class OneCheckbox extends React.PureComponent {
+    render() {
+        const { children, ...restProps } = this.props;
+        return (
+            <Checkbox {...restProps}/>
+        )
+    } 
+}
+
+//Radio选择框
+export class RadioExtend extends React.PureComponent {
+    render() {
+        const { optionlist = [], ...extprops } = this.props;
+        return (
+            <RadioGroup {...extprops}>
+                {
+                    optionlist.map((item) => {
+                        return <Radio key={item.key} value={item.key} >{item.value}</Radio>
+                    })
+                }
+            </RadioGroup>
+        );
+    }
+}
+
+//CheckboxGroup选择框组
+export class CheckboxGroupExtend extends React.Component {
+    render() {
+        const { ...restProps } = this.props;
+        return (
+            <Checkbox.Group {...restProps} />
+        )
+    }
+}
+
+//Icon图标
+export class IconExtend extends React.Component {
+    render() {
+        const { children, ...restProps } = this.props;
+        return (
+            <Icon {...restProps} />
+        )
+    }
+}
+
+//Select选择框
+export class SelectExtend extends React.Component {
+    render() {
+        const { optionlist, ...restProps } = this.props;
+        return (
+            <Select
+                placeholder={intl.formatMessage('WMS_BS_SelTip')}
+                allowClear
+                {...restProps}
+            >
+                {optionlist && optionlist.map(x => <Select.Option key={x.key} value={x.key}>{x.value}</Select.Option>)}
+            </Select>
+        )
+    }
+}
+
+//下拉按钮菜单
+export class DropdownMenuExtend extends React.Component {
+    render() {
+        const {
+            itemlist,
+            butico = 'usergroup-add',
+            buttext,
+            onClick,
+            operateCode,
+            ...restProps
+        } = this.props;
+        const ishaspower = isHasAuthority(operateCode);
+        if (!ishaspower) {
+            restProps.disabled = true;
+        }
+        return (
+            <Dropdown
+                overlay={
+                    <Menu
+                        onClick={onClick}
+                        selectedKeys={[]}
+                    >
+                        {
+                            itemlist && itemlist.map(x => <Menu.Item key={x.key}>{x.value}</Menu.Item>)
+                        }
+                    </Menu>
+                }
+                {...restProps}
+            >
+                <Button type='primary' icon={butico}>
+                    {buttext} <IconExtend type='down' />
+                </Button>
+            </Dropdown>
+        )
+    }
+}
+
+//Ellipsis文本自动省略号 
+//  children:移动到文本展示完整内容的提示 
+//  length:在按照长度截取下的文本最大字符数，超过则截取省略 
+//  lines:在按照行数截取下最大的行数，超过则截取省略 默认：1
+export class EllipsisExtend extends React.Component {
+    render() {
+        const { children, ...restProps } = this.props;
+        return (
+            <Ellipsis tooltip {...restProps}>{children}</Ellipsis>
+        )
+    }
+}
+
+//LableValue 对其Key:Value
+export class LableValueExtend extends React.Component {
+    render() {
+        const { children, lable, width, EllipsisShow = false } = this.props;
+        return (
+            <React.Fragment>
+                {
+                    EllipsisShow
+                        ?
+                        <React.Fragment>
+                            {
+                                ((children || "").length <= 20 && children)
+                                    ?
+                                    <p keyssss={333}>{lable} : {children}</p>
+                                    :
+                                    <React.Fragment>
+                                        {!!children && <p className='mg0'><span className={width > 0 ? 'lvtar' : 'lvtarrow'} style={width > 0 ? { width: width } : undefined}>{lable}：</span><Ellipsis tooltip length={20}>{children}</Ellipsis>
+                                        </p>}
+                                    </React.Fragment>
+                            }
+                        </React.Fragment>
+                        :
+                        <React.Fragment>
+                            {!!children && <p className='mg0'><span className={width > 0 ? 'lvtar' : 'lvtarrow'} style={width > 0 ? { width: width } : undefined}>{lable}：</span>{children}</p>}
+                        </React.Fragment>
+                }
+            </React.Fragment>
+        )
+    }
+}
+
+
+//Image 对其Key:Value
+export class ImageExtend extends React.Component {
+    render() {
+        const { src, noMargin, ...restProps } = this.props;
+        const divStyle = {
+            border: 'solid 1px #d9d9d9',
+            borderRadius: 5,
+            padding: 6,
+            display: 'inline-block',
+        }
+        if (!noMargin) {
+            divStyle.marginRight = 14;
+            divStyle.marginBottom = 14;
+        }
+        return (
+            <div style={divStyle}>
+                <img
+                    src={src}
+                    {...restProps}
+                />
+            </div>
+        )
+    }
+}
+

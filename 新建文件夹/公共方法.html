@@ -1,0 +1,266 @@
+import {
+  BackTop, Input, Form, Row, Col,
+  Divider, Button, Select, message, Spin,
+  Modal, Radio, Checkbox, Tabs, Anchor, DatePicker, TimePicker, InputNumber
+} from 'antd';
+import moment from 'moment';
+import { getTimeDistance } from '@/utils/utils';
+
+//国际化
+import intl from '@/common/locales';
+
+import numeral from 'numeral';
+
+
+//组装请求参数
+export function getParam(filters, pagination, sorter) {
+  let param = {
+      input: filters
+  };
+  if (pagination) {
+      param.current = pagination.current;
+      param.pageSize = pagination.pageSize;
+  }
+  // 排序
+  if (sorter && sorter.field) {
+      param.orderBy = {
+          field: sorter.field,
+          order: sorter.order === 'ascend' ? 0 : 1
+      }
+  }
+  return param;
+}
+
+//获取验证规则
+export function getValidateRules({
+  intlKey,
+  intlDefault,
+  min = 0,
+  max = 0,
+  required = false,
+  isEmail = false,
+  isNoChinese = false,
+  validator,
+  empty = false
+}) {
+  const rules = [];
+  if (required) {
+      rules.push({
+          required: true,
+          message: intl.requiredMessage(intlKey, intlDefault)
+      });
+  } else {
+      rules.push({
+          required: false,
+          message: intl.requiredMessage(intlKey, intlDefault)
+      });
+  }
+  if (max > 0) {
+      rules.push({
+          max: max,
+          message: intl.maxLengthMessage(intlKey, intlDefault, max)
+      });
+  }
+  if (min > 0 && !empty) {
+      rules.push({
+          min: min,
+          message: intl.minLengthMessage(intlKey, intlDefault, min)
+      });
+  }
+  // 不能为空
+  if (min > 0 && empty) {
+      rules.push({
+          min: min,
+          message: intl.minLengthEmptyMessage(intlKey, intlDefault, min)
+      });
+  }
+  if (isEmail) {
+      rules.push({
+          type: 'email',
+          message: intl.emailMessage(intlKey, intlDefault, min)
+      });
+  }
+  if (isNoChinese) {
+      rules.push({
+          pattern: /^[^\u4e00-\u9fa5]+$/,
+          message: intl.noChineseMessage(intlKey, intlDefault)
+      });
+  }
+  if (validator) {
+      rules.push({
+          validator: validator
+      });
+  }
+  return rules;
+}
+
+//获取国际化时间
+export function getLocaleDay(param) {
+  let dateformat = dateFormat.YYYYMMDDHHmmss;
+  if (moment.locale() != 'zh-cn') {
+      dateformat = 'LLL'
+  }
+  if (!param) {
+      return "";         
+  }
+  return moment(param).format(dateformat);
+}
+
+// 获取国际化时间 年月日
+export function getLocaleDate(param) {
+  let dateformat = dateFormat.YYYYMMDD;
+  if (moment.locale() != 'zh-cn') {
+      dateformat = 'LLL'
+  }
+  return moment(param).format(dateformat);
+}
+
+// 转换UTC时间为本地时间 年月日
+export function getNativeDate(param) {
+  let dateformat = dateFormat.YYYYMMDD;
+  if (moment.locale() != 'zh-cn') {
+      dateformat = 'LLL'
+  }
+  return moment(param).utcOffset(-480).format(dateformat);
+}
+
+//时间格式
+export const dateFormat = {
+  YYYYMMDD: 'YYYY-MM-DD',
+  YYYYMMDDHHmmss: 'YYYY-MM-DD HH:mm:ss'
+}
+
+//默认时间范围格式
+export const dateFormatRange = {
+  YYYYMMDD: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')]
+}
+
+//获取当天时间 23:59:59
+export function getDayLast() {
+  const now = new Date();
+  now.setHours(23);
+  now.setMinutes(59);
+  now.setSeconds(59);
+  return moment(now);
+}
+
+//获取差异时间（天）23:59:59
+export function getDiffDayLast(num) {
+  const oneDay = 1000 * 60 * 60 * 24 * num;
+  return moment(getDayLast() + oneDay);
+}
+
+//获取当天时间 00:00:00
+export function getDayEary() {
+  const now = new Date();
+  now.setHours(0);
+  now.setMinutes(0);
+  now.setSeconds(0);
+  return moment(now);
+}
+
+//获取差异时间（天）00:00:00
+export function getDiffDayEary(num) {
+  const oneDay = 1000 * 60 * 60 * 24 * num;
+  return moment(getDayEary() + oneDay);
+}
+
+//获取当天时间范围
+export function getDayDistance() {
+  return getTimeDistance('today')
+}
+
+/*获取一个月的天数 */
+export function getCountDays(param) {
+  var curDate = new Date(param);
+  /* 获取当前月份 */
+  var curMonth = curDate.getMonth();
+  /*  生成实际的月份: 由于curMonth会比实际月份小1, 故需加1 */
+  curDate.setMonth(curMonth + 1);
+  /* 将日期设置为0, 这里为什么要这样设置, 我不知道原因, 这是从网上学来的 */
+  curDate.setDate(0);
+  /* 返回当月的天数 */
+  return curDate.getDate();
+}
+
+//获取随机数
+export function getRandomString(len) {
+  let rdmString = '';
+  while (rdmString.length < len) {
+      rdmString += (Math.random() * 37 | 0).toString(36);
+  }
+  return rdmString;
+}
+
+//取url参数
+export function getValueFromUrl(urlParam, key) {
+  var url = String(urlParam);
+  var rval = ""; var strQus = "?"; var strAmp = "&"; var strEq = "="; var iPos;
+  iPos = url.indexOf(strQus); var strQuery = url.substr(iPos, url.length - iPos);
+  var strLCQuery = strQuery.toLowerCase();
+  var LCKey = key.toLowerCase();
+  iPos = strLCQuery.indexOf(strQus + LCKey + strEq);
+  if (iPos == -1) {
+      iPos = strLCQuery.indexOf(strAmp + LCKey + strEq);
+      if (iPos == -1) { return rval; }
+  }
+  rval = strQuery.substr(iPos + key.length + 2, strQuery.length - (iPos + key.length + 2)); var iPosAMP = rval.indexOf(strAmp);
+  if (iPosAMP == -1) { return rval; } else { rval = rval.substr(0, iPosAMP); }
+  return rval;
+}
+
+// 分页优化(超过十条数据尾删)
+export function poplist(state, action) {
+  if (state.data.list.length >= state.pagination.pageSize) {
+      state.data.list.pop();
+      state.data.list.splice(0, 0, action.payload)
+  } else {
+      state.data.list.splice(0, 0, action.payload)
+  }
+  return state;
+}
+
+// 取整
+export function NumeralFormat(value) {
+  return numeral(value).format('0,0.00');
+}
+
+// 验证url
+const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/g;
+export function isUrl(path) {
+  return reg.test(path);
+}
+
+// 弹窗验证错误信息
+export const errMessage = (err) => {
+  let messageData = []
+  for (const key in err) {
+    console.log(err[key], 888)
+    if (err.hasOwnProperty(key)) {
+      const element = err[key];
+      element.errors.map((e, i) => {
+        messageData.push(e.message)
+      })
+      console.log(element, 999)
+    }
+  }
+
+  messageData = <div>{messageData.map((e, i)=><div>{e}</div>)}</div>
+  
+  Modal.error({
+    title: '错误信息',
+    content: messageData,
+  });
+}
+
+// 全等0
+export const EqualTo = (value) => {
+  if(value === 0 || value === undefined || value === null || value === '') {
+      return true
+  }else{
+      return false
+  }
+}
+
+
+
