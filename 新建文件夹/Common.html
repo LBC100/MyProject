@@ -1,0 +1,557 @@
+import React from 'react';
+import { Link } from 'dva/router';
+import { Button, Modal, Spin, Select, Switch, Icon, Radio, DatePicker } from 'antd';
+const { Option } = Select;
+const RadioGroup = Radio.Group;
+import { ImageExtend } from '@/components/AntExtend';
+//国际化
+import intl from '@/common/locales';
+
+//权限控制
+import { isHasAuthority } from '@/common/menutree';
+
+//公用组件
+import moment from 'moment';
+//公共方法
+import { getCountDays } from '@/utils/comhelper';
+
+
+import styles from './index.less';
+
+
+
+//弹出层
+export class ModalForm extends React.PureComponent {
+    state = {
+        visible: false,
+        isSumbitLoading: false,
+        butLoading: false
+    };
+
+    showModal = () => {
+        const { btnOnClick } = this.props
+        if (this.props.showModal) {
+            this.setState({ butLoading: true });
+            this.props.showModal((isShow) => {
+                this.setState({ visible: isShow === false ? false : true, butLoading: false })
+            })
+        }
+        else {
+            this.setState({ visible: true });
+        }
+        btnOnClick && btnOnClick()
+    };
+
+    handleCancel = () => {
+        this.setState({
+            visible: false,
+            isSumbitLoading: false,
+            butLoading: false
+        }, () => {
+            this.props.form && this.props.form.resetFields();
+        });
+    };
+
+    handleOnClear = () => {
+        this.props.onClear && this.props.onClear()
+    }
+
+    handleCallBack = (e) => {
+        console.log('状态2', e)
+        if (e === 'success') {
+            this.handleCancel();
+        }
+        else if (e === 'process') {
+            this.setState({
+                isSumbitLoading: false
+            });
+        }
+        else {
+            this.setState({
+                isSumbitLoading: false,
+                butLoading: false
+            });
+        }
+    };
+
+    handleCreate = (e) => {
+        e.preventDefault();
+        const form = this.props.form;
+        if (form) {
+            form.validateFields((err, values) => {
+                if (err) {
+                    return;
+                }
+                this.setState({
+                    isSumbitLoading: true
+                });
+                this.props.onSubmit(err, values, this.handleCallBack);
+            });
+        }
+        else {
+            this.setState({
+                isSumbitLoading: true
+            });
+            this.props.onSubmit(this.handleCallBack);
+        }
+        this.props.onOk && this.props.onOk()
+    };
+
+    render() {
+        const {
+            children,
+            title,
+            butico,
+            buttext,
+            onCreate,
+            butvisible = true,
+            ishasfoot = true,
+            modwidth = 600,
+            operateCode,
+            butdisabled = false,
+            style = {},
+            okButtonProps = { disabled: false }, 
+            btnOnClick,
+        } = this.props;
+        //Modal属性
+        const modalProps = {
+            title: title,
+            width: modwidth,
+            onOk: this.handleCreate,
+            onCancel: this.handleOnClear,
+            visible: (this.state.visible || this.props.visible),
+            confirmLoading: this.state.isSumbitLoading,
+            destroyOnClose: true,
+            bodyStyle: { padding: 12 },
+            maskClosable: false,
+            dragable: true,
+            okButtonProps: okButtonProps,
+        }
+
+        //按钮属性
+        const butProps = {
+            icon: butico,
+            type: 'primary',
+            onClick: this.showModal,
+            loading: this.state.butLoading,
+            style: style
+        }
+        const ishaspower = isHasAuthority(operateCode);
+        if (!ishaspower || butdisabled) {
+            butProps.disabled = true;
+        }
+
+        return (
+            <React.Fragment>
+                {
+                    butvisible
+                    &&
+                    <Button {...butProps} loading={this.state.butLoading}>
+                        {buttext}
+                    </Button>
+                }
+                {
+                    ishasfoot ?
+                        <Modal {...modalProps}>
+                            {<Spin spinning={this.state.isSumbitLoading}>
+                                {children ? <div>{children}</div> : null}
+                            </Spin>}
+                        </Modal>
+                        :
+                        <Modal {...modalProps} footer={null}>
+                            <Spin spinning={this.state.isSumbitLoading}>
+                                {children ? <div>{children}</div> : null}
+                            </Spin>
+                        </Modal>
+                }
+
+            </React.Fragment>
+        );
+    }
+}
+
+//Select启用
+export class SelectStatus extends React.PureComponent {
+    render() {
+        const { ...restProps } = this.props;
+        return (
+            <Select
+                allowClear
+                placeholder={intl.formatMessage('WMS_BS_SelTip')}
+                {...restProps}
+            >
+                <Option key={0}>{intl.formatMessage('WMS_BS_DisableStatus', '停用')}</Option>
+                <Option key={1}>{intl.formatMessage('WMS_BS_EnableStatus', '启用')}</Option>
+            </Select>
+        );
+    }
+}
+
+//Select操作类型
+export class SelectOperateType extends React.PureComponent {
+    render() {
+        const { ...restProps } = this.props;
+        return (
+            <Select
+                allowClear
+                placeholder={intl.formatMessage('WMS_BS_SelTip')}
+                {...restProps}
+            >
+                <Option key={1}>{intl.formatMessage('WMS_BS_Added', '新增')}</Option>
+                <Option key={2}>{intl.formatMessage('WMS_BS_Edit', '修改')}</Option>
+            </Select>
+        );
+    }
+}
+
+
+
+//Selects激活
+export class SelectActivity extends React.PureComponent {
+    render() {
+        const { ...restProps } = this.props;
+        return (
+            <Select
+                allowClear
+                placeholder={intl.formatMessage('WMS_BS_SelTip')}
+                {...restProps}
+            >
+                <Option key={0}>{intl.formatMessage('WMS_BS_UnActivity')}</Option>
+                <Option key={1}>{intl.formatMessage('WMS_BS_Activityed')}</Option>
+            </Select>
+        );
+    }
+}
+
+//Selects锁定
+export class SelectLocked extends React.PureComponent {
+    render() {
+        const { ...restProps } = this.props;
+        return (
+            <Select
+                allowClear={true}
+                placeholder={intl.formatMessage('WMS_BS_SelTip')}
+                {...restProps}
+            >
+                <Option key={0}>{intl.formatMessage('WMS_BS_UnLock')}</Option>
+                <Option key={1}>{intl.formatMessage('WMS_BS_Locked')}</Option>
+            </Select>
+        );
+    }
+}
+
+//Selects是否
+export class SelectYesOrNO extends React.PureComponent {
+    render() {
+        const { ...restProps } = this.props;
+        return (
+            <Select
+                allowClear
+                placeholder={intl.formatMessage('WMS_BS_SelTip')}
+                {...restProps}
+            >
+                <Option key={0}>{intl.formatMessage('WMS_BS_NoStatus', '否')}</Option>
+                <Option key={1}>{intl.formatMessage('WMS_BS_YesStatus', '是')}</Option>
+            </Select>
+        );
+    }
+}
+
+//计费方式
+export class SelectBillingWay extends React.PureComponent {
+    render() {
+        const { ...restProps } = this.props;
+        return (
+            <Select
+                allowClear
+                placeholder={intl.formatMessage('WMS_BS_SelTip')}
+                {...restProps}
+            >
+                <Option key={1}>{intl.formatMessage('SPD', 'SPD')}</Option>
+                <Option key={2}>{intl.formatMessage('LTL', 'LTL')}</Option>
+            </Select>
+        );
+    }
+}
+
+
+//Switch启用
+export class SwitchStatus extends React.PureComponent {
+    render() {
+        const { ...restProps } = this.props;
+        return (
+            <Switch
+                checkedChildren={intl.formatMessage('WMS_BS_EnableStatus', '启用')}
+                unCheckedChildren={intl.formatMessage('WMS_BS_DisableStatus', '停用')}
+                {...restProps}
+            />
+        );
+    }
+}
+
+
+//Select支持
+export class SwitchSupport extends React.PureComponent {
+    render() {
+        const { ...restProps } = this.props;
+        return (
+            <Switch
+                checkedChildren={intl.formatMessage('WMS_BS_Support', '支持')}
+                unCheckedChildren={intl.formatMessage('WMS_BS_NoSupport', '不支持')}
+                {...restProps}
+            />
+        );
+    }
+}
+
+//Switch是否
+export class SwitchYesOrNO extends React.PureComponent {
+    render() {
+        const { ...restProps } = this.props;
+        return (
+            <Switch
+                checkedChildren={intl.formatMessage('WMS_BS_YesStatus', '是')}
+                unCheckedChildren={intl.formatMessage('WMS_BS_NoStatus', '否')}
+                {...restProps}
+            />
+        );
+    }
+}
+
+//Switch公开
+export class SwitchIsPublic extends React.PureComponent {
+    render() {
+        const { ...restProps } = this.props;
+        return (
+            <Switch
+                checkedChildren={intl.formatMessage('WMS_BS_Public', '公开')}
+                unCheckedChildren={intl.formatMessage('WMS_BS_NoPublic', '不公开')}
+                {...restProps}
+            />
+        );
+    }
+}
+
+//图标状态
+export class IconStatus extends React.PureComponent {
+    render() {
+        const { status, ...restProps } = this.props;
+        return (
+            <React.Fragment>
+                {
+                    status ?
+                        <Icon
+                            type="check-circle-o"
+                            style={{ fontSize: 16, color: 'green' }}
+                            {...restProps} />
+                        :
+                        <Icon
+                            type="close-circle-o"
+                            style={{ fontSize: 16, color: 'red' }}
+                            {...restProps}
+                        />
+                }
+            </React.Fragment>
+        )
+    }
+}
+
+
+//CheckboxAudit审核
+export class CheckboxAudit extends React.PureComponent {
+    render() {
+        const { ...extprops } = this.props;
+        return (
+            <RadioGroup {...extprops}>
+                <Radio key={1} value={1} >{intl.formatMessage('WMS_Through', '通过')}</Radio>
+                <Radio key={2} value={2} >{intl.formatMessage('WMS_Fail', '不通过')}</Radio>
+            </RadioGroup>
+        );
+    }
+}
+
+
+//图片可点击放大
+export class ImageUrlsExtend extends React.PureComponent {
+    state = {
+        previewVisible: false,
+        src: undefined
+    }
+
+    render() {
+        const { ImageUrls = [] } = this.props;
+        const { previewVisible, src } = this.state;
+        return (
+            <React.Fragment>
+                {
+                    ImageUrls.map((item) => {
+                        return <ImageExtend key={item} src={item} style={{ width: 145, cursor: "pointer" }} onClick={() => { this.handleonClick(item) }} />
+                    })
+                }
+                <Modal visible={previewVisible} footer={null} onCancel={this.handleCancel} className={styles.fontsizes}>
+                    <img alt="image" style={{ width: '100%' }} src={src} />
+                </Modal>
+            </React.Fragment>
+        );
+    }
+
+    handleCancel = () => {
+        this.setState({
+            previewVisible: false,
+        })
+    }
+
+    handleonClick = (item) => {
+        this.setState({
+            previewVisible: true,
+            src: item
+        })
+    }
+}
+
+
+//状态文字颜色
+export class StatusColor extends React.Component {
+    state = {
+        arr: [
+            ["", "green", "#659be0", "#36c6d3", " #ed6b75", "#F1C40F"],
+            ["", "green", "#659be0", "#36c6d3", " #c49f47", "#ed6b75"],
+            ["", "green", "#659be0", "#36c6d3", "#ed6b75"],
+            ["", "#659be0", "#36c6d3", " #ed6b75", "green"],
+            ["", "#659be0", "#34bfa3", "#f4516c"],
+            ["#659be0", "#34bfa3", "#f4516c"],
+            ["", "", "#659be0", "#f4516c", "#34bfa3"],
+        ],
+    }
+
+    render() {
+        const {
+            children,
+            Status,
+            type = 0,
+            ...restProps
+        } = this.props;
+        let color = this.state.arr[type][Status];
+        return (
+            <React.Fragment>
+                {
+                    (type == 4 || type == 5 || type == 6)
+                        ?
+                        <span style={{ background: color, color: "#fff", padding: "5px 10px", borderRadius: "0.75rem" }} {...restProps}>{children}</span>
+                        :
+                        <span style={{ background: color, color: "#fff", padding: "2px 5px" }} {...restProps}>{children}</span>
+                }
+            </React.Fragment>
+        )
+    }
+}
+
+
+// 日期选择框(不可跨月)
+export class DateRange extends React.Component {
+    state = {
+        startValue: null,
+        endValue: null,
+        endOpen: false,
+        value: []
+    };
+
+    disabledStartDate = (startValue) => {
+        return false;
+    }
+
+    disabledEndDate = (endValue) => {
+        const startValue = this.state.startValue;
+        if (!endValue || !startValue) {
+            return false;
+        }
+        //获取开始时间
+        let dates = new Date(startValue);
+        // 获取开始时间天
+        dates = dates.getDate();
+        //获取不可以选择的时间(总时间 - 开始时间当前日)
+        let countDays = getCountDays(startValue) - dates;
+        const date = endValue.valueOf() >= moment(startValue).subtract(-countDays - 1, 'days') || endValue.valueOf() <= startValue.valueOf();
+        return date;
+    }
+
+    onChange = (field, value) => {
+        this.setState({
+            [field]: value,
+        });
+    }
+
+    onStartChange = (values) => {
+        const { onChange } = this.props;
+        let value = this.state.value;
+        value[0] = values;
+        this.onChange('startValue', values);
+        this.setState({ value }, () => {
+            onChange && onChange(value);
+        })
+    }
+
+    onEndChange = (values) => {
+        const { onChange } = this.props;
+        let value = this.state.value;
+        value[1] = values;
+        this.onChange('endValue', values);
+        this.setState({ value }, () => {
+            onChange && onChange(value);
+        })
+    }
+
+    handleStartOpenChange = (open) => {
+        if (!open) {
+            this.setState({ endOpen: true });
+        }
+    }
+
+    handleEndOpenChange = (open) => {
+        this.setState({ endOpen: open });
+    }
+
+    render() {
+        const { startValue, endValue, endOpen } = this.state;
+        return (
+            <div>
+                <DatePicker
+                    disabledDate={this.disabledStartDate}
+                    format="YYYY-MM-DD"
+                    value={startValue}
+                    placeholder="Start"
+                    onChange={this.onStartChange}
+                    onOpenChange={this.handleStartOpenChange}
+                />
+                <DatePicker
+                    disabledDate={this.disabledEndDate}
+                    format="YYYY-MM-DD"
+                    value={endValue}
+                    placeholder="End"
+                    onChange={this.onEndChange}
+                    open={endOpen}
+                    onOpenChange={this.handleEndOpenChange}
+                />
+            </div>
+        );
+    }
+}
+
+
+//状态是否名称
+export class WhetherStatusName extends React.Component {
+    render() {
+        const { status } = this.props;
+        return (
+            <React.Fragment>
+                {
+                    status == 2
+                        ?
+                        <span >{intl.formatMessage("OMS_YesName", "是")}</span>
+                        :
+                        <span >{intl.formatMessage("OMS_NoName", "否")}</span>
+                }
+            </React.Fragment>
+        )
+    }
+}
