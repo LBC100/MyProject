@@ -3,6 +3,8 @@ import {
   Divider, Button, Select, message, Spin,
   Modal, Radio, Checkbox, Tabs, Anchor, DatePicker, TimePicker, InputNumber
 } from 'antd';
+import {isEqual} from 'lodash';
+
 import moment from 'moment';
 import { getTimeDistance } from '@/utils/utils';
 
@@ -276,3 +278,35 @@ export const EqualTo = (value) => {
 
 
 
+// 合并style
+export const handleMergeStyle = (localStyle, propsStyle) => {
+  let mergeStyle = {}
+  if(propsStyle) {
+      mergeStyle = {
+          ...localStyle,
+          ...propsStyle,
+      }
+  }else{
+      return localStyle
+  }
+  return mergeStyle
+}
+
+// js判断数组是否有重复值 有重复返回true否则返回false
+// (浅度判断)
+export const equalArr = (arr) => {
+  if((new Set(arr)).size != arr.length){
+      return true
+  }
+  return false
+}
+
+
+// (深度判断)
+export const equalArrDeep = (arr) => {
+  var bool=false;
+  for(var i=1,len=arr.length;i<len;i++){
+      if(isEqual(arr[0], arr[i])) {bool=true}
+  }
+  return bool
+}
