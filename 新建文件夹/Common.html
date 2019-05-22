@@ -42,24 +42,33 @@ export class ModalForm extends React.PureComponent {
         btnOnClick && btnOnClick()
     };
 
-    handleCancel = () => {
+    handleAfterClose = () => {
         this.setState({
             visible: false,
             isSumbitLoading: false,
             butLoading: false
         }, () => {
+            this.props.afterClose && this.props.afterClose();
             this.props.form && this.props.form.resetFields();
         });
     };
 
+    
     handleOnClear = () => {
-        this.props.onClear && this.props.onClear()
+        this.setState({
+            visible: false,
+            isSumbitLoading: false,
+            butLoading: false
+        }, () => {
+            this.props.onClear && this.props.onClear()
+            this.props.form && this.props.form.resetFields();
+        });
     }
 
     handleCallBack = (e) => {
         console.log('状态2', e)
         if (e === 'success') {
-            this.handleCancel();
+            this.handleAfterClose();
         }
         else if (e === 'process') {
             this.setState({
@@ -118,7 +127,7 @@ export class ModalForm extends React.PureComponent {
             title: title,
             width: modwidth,
             onOk: this.handleCreate,
-            onCancel: this.handleOnClear,
+            onCancel: this.handleOnClear, // 
             visible: (this.state.visible || this.props.visible),
             confirmLoading: this.state.isSumbitLoading,
             destroyOnClose: true,
@@ -126,6 +135,7 @@ export class ModalForm extends React.PureComponent {
             maskClosable: false,
             dragable: true,
             okButtonProps: okButtonProps,
+            afterClose: this.props.afterClose,
         }
 
         //按钮属性
