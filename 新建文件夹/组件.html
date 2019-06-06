@@ -61,3 +61,33 @@
   }
 
 
+  /**
+  * td 溢出隐藏 组件
+  * <LineWrap title={Reason} lineClampNum={5} />
+  */
+  import React, { PureComponent } from 'react';
+  import PropTypes from 'prop-types';
+  import { Tooltip } from 'antd';
+   
+  export default class LineWrap extends PureComponent {
+    static propTypes = {
+      title: PropTypes.string,
+      lineClampNum: PropTypes.number,
+    };
+   
+    handleText = (text, lineClampNum) => {
+      const newText = text.slice(0, lineClampNum)
+      return `${newText}...`
+    }
+    render() {
+      const { title, lineClampNum } = this.props;
+  
+      return (
+          lineClampNum > 100 ?
+          <Tooltip placement="topLeft" title={title}>
+            <span>{this.handleText(title, lineClampNum)}</span>
+          </Tooltip>
+          : <span>{title}</span>
+      );
+    }
+  }

@@ -4,6 +4,7 @@ import {
   Modal, Radio, Checkbox, Tabs, Anchor, DatePicker, TimePicker, InputNumber
 } from 'antd';
 import {isEqual} from 'lodash';
+import Qs from 'qs';
 
 import moment from 'moment';
 import { getTimeDistance } from '@/utils/utils';
@@ -223,6 +224,57 @@ export function getValueFromUrl(urlParam, key) {
   return rval;
 }
 
+// 取url参数
+export const filterUrlParam = (url=window.location.href) => {
+  // url: 地址.
+  const i = url.lastIndexOf('?')
+  if(i !== -1) {
+    // 有参数
+    const param = Qs.parse(url.slice(i + 1)) // 如: Qs.parse(isedit=true&OrderSourceSku=123,321)
+    return param
+  }else{
+    // 没有参数
+    return undefined
+  }
+}
+
+// 清除url参数
+export const clearUrlParam = (url=window.location.href, arrKey=[]) => {
+  /* 
+    url: 默认window.location.href
+    arrKey: [] 需要删除的参数
+    参数1: null 则使用默认url
+  */
+  url = (url === null) ? window.location.href : url
+
+  // console.log('i1', url)
+  const i = url.lastIndexOf('?')
+  if(i !== -1) {
+    // 有参数
+    const urlFirst = url.slice(0, i) // http://localhost:8001/#/PhxNegationStrategy
+    const param = Qs.parse(url.slice(i + 1)) // 如: Qs.parse(isedit=true&OrderSourceSku=123,321)
+    
+    if(arrKey.length > 0) {
+      arrKey.map((e, i) => {
+        // console.log(e, '序列化2')
+        delete param[e]
+      })
+      // 删除指定参数后还有没有参数
+      if(!!Qs.stringify(param)) {
+        // console.log('新url1', `${urlFirst}?${Qs.stringify(param)}`)
+        return `${urlFirst}?${Qs.stringify(param)}`
+      }else{
+        return urlFirst
+      }
+    }
+    // 不传arrKey则把url参数全部删除
+    return urlFirst
+  }else{
+    // 没有参数
+    return url
+  }
+}
+
 // 分页优化(超过十条数据尾删)
 export function poplist(state, action) {
   if (state.data.list.length >= state.pagination.pageSize) {
@@ -249,13 +301,13 @@ export function isUrl(path) {
 export const errMessage = (err) => {
   let messageData = []
   for (const key in err) {
-    console.log(err[key], 888)
+    // console.log(err[key], 888)
     if (err.hasOwnProperty(key)) {
       const element = err[key];
       element.errors.map((e, i) => {
         messageData.push(e.message)
       })
-      console.log(element, 999)
+      // console.log(element, 999)
     }
   }
 
@@ -310,3 +362,43 @@ export const equalArrDeep = (arr) => {
   }
   return bool
 }
+
+// 随机生成范围内的数字. 保留几位数(前面补零)
+export const rndNum = (min, max, length) =>{
+  const PrefixInteger = (num, length) => {
+      return (Array(length).join('0') + num).slice(-length);
+  }
+  const num = (min + Math.floor(Math.random() * (max - min + 1)))
+  if(length) { return PrefixInteger(num, length) }
+  return num
+}
+
+// 提示选择行
+export const selectLine = (rowData, text, cb) => {
+  if(rowData.length == 0) {
+    Modal.info({
+      title: '提示',
+      content: text,
+      onOk() {},
+      okText: '关闭',
+    });
+    return
+  }else{
+    cb && cb()
+  }
+}
+
+// 过滤字符串 超出字数提示
+export const normalizeValue = (value, text, num, title='提示') => {
+  if(value && value.length > num) {
+      Modal.info({
+          title: title,
+          content: `${text}不能超过${num}个字符`,
+          onOk() {},
+        });
+      return value.slice(0, num)
+  }
+  return value
+}
+
+
