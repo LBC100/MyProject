@@ -3850,8 +3850,22 @@ ant 锚点
 
 
 
+const request = async (url, options, isprocess) => {
+    let csrfToken = getCookie('csrftoken')
+    // 检测有没有csrftoken, 没有则先获取一次
+    if(!csrfToken) {
+      await fetch('/api/DjangoTestGet/')
+    }
+    ...
+}
 
+    post请求需要加上
+    'X-CSRFtoken': getCookie('csrftoken'),
 
+    csrf_exempt   给单个视图排除校验
+    csrf_protect  给单个视图必须校验
+    process_request
+        从请求的cookie中获取csrftoken的值   ——》csrf_token   ——》request.META['CSRF_COOKIE']
 
 
 
