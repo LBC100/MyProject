@@ -1152,7 +1152,7 @@ while
     string.charAt(索引)。动态方法
         string.charAt(索引):主要为兼容IE7以下浏览器的跟str[0]一样。
 
-    string.split()
+    string.split() 字符串转数组
         以某些字符为依据，把字符串分割出来，放到数组中。返回值是数组。一般会和数组的join()合用。
 
         如果用字符串作为分隔符：
@@ -1236,6 +1236,8 @@ while
 
     str.trim()。去掉前后空格。
         低版本浏览器不兼容。
+        import {trim} from 'lodash'
+
 
     实现一个trim方法，兼容所有浏览器
 
@@ -1467,6 +1469,17 @@ while
             Maximum call stack size exceeded
 
     数组去重
+        (浅去重)
+            _.uniq([2, 1, 2]);
+            // => [2, 1]
+        (深去重)
+        const uniqDeep = (arr) => {
+            let newArr = [arr[0]]
+            for(let i=1,len=arr.length;i<len;i++){
+                if(!isEqual(arr[0], arr[i])) {newArr.push(arr[i])}
+            }
+            return newArr
+        }
 
     git和github
         git 工具
@@ -2674,6 +2687,9 @@ while
     解决跨域问题：
         利用 XMLHttpRequest() + 后端header('Access-Control-Allow-Origin:*') 配合来解决。
         后端代理：一个服务器文件可以访问第三方资源，这个服务器文件又跟前端同源，即实现跨域
+        前端
+            'X-Requested-With': 'XMLHttpRequest',
+            'Access-Control-Allow-Origin': '*',
         jsonp:
             jsonp没有post请求
             1.数据格式就是函数名 + 括号
@@ -3317,6 +3333,28 @@ es5 和 es6 继承的区别。
             export default ({ title }) => <div className={styles.title}>{title}</div>;
             
         不过有的时候，我们就是想要一个全局生效的样式呢？可以使用 :global。
+            :global{
+                // 全局覆盖ant样式
+                body, html{
+                // 表格
+                .ant-table {
+                    font-size: 12px;
+                }
+                }
+            
+                // 某个容器下的ant样式覆盖
+                .wrapperTab{
+                // 表格
+                .ant-table {
+                    font-size: 20px;
+                }
+                }
+            }
+
+            用法:
+                <!-- <div className={'wrapperTab'}> <Table /> </div> -->
+                
+
             /* 定义全局样式 */
             :global(.text) {
               font-size: 16px;
@@ -3331,6 +3369,8 @@ es5 和 es6 继承的区别。
                 background: #ebebeb;
               }
             }
+
+            
 
 2018-4-17号
     import { connect } from 'dva';
@@ -3723,11 +3763,6 @@ umi + dva + ant.design
             win.focus();
         }
 
-    dva loading
-        单个请求的loading
-            loading.effects['packingbox/getproductbycode']
-        模块的loading
-            loading.models.phxbrand
         
     修改数组的某个元素
         const createParam = (arr) => {
@@ -3807,7 +3842,10 @@ props 存在的时候更新
         size="small" 
     />
 
-请求成功后提示 process
+限制字数
+    maxlength={50}
+
+请求成功提示 process
     const response = yield call(request, dvaurl, { method: 'POST', body: payload }, 'process');
 
 vscode 代码回跳
@@ -3848,16 +3886,213 @@ ant 锚点
     </Col>
     <a id='anchorBasic' title="锚点-执行内容"></a>
 
+加载中
+dva loading
+        单个请求的loading
+        loading={this.props.loading.effects['packingbox/getproductbycode'] ? true : false}
+        模块的loading
+            this.props.loading.models.phxlistformdata ? true : false
+            this.props.loading.models.phxlistformdata ? true : false
+            this.props.loading.global ? true : false
+    
 
+    
+    
 
-const request = async (url, options, isprocess) => {
-    let csrfToken = getCookie('csrftoken')
-    // 检测有没有csrftoken, 没有则先获取一次
-    if(!csrfToken) {
-      await fetch('/api/DjangoTestGet/')
+执行深比较来确定两者的值是否相等。
+    _.isEqual(value, other)
+    例子
+        var object = { 'a': 1 };
+        var other = { 'a': 1 };
+        
+        _.isEqual(object, other);
+        // => true
+        
+        object === other;
+        // => false
+
+js判断数组是否有重复值 (简单)
+    <!-- 
+        (浅度判断)
+        var arr = [1,2,3,4,5,2,3];
+        const equalArr = (arr) => {
+            if((new Set(arr)).size != arr.length){
+                return true
+            }
+            return false
+        }
+        
+        
+        (深度判断)
+        const equalArrDeep = (arr) => {
+            var bool=true;
+            for(var i=1,len=arr.length;i<len;i++){
+                if(isEqual(arr[0], arr[i])) {bool=false}
+            }
+            return bool
+        }
+    -->
+    
+
+vscode 插件
+    htmltagwrap	快捷包裹html标签
+
+React dangerouslySetInnerHTML - 将HTML字符串解析为html
+    const text = 'Admin将计划名称由：【测试1自动下架】改为：【测试1自动下架2】。<br />Admin修改了策略概述;'
+    <div dangerouslySetInnerHTML={{__html: text}}></div>
+
+    
+表格错位解决
+    确定宽度, 剩下不确定的列撑开全部
+    const columns = [
+      { title: '操作人', dataIndex: 'Operator', align: 'center', width: 100, },
+      { title: '日志内容', dataIndex: 'Log', 
+        // width: 580,
+        render: (text, record, index) => { return text }
+      },
+      { title: '时间', dataIndex: 'OperationTime', align: 'center', width: 180, },
+    ];
+    
+
+空格符号
+    &nbsp;
+
+// 取url参数
+    import Qs from 'qs';
+    const filterUrlParam = (url=window.location.href) => {
+        // url: 地址.
+        const i = url.lastIndexOf('?')
+        if(i !== -1) {
+            // 有参数
+            const param = Qs.parse(url.slice(i + 1)) // 如: Qs.parse(isedit=true&OrderSourceSku=123,321)
+            return param
+        }else{
+            // 没有参数
+            return undefined
+        }
     }
-    ...
-}
+
+跳转网页
+    路由跳转
+    1. import router from 'umi/router';
+        // 普通跳转，不带参数
+        router.push('/list');
+    2. window.location.href = 'http:...'
+
+
+一个简单的javascript实用程序，用于有条件地将classNames连接在一起
+    https://github.com/JedWatson/classnames
+
+React 监听浏览器窗口大小改变、监听浏览器滚动条滚动
+    componentDidMount() {
+        window.addEventListener('scroll', this.handleScroll.bind(this)) //监听滚动
+        window.addEventListener('resize', this.handleResize.bind(this)) //监听窗口大小改变
+    }
+
+    componentWillUnmount() { //一定要最后移除监听器，以防多个组件之间导致this的指向紊乱
+        window.removeEventListener('scroll', this.handleScroll.bind(this)) 
+        window.removeEventListener('resize', this.handleResize.bind(this))
+    }
+
+    handleScroll = e => {
+        console.log(
+            '浏览器滚动事件',
+            e.srcElement.scrollingElement.scrollTop,
+            e.srcElement.scrollingElement.scrollHeight
+        )
+        //e.srcElement.scrollingElement.scrollTop为距离滚动条顶部高度
+        // e.srcElement.scrollingElement.scrollHeight为整个文档高度
+    }
+
+    handleResize = e => {
+        console.log('浏览器窗口大小改变事件', e.target.innerWidth)
+    }
+
+Form.Item 前面不显示描述文字
+    <!--
+        <Form.Item {...formItemLayout} colon={false} label={<span></span>}>
+            <Row gutter={24}>
+                <Col md={13}>
+                    <Input />
+                </Col>
+            </Row>
+        </Form.Item>
+    -->
+转换默认的 value 给控件，一个选择全部的例子
+    options.normalize
+
+过滤值
+    normalize
+    
+TreeSelect树选择
+<!-- 
+    数据结构
+    const treeData = [
+        {
+            title: '中国',
+            value: '0-1',
+            key: '0-1',
+            filterKye: '中国',
+            children: [
+            {
+                title: '广东',
+                value: '0-1-0',
+                key: '0-1-0',
+                filterKye: '中国-广东',
+            },
+            {
+                title: '广西',
+                value: '0-1-1',
+                key: '0-1-1',
+                filterKye: '中国-广西',
+            },
+            ],
+        },
+        {
+            title: '美国',
+            value: '0-0',
+            key: '0-0',
+            filterKye: '美国',
+            children: [
+            {
+                title: '旧金山',
+                value: '0-0-0',
+                key: '0-0-0',
+                filterKye: '美国-旧金山',
+            },
+            ],
+        },
+    ];
+    <TreeSelect
+        showSearch={true} /* 在下拉中显示搜索框(仅在单选模式下生效) */
+        treeNodeFilterProp='filterKye' /* 输入项过滤对应的 treeNode 属性，默认是'value' */
+    />
+
+ -->
+
+隐藏浏览器滚动条但内容可以滚动的解决方式
+    /* 兼容IE10+ */
+    .outContainer { -ms-overflow-style: none; overflow: -moz-scrollbars-none; }
+
+    /* 使用伪类选择器 ::-webkit-scrollbar ,兼容chrome和safari浏览器 */
+    .outContainer::-webkit-scrollbar {  
+        width:0 !important;   /* remove scrollbar space */
+        background: transparent;  /* optional: just make scrollbar invisible */
+    }
+    使用
+        className="outContainer"
+    
+    
+
+
+    const request = async (url, options, isprocess) => {
+        let csrfToken = getCookie('csrftoken')
+        // 检测有没有csrftoken, 没有则先获取一次
+        if(!csrfToken) {
+        await fetch('/api/DjangoTestGet/')
+        }
+        ...
+    }
 
     post请求需要加上
     'X-CSRFtoken': getCookie('csrftoken'),
@@ -3867,9 +4102,85 @@ const request = async (url, options, isprocess) => {
     process_request
         从请求的cookie中获取csrftoken的值   ——》csrf_token   ——》request.META['CSRF_COOKIE']
 
+ant 固定表格头
+    // 滚动条和缩放窗口
+    handleScrollResize = () => {
+        // 获取表格
+        const handleTabs = (headAutoKey, bodyAutoKey, num) => {
+            let headEle = document.getElementById(headAutoKey)
+            let headChild
 
+            let bodyEle = document.getElementById(bodyAutoKey)
+            let bodyChild
+            
+            if(bodyEle && headEle) {
+                headChild = headEle.children[0].children
+                bodyChild = bodyEle.children
+            }
 
+            if(headChild) {
+                for (let i = 0; i < headChild.length; i++) {
+                    headChild[i].style.width = window.getComputedStyle(bodyChild[i]).width
+                }
 
+                if(num == 1) {
+                    headEle.style.position = 'fixed'
+                    headEle.style.width = bodyEle.clientWidth
+                    headEle.style['z-index'] = 999
+                    headEle.style['top'] = '64px'
+                }else {
+                    headEle.style.position = 'inherit'
+                }
+            
+            }
+        }
+
+        // 1.滚动距离  2.表格头id  3.表格体id  4.距离头部触发
+        const start = (scrollTop, headAutoKey, bodyAutoKey, topNum) => {
+            if(scrollTop > topNum) {
+                handleTabs(headAutoKey, bodyAutoKey, 1)
+            }else{
+                handleTabs(headAutoKey, bodyAutoKey, 2)
+            }
+        }
+
+        //////////////////////////
+        // 滚动元素
+        let scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+        start(scrollTop, 'headAutoKey', 'bodyAutoKey', 200)
+    }
+
+    componentDidMount() {
+        window.addEventListener('scroll', this.handleScrollResize) //监听滚动
+        window.addEventListener('resize', this.handleScrollResize) //监听窗口大小改变
+    }
+
+    componentWillUnmount() { //一定要最后移除监听器，以防多个组件之间导致this的指向紊乱
+        window.removeEventListener('scroll', this.handleScrollResize)
+        window.removeEventListener('resize', this.handleScrollResize)
+    }
+
+    const components = {
+        header: {
+          wrapper: (props)=>{
+            const { ...restProps } = props
+            return (
+              <thead {...restProps} id={'headAutoKey'} />
+            )
+          },
+        },
+        body: {
+          row: (props)=>{
+            const { ...restProps } = props
+            return (
+              <tr {...restProps} id={'bodyAutoKey'}/>
+            )
+          },
+        }
+    };
+
+获取元素精确宽度
+    console.log(window.getComputedStyle(document.getElementById("test")));
 
 
 
