@@ -244,6 +244,8 @@ export const clearUrlParam = (url=window.location.href, arrKey=[]) => {
     url: 默认window.location.href
     arrKey: [] 需要删除的参数
     参数1: null 则使用默认url
+    用法: 
+          window.location.href = clearUrlParam() // 清空地址栏参数
   */
   url = (url === null) ? window.location.href : url
 
@@ -261,7 +263,6 @@ export const clearUrlParam = (url=window.location.href, arrKey=[]) => {
       })
       // 删除指定参数后还有没有参数
       if(!!Qs.stringify(param)) {
-        // console.log('新url1', `${urlFirst}?${Qs.stringify(param)}`)
         return `${urlFirst}?${Qs.stringify(param)}`
       }else{
         return urlFirst
@@ -376,29 +377,84 @@ export const rndNum = (min, max, length) =>{
 // 提示选择行
 export const selectLine = (rowData, text, cb) => {
   if(rowData.length == 0) {
-    Modal.info({
-      title: '提示',
-      content: text,
-      onOk() {},
-      okText: '关闭',
-    });
-    return
+      message.warning(text);
+      // Modal.info({
+      //     title: '提示',
+      //     content: text,
+      //     onOk() {},
+      //     okText: '关闭',
+      // });
+      return
   }else{
-    cb && cb()
+      cb && cb()
   }
 }
 
 // 过滤字符串 超出字数提示
-export const normalizeValue = (value, text, num, title='提示') => {
+export const normalizeValue = (value, text, num, tips=true, modal=false, title='提示', ) => {
   if(value && value.length > num) {
-      Modal.info({
-          title: title,
-          content: `${text}不能超过${num}个字符`,
-          onOk() {},
-        });
+      if(tips) {
+          modal ? Modal.info({
+              title: title,
+              content: `${text}不能超过${num}个字符`,
+              onOk() {},
+          })
+          :
+          message.warning(`${text}不能超过${num}个字符`);
+      }
       return value.slice(0, num)
   }
   return value
 }
+
+/* 
+  返回值为[]
+  {
+      type: 'add' / 'subtract' // add: 往前加天数, subtract: 往后减天数
+      num: 1, // 增加 / 减少的天数
+      timeType:  days, // 默认天 y Q M w d h m s ms	
+      customStart: '2019-6-1 13:30', // 自定义开始时间
+      theMonth: true, // 当月1号到当天时间
+  }
+*/
+export const myMoment = (props={}) => {
+  if((JSON.stringify(props) !== "{}")) {
+      // 有参数
+      const {
+          type='add',
+          num=0,
+          timeType='days',
+          customStart=undefined, // 自定义
+          theMonth=false, // 当月1号到当天时间
+      } = props
+
+      let startTime, endTime
+
+      if(theMonth) {
+          // 当月1号到当天时间
+          const y = moment().year();
+          const m = moment().month() + 1
+
+          startTime = moment(`${y}-${m}-1 00:00`);
+          endTime = moment()
+      }else if(customStart) {
+          // 自定义开始时间
+          startTime = type == 'add' ? moment(customStart) : moment(customStart)[type](num, timeType)
+          endTime = type == 'add' ? moment(customStart)[type](num, timeType) : moment(customStart)
+      }else {
+          // 开始时间为今天
+          startTime = type == 'add' ? moment() : moment()[type](num, timeType)
+          endTime = type == 'add' ? moment()[type](num, timeType) : moment()
+      }
+      
+
+      console.log('欢迎来到myMoment', startTime)
+      return [startTime, endTime]
+  }else {
+      // 不传参则返回当天时间
+      return [moment(), moment()]
+  }
+}
+
 
 

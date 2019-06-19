@@ -565,6 +565,7 @@ bindActionCreators 用来包装绑定Actions
 
 【npm uninstall xxx】卸载模块； 
 【npm uninstall -g xxx】删除全局模块xxx；
+ npm update 升级
 
 去a链接下划线
     text-decoration:underline;
@@ -2532,6 +2533,10 @@ while
 
     react native 安卓和ios阴影效果不兼容，安卓用elevation代替
 
+react库
+    react-chartjs-2
+    react-chartjs
+
 18-2-26号
     异步的js和xml
     前后端数据交互的技术，获取数据的技术
@@ -3704,15 +3709,16 @@ umi + dva + ant.design
         />
      -->
 
+打包后全局清除console.log. 
     npm start 开发环境
         console.log(process.env.NODE_ENV, '环境'); // development 环境
     npm run build 打包
         console.log(process.env.NODE_ENV, '环境'); // production 环境
-    
-    if(process.env.NODE_ENV === 'production') {
-        // 打包后
-        console.log = function(){}
-    }
+    在global.js文件添加
+        if(process.env.NODE_ENV === 'production') {
+            // 打包后
+            console.log = function(){}
+        }
 装饰器
     https://edu.51cto.com//center/course/lesson/index?id=226195
     // 装饰函数
@@ -3889,7 +3895,7 @@ ant 锚点
 加载中
 dva loading
         单个请求的loading
-        loading={this.props.loading.effects['packingbox/getproductbycode'] ? true : false}
+            loading={this.props.loading.effects['packingbox/getproductbycode'] ? true : false}
         模块的loading
             this.props.loading.models.phxlistformdata ? true : false
             this.props.loading.models.phxlistformdata ? true : false
@@ -4081,55 +4087,78 @@ TreeSelect树选择
     }
     使用
         className="outContainer"
+    使用
+        <!-- <div className='hiddenTabScrollBar'> <Table /> </div> -->
+        :global{
+            // 全局覆盖ant样式
+            
+            .hiddenTabScrollBar{
+              /* 兼容IE10+ */
+              .ant-table-fixed-header .ant-table-scroll .ant-table-header,
+              .ant-table-fixed-header > .ant-table-content > .ant-table-scroll > .ant-table-body
+              { -ms-overflow-style: none; overflow: -moz-scrollbars-none; }
+          
+              /* 使用伪类选择器 ::-webkit-scrollbar ,兼容chrome和safari浏览器 */
+              .ant-table-fixed-header .ant-table-scroll .ant-table-header::-webkit-scrollbar,
+              .ant-table-fixed-header > .ant-table-content > .ant-table-scroll > .ant-table-body::-webkit-scrollbar
+              {  
+                width:0 !important;   /* remove scrollbar space */
+                background: transparent;  /* optional: just make scrollbar invisible */
+              }
+            }
+        }
     
     
 ant 固定表格头
 
     // 滚动条和缩放窗口
     handleScrollResize = () => {
-        // 获取表格
-        const handleTabs = (headAutoKey, bodyAutoKey, num) => {
-            let headEle = document.getElementById(headAutoKey)
-            let headChild
+        // 1.滚动距离  2.表格头id  3.表格体id  4.距离头部触发 5.固定在头部的距离
+        const scrollTopStart = (scrollTop, headAutoKey, bodyAutoKey, triggerNum, topNum) => {
+            // 获取表格
+            const handleTabs = (headAutoKey, bodyAutoKey, topNum, num) => {
+                let headEle = document.getElementById(headAutoKey)
+                let headChild
 
-            let bodyEle = document.getElementById(bodyAutoKey)
-            let bodyChild
-            
-            if(bodyEle && headEle) {
-                headChild = headEle.children[0].children
-                bodyChild = bodyEle.children
-            }
-
-            if(headChild) {
-                for (let i = 0; i < headChild.length; i++) {
-                    headChild[i].style.width = window.getComputedStyle(bodyChild[i]).width
+                let bodyEle = document.getElementById(bodyAutoKey)
+                let bodyChild
+                
+                if(bodyEle && headEle) {
+                    headChild = headEle.children[0].children
+                    bodyChild = bodyEle.children
                 }
 
-                if(num == 1) {
-                    headEle.style.position = 'fixed'
-                    headEle.style.width = bodyEle.clientWidth
-                    headEle.style['z-index'] = 999
-                    headEle.style['top'] = '64px'
-                }else {
-                    headEle.style.position = 'inherit'
-                }
-            
-            }
-        }
+                if(headChild) {
 
-        // 1.滚动距离  2.表格头id  3.表格体id  4.距离头部触发
-        const start = (scrollTop, headAutoKey, bodyAutoKey, topNum) => {
-            if(scrollTop > topNum) {
-                handleTabs(headAutoKey, bodyAutoKey, 1)
+                    for (let i = 0; i < headChild.length; i++) {
+                        headChild[i].style.width = window.getComputedStyle(bodyChild[i]).width
+                    }
+
+                    if(num == 1) {
+                        headEle.style.position = 'fixed'
+                        headEle.style.width = bodyEle.clientWidth
+                        headEle.style['z-index'] = 999
+                        headEle.style['top'] = `${topNum}px`
+                        headEle.style['border-top'] = '1px solid #e8e8e8'
+                    }else {
+                        headEle.style.position = 'inherit'
+                        headEle.style['border-top'] = 0
+                    }
+                
+                }
+            }
+            //////////////////////
+            if(scrollTop > triggerNum) {
+                handleTabs(headAutoKey, bodyAutoKey, topNum, 1)
             }else{
-                handleTabs(headAutoKey, bodyAutoKey, 2)
+                handleTabs(headAutoKey, bodyAutoKey, topNum, 2)
             }
         }
 
         //////////////////////////
         // 滚动元素
         let scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-        start(scrollTop, 'headAutoKey', 'bodyAutoKey', 200)
+        scrollTopStart(scrollTop, 'headAutoKey', 'bodyAutoKey', 200, 64)
     }
 
     componentDidMount() {
@@ -4164,6 +4193,47 @@ ant 固定表格头
 获取元素精确宽度
     console.log(window.getComputedStyle(document.getElementById("test")));
 
+内嵌网页
+<!-- 
+    <iframe 
+        style={{width:'100%', height:500, overflow:'visible'}}
+        frameBorder="0"
+        src='http://192.168.200.215:100/?#/providedToThirdParties/AutoPriceAdjustmentDetails?OrderSourceId=8253&OrderSourceSku=DECEN033LO83G09Y117OJL14&PlanType=2'
+    />
+ -->
+
+ ant 
+    时间范围限制
+        // 限制时间
+        handleData = (time) => {
+            if(!time){
+                return false
+            }else{
+                // 大于当前日期不能选 time > moment()
+                // 小于当前日期不能选 time < moment().subtract(1, "days")
+                // 只能选前7后7 time < moment().subtract(7, "days") || time > moment().add(7, 'd')
+                return time < moment().subtract(91, "days") || time > moment()
+            }
+        }
+        https://blog.csdn.net/wax9092/article/details/83275433
+        <DatePicker.RangePicker disabledDate={this.handleData}/>
+
+ant 表格分页
+    显示总数
+        const paginationProps = (pagination) => {
+            return {
+                showTotal: (total, range) => `共 ${total} 条记录`,
+                ...pagination,
+            }
+        };
+
+        pagination={paginationProps(p)}
+
+表单提交导致应用重新加载
+    默认的提交按钮就是会刷新页面，相当于发起了一个get请求。只需要
+        handleSubmit = (e) => {
+            e.preventDefault && e.preventDefault();
+        }
 
 
 
