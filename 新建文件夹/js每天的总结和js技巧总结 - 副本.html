@@ -4109,8 +4109,26 @@ TreeSelect树选择
         }
     
     
-ant 固定表格头
 
+
+    const request = async (url, options, isprocess) => {
+        let csrfToken = getCookie('csrftoken')
+        // 检测有没有csrftoken, 没有则先获取一次
+        if(!csrfToken) {
+        await fetch('/api/DjangoTestGet/')
+        }
+        ...
+    }
+
+    post请求需要加上
+    'X-CSRFtoken': getCookie('csrftoken'),
+
+    csrf_exempt   给单个视图排除校验
+    csrf_protect  给单个视图必须校验
+    process_request
+        从请求的cookie中获取csrftoken的值   ——》csrf_token   ——》request.META['CSRF_COOKIE']
+
+ant 固定表格头
     // 滚动条和缩放窗口
     handleScrollResize = () => {
         // 1.滚动距离  2.表格头id  3.表格体id  4.距离头部触发 5.固定在头部的距离
