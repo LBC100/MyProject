@@ -3763,7 +3763,7 @@ umi + dva + ant.design
 
                 
             
-    在新的标签页打开网页/新窗口/新标签页
+    // 在新的标签页打开网页/新窗口/新标签页
         handleOpenInNewTab = (url) => {
             const win = window.open(url, '_blank');
             win.focus();
@@ -3900,6 +3900,8 @@ dva loading
             this.props.loading.models.phxlistformdata ? true : false
             this.props.loading.models.phxlistformdata ? true : false
             this.props.loading.global ? true : false
+
+        <Spin spinning={this.props.loading.effects['common/GetNegativeById'] ? true : false}></Spin>
     
 
     
@@ -4024,11 +4026,21 @@ Form.Item 前面不显示描述文字
             </Row>
         </Form.Item>
     -->
-转换默认的 value 给控件，一个选择全部的例子
+转换默认的 value 给控件，一个选择全部的例子 过滤值
     options.normalize
+    normalize: (value, prevValue, allValues)=>{
+        if(value === undefined) return 1
+        return value
+    }
 
-过滤值
-    normalize
+数组取值
+    <!-- 
+        {getFieldDecorator('CalendarValue.' + i, {
+            initialValue: e.value,
+        })(
+            <InputNumberExtend precision={1} />
+        )}
+     -->
     
 TreeSelect树选择
 <!-- 
@@ -4078,7 +4090,11 @@ TreeSelect树选择
 
 隐藏浏览器滚动条但内容可以滚动的解决方式
     /* 兼容IE10+ */
-    .outContainer { -ms-overflow-style: none; overflow: -moz-scrollbars-none; }
+    .outContainer{ 
+        -ms-overflow-style: none; 
+        overflow: -moz-scrollbars-none;
+        scrollbar-width: none; // 火狐隐藏滚动条
+    }
 
     /* 使用伪类选择器 ::-webkit-scrollbar ,兼容chrome和safari浏览器 */
     .outContainer::-webkit-scrollbar {  
@@ -4096,7 +4112,7 @@ TreeSelect树选择
               /* 兼容IE10+ */
               .ant-table-fixed-header .ant-table-scroll .ant-table-header,
               .ant-table-fixed-header > .ant-table-content > .ant-table-scroll > .ant-table-body
-              { -ms-overflow-style: none; overflow: -moz-scrollbars-none; }
+              { -ms-overflow-style: none; overflow: -moz-scrollbars-none; scrollbar-width: none; }
           
               /* 使用伪类选择器 ::-webkit-scrollbar ,兼容chrome和safari浏览器 */
               .ant-table-fixed-header .ant-table-scroll .ant-table-header::-webkit-scrollbar,
@@ -4255,8 +4271,39 @@ ant 表格分页
 
 
 
+火狐专用hack 
+    @-moz-document url-prefix() {
+        /* 内写样式 */
+        .className{ 
+            scrollbar-width: none; // 火狐隐藏滚动条
+        }
+    }
+
+表格中文排序
+    sorter: (a, b) => a.a4.localeCompare(b.a4, 'zh-CN'),
 
 
+循环生成元素的时候加上key否则有时候会数据错乱
+
+has()
+    以has参数中的选择器或者DOM元素作为条件，检测原结果集中的元素是否符合，去掉不符合的元素，将符合的元素构成一个新结果集
+    const intersection = (a, b) => { const s = new Set(b); return a.filter(x => !s.has(x)); };
+    console.log(intersection([4,2,3,1,5], [3,1,2]), '测试1')
+
+背景图自适应(铺满容器)
+    background-size: 100% 100%;
+
+InputNumber 怎么不显示右侧的步距？
+    <!-- 
+        // 不显示右侧的步距
+        .stepNone{
+            .ant-input-number-handler-wrap{
+                display: none;
+            }
+        }
+        // 使用
+        <div className='stepNone'></div>
+     -->
 
 
 
