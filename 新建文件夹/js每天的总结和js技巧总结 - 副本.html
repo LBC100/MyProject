@@ -725,11 +725,57 @@ react 更新数据时属性名为变量
 阴影
     box-shadow: 0px 0 20px #e4e3e3;
 
+CSS旋转&翻转，兼容方案
 旋转
     -moz-transform:rotate(180deg); 
     -webkit-transform:rotate(180deg);
    transform:rotate(180deg);
    filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+
+
+
+    /*水平翻转*/
+    .flipx {
+        -moz-transform:scaleX(-1);
+        -webkit-transform:scaleX(-1);
+        -o-transform:scaleX(-1);
+        transform:scaleX(-1);
+        filter:FlipH();
+    }
+    /*垂直翻转*/
+    .flipy {
+        -moz-transform:scaleY(-1);
+        -webkit-transform:scaleY(-1);
+        -o-transform:scaleY(-1);
+        transform:scaleY(-1);
+        filter:FlipV();
+    }
+    /*顺时针旋转90度*/
+    .rotate90 {
+        filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=1);
+        -moz-transform: rotate(90deg);
+        -o-transform: rotate(90deg);
+        -webkit-transform: rotate(90deg);
+        transform: rotate(90deg);
+    }
+    /*顺时针旋转180度*/
+    .rotate180 {
+        filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
+        -moz-transform: rotate(180deg);
+        -o-transform: rotate(180deg);
+        -webkit-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }
+    /*顺时针旋转270度*/
+    .rotate270 {
+        filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+        -moz-transform: rotate(270deg);
+        -o-transform: rotate(270deg);
+        -webkit-transform: rotate(270deg);
+        transform: rotate(270deg);
+    }
+
+
 
 react-router-config
     key相同则不会重新渲染组件
@@ -2441,6 +2487,8 @@ while
     检测父级传过来的数据
     插入本地图片
         src={require('../img/icon1.png')}
+        <!-- <img style={{width: 105}} src={require('@/assets/u873.png')} /> -->
+        
 
     子组件有需要的话可以设置自己的数据，改变子组件自己的this.state，页面会刷新。这时也可以同步父数据
     数据从父组件接收解构过来后。可以做一些判断，把子组件的数据赋值到父组件的变量中。通过在父组件中设置状态属性。    如：random随机。 btn1Num是控制子组件一个按钮的两种状态。
@@ -3381,7 +3429,7 @@ es5 和 es6 继承的区别。
     import { connect } from 'dva';
     
         
-    model可以有很多个只要app.model方法运行了store里就有数据
+    model可以有很多个只要app.model方法运行�����store里就有数据
         app.model(require('./models/login').default);
     
     组件取数据。在组件的上面写：
@@ -4266,8 +4314,11 @@ ant 表格分页
 表单提交导致应用重新加载
     默认的提交按钮就是会刷新页面，相当于发起了一个get请求。只需要
         handleSubmit = (e) => {
-            e.preventDefault && e.preventDefault();
+            e && e.preventDefault();
+            const { dispatch } = this.props
+            this.props.form.validateFields((err, values) => {})
         }
+        
 
 
 
@@ -4304,6 +4355,65 @@ InputNumber 怎么不显示右侧的步距？
         // 使用
         <div className='stepNone'></div>
      -->
+
+请求头加验证信息
+    newOptions.headers = {
+        'Authorization': 'Basic ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoid3l0Iiwic3ViIjoiYWRtaW4iLCJleHAiOjYzNjk3ODQzMTI1MTY1MX0.RxemamqKJXy864ruTrrfSZ1EQEZTMre-_qCT4Z240cA', 
+    }
+    fetch(url, newOptions)
+
+请求自动带cookies
+    credentials: 'include',
+
+// 搜索列表
+    handleSearch = (e, pagination) => {
+      const { dispatch } = this.props
+      e && e.preventDefault();
+      this.props.form.validateFields((err, values) => {
+        const {
+          Search: {
+            ruleTitle='',
+            sku='',
+            isActive=0,
+          } 
+        } = values
+  
+        let newPagination = {
+          "current": 1,
+          "pageSize": 20,
+        }
+  
+        if(pagination) { newPagination = pagination }
+  
+        let input = {
+          "ruleTitle":ruleTitle,
+          "isActive": isActive === 1 ? true : false,
+          "sku": sku,
+        }
+  
+  
+  
+        if(isActive === 0){ delete input.isActive } // 选中全部则不传
+        
+        // 获取列表
+        dispatch({
+          type: 'averagedailysales/GetPagerListAsync',
+          payload: {
+            ...newPagination,
+            "input": input,
+          }
+        })
+        console.log('提交1', values)
+      })
+      
+  
+    }
+
+
+联调#
+    当本地开发完毕之后，如果服务器的接口满足之前的约定，那么只需要关闭 mock 数据或者代理到服务端的真实接口地址即可。
+    npm run start:no-mock
+
 
 
 
