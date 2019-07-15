@@ -1,0 +1,347 @@
+import fetch from 'dva/fetch';
+import { notification, message, Modal } from 'antd';
+import router from 'umi/router';
+import fileDownload from 'js-file-download';
+import syrequest from 'sync-request';
+import simpleStorage from 'simplestorage.js'
+const Qs = require('qs');
+
+import intl from '@/common/locales';
+// 公共方法
+import { getParam, getValidateRules, getLocaleDay, filterUrlParam, clearUrlParam } from '@/utils/comhelper';
+
+const codeMessage = {
+  200: '服务器成功返回请求的数据。',
+  201: '新建或修改数据成功。',
+  202: '一个请求已经进入后台排队（异步任务）。',
+  204: '删除数据成功。',
+  400: '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
+  401: '用户没有权限（令牌、用户名、密码错误）。',
+  403: '用户得到授权，但是访问是被禁止的。',
+  404: '发出的请求针对的是不存在的记录，服务器没有进行操作。',
+  406: '请求的格式不可得。',
+  410: '请求的资源被永久删除，且不会再得到的。',
+  422: '当创建一个对象时，发生一个验证错误。',
+  500: '服务器发生错误，请检查服务器。',
+  502: '网关错误。',
+  503: '服务不可用，服务器暂时过载或维护。',
+  504: '网关超时。',
+};
+
+
+// function checkStatus(response) {
+//   if (response.status >= 200 && response.status < 300) {  
+//     return response;
+//   }
+//   const errortext = codeMessage[response.status] || response.statusText;
+//   notification.error({
+//     message: `${intl.formatMessage('OMS_Error_NetWork')} ${response.status}`,
+//     description: errortext,
+//   });
+//   const error = new Error(errortext);
+//   error.name = response.status;
+//   error.response = response;
+//   throw error;
+// }
+
+//处理状态
+export const operateStatus = { Error: 'error', Success: 'success', Warning: 'warning', Unauthorized: 'unauthorized', Fail: 'fail' };
+const checkStatus = response => {
+  if (response.status >= 200 && response.status < 300) {
+    return response;
+  }
+  const errortext = codeMessage[response.status] || response.statusText;
+  notification.error({
+    message: `请求错误 ${response.status}`,
+    description: errortext,
+  });
+  const error = new Error(errortext);
+  error.name = response.status;
+  error.response = response;
+  throw error;
+};
+
+let hasUnau = true;
+let tokenBool = true
+/**
+ * Requests a URL, returning a promise.
+ *
+ * @param  {string} url       The URL we want to request
+ * @param  {object} [options] The options we want to pass to "fetch"
+ * @return {object}           An object containing either "data" or "err"
+ */
+export default function request(url, options, isprocess) {
+  /////////////////////////
+  // 格式化分页数据
+  const formatPagination = (response) => { }
+
+  // 获取参数并请求获取Token
+  const handleGetParamRequestToken = async () => {
+    let params = filterUrlParam() // 获取地址栏参数
+    params = params ? params : {}
+    const { adminId, customerId, signature } = params
+    if(adminId && customerId && signature) {
+      let paramsUrl = Qs.stringify(params);
+      let url = `/api/authorize/token/?${paramsUrl}`
+      let newOptions = {}
+      newOptions.method = 'GET'
+      
+      tokenBool = false; // 验证请求只走一次
+      const response = await fetch(url, newOptions).then((response)=>{return response.json();})
+      if(response.status == "success") {
+        const {
+          data: {
+            token=undefined
+          }
+        } = response
+        if(token) {
+          simpleStorage.set('znbhToken', {token: token}) // 1,设置-本地本地token
+        }
+      }
+      
+      clearUrlParam() // 清空地址栏参数
+    }else {
+      // 地址栏无参数或者参数不全
+      let token = simpleStorage.get('znbhToken')
+      token = token ? token.token : ''
+
+      // 地址栏无参并且之前没有保存token则跳转403
+      if(token == '') {
+        router.push('/exception/403');
+
+        Modal.error({
+          title: '参数错误',
+          content: '请检查参数',
+        });
+      }
+    }
+    tokenBool = false
+  }
+  ////////////////////////
+  // 只弹一次窗
+  if(tokenBool) {
+    handleGetParamRequestToken()
+  }
+  
+  // 2,获取-最新本地token
+  let token = simpleStorage.get('znbhToken')
+  token = token ? token.token : ''
+  
+  const defaultOptions = {
+    credentials: 'include',
+  };
+  const newOptions = { ...defaultOptions, ...options };
+  if (
+    newOptions.method === 'POST'
+    ||
+    newOptions.method === 'PUT'
+    ||
+    newOptions.method === 'DELETE'
+    // ||
+    // newOptions.method === 'GET'
+  ) {
+    console.log(options, newOptions, '请求2')
+    if (!(newOptions.body instanceof FormData)) {
+      newOptions.headers = {
+        Accept: 'application/json',
+        'Content-Type': 'application/json; charset=utf-8',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Access-Control-Allow-Origin': '*',
+        // 'Authorization': 'Basic ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoid3l0Iiwic3ViIjoiYWRtaW4iLCJleHAiOjYzNjk3ODQzMTI1MTY1MX0.RxemamqKJXy864ruTrrfSZ1EQEZTMre-_qCT4Z240cA', 
+        'Authorization': 'Basic ' + token, 
+        ...newOptions.headers,
+      };
+      if (newOptions.body) {
+        newOptions.body.language = intl.getInputLanguage();
+      }
+      else {
+        newOptions.body = { language: intl.getInputLanguage() }
+      }
+      newOptions.body = JSON.stringify(newOptions.body);
+
+    } else {
+      // newOptions.body is FormData
+      newOptions.headers = {
+        Accept: 'application/json',
+        ...newOptions.headers,
+      };
+    }
+  }else if(newOptions.method === 'GET'){
+    newOptions.headers = {
+      'Authorization': 'Basic ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoid3l0Iiwic3ViIjoiYWRtaW4iLCJleHAiOjYzNjk3ODQzMTI1MTY1MX0.RxemamqKJXy864ruTrrfSZ1EQEZTMre-_qCT4Z240cA', 
+      ...newOptions.headers,
+    };
+    if(newOptions.body) {
+      delete newOptions.body
+      // newOptions.data = JSON.stringify(newOptions.body);
+    }
+    
+    // console.log(options, newOptions, newOptions.body , '请求3')
+  }
+  
+
+  return fetch(url, newOptions)
+    .then(checkStatus)
+    .then(response => {
+      // DELETE and 204 do not return data by default
+      // using .json will report an error.
+      if (newOptions.method === 'DELETE' || response.status === 204) {
+        return response.text();
+      }
+      return response.json();
+    })
+    .then(response => {
+      switch (response.status) {
+        case operateStatus.Success:
+          if (isprocess) {
+            message.success('操作成功');
+          }
+          break;
+        case operateStatus.Fail:
+          router.push('/exception/403');
+          break;
+        case operateStatus.Warning:
+          window.g_app._store.dispatch({
+            type: 'login/logout',
+          });
+          break;
+        case operateStatus.Error:
+          Modal.error({
+            title: `操作 ${response.status}`,
+            content: response.message
+          });
+          break;
+        case operateStatus.Unauthorized:
+          if (hasUnau) {
+            Modal.warning({
+              title: '提示',
+              content: response.message,
+              autoFocusButton: 'ok',
+              okText: '重新登录',
+              okButtonProps: { icon: 'reload' },
+              onOk: () => {
+                const URLPARAMS = new URL(window.location.href);
+                window.location.href = `${response.data}${encodeURIComponent(`${URLPARAMS.protocol}//${URLPARAMS.host}/account/login?redirecturl=`) + encodeURIComponent(encodeURIComponent('/' + URLPARAMS.hash))}`;
+                // console.log(window.location.href)  
+                // console.log(URLPARAMS.hash)        
+              }
+            });
+            hasUnau = false;
+          }
+          break;
+      }
+      return response;
+    })
+    .catch(e => {
+      
+    });
+}
+
+
+
+/**
+ * Requests a URL, returning a promise.
+ *
+ * @param  {string} url       The URL we want to request
+ * @param  {object} [options] The options we want to pass to "fetch"
+ * @return {object}           An object containing either "data" or "err"
+ */
+export function syncrequest(url, options, processtype) {
+  let json = { json: {} }
+  if (options.method === 'POST' || options.method === 'PUT') {
+    if (options.body) {
+      options.body.language = intl.getLanguage();
+      json = { json: options.body }
+    }
+    else {
+      json = { json: { language: intl.getLanguage() } }
+    }
+  }
+  const response = syrequest(options.method, url, json)
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    if (processtype === 'process') {
+      switch (response.statusCode) {
+        case operateStatus.Success:
+          message.success(intl.formatMessage('WMS_BS_OperateSuccess'));
+          break;
+        case operateStatus.Error:
+          Modal.error({
+            title: `${intl.formatMessage('WMS_BS_Operate')} ${response.status}`,
+            content: response.message
+          });
+          break;
+      }
+    }
+    const jsonbody = JSON.parse(response.getBody())
+    if (jsonbody.status === operateStatus.Warning) {
+      const urlParams = new URL(window.location.href);
+      localStorage.clear();
+      if (urlParams.hash == '#/' || urlParams.hash == '#/user/login') {
+        window.location = '/#/user/login';
+      } else {
+        window.location = '/?redirect=' + urlParams.hash.replace(/\//g, '%2F').replace('#', '') + '#/user/login';
+      }
+    }
+    else {
+      return jsonbody;
+    }
+  }
+  else {
+    const errortext = codeMessage[response.statusCode] || response.url;
+    notification.error({
+      message: `${intl.formatMessage('WMS_Error_NetWork')} ${response.statusCode}`,
+      description: errortext,
+    });
+  }
+}
+
+
+
+
+export function filerequest(url, extype, filename, options) {
+  const defaultOptions = {
+    credentials: 'include',
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json; charset=utf-8'
+    },
+    body: {
+      language: intl.getLanguage(),
+      type: extype,
+      filename: filename,
+      inputView: options
+    }
+  };
+  defaultOptions.body = JSON.stringify(defaultOptions.body);
+  return fetch(url, defaultOptions)
+    .then(checkStatus)
+    .then(response => { return response.blob() })
+    .then(blob => {
+      fileDownload(blob, `${filename}.xlsx`);
+    });
+}
+
+export function fileziprequest(url, extype, filename, options) {
+  const defaultOptions = {
+    credentials: 'include',
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json; charset=utf-8'
+    },
+    body: {
+      language: intl.getLanguage(),
+      type: extype,
+      filename: filename,
+      inputView: options
+    }
+  };
+  defaultOptions.body = JSON.stringify(defaultOptions.body);
+  return fetch(url, defaultOptions)
+    .then(checkStatus)
+    .then(response => { return response.blob() })
+    .then(blob => {
+      fileDownload(blob, `${filename}.zip`);
+    });
+}

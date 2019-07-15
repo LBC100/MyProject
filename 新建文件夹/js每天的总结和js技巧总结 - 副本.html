@@ -4192,6 +4192,61 @@ TreeSelect树选择
     process_request
         从请求的cookie中获取csrftoken的值   ——》csrf_token   ——》request.META['CSRF_COOKIE']
 
+
+// 获取参数并请求获取Token
+    const handleGetParamRequestToken = async () => {
+        let params = filterUrlParam() // 获取地址栏参数
+        params = params ? params : {}
+        const { adminId, customerId, signature } = params
+        if(adminId && customerId && signature) {
+        let paramsUrl = Qs.stringify(params);
+        let url = `/api/authorize/token/?${paramsUrl}`
+        let newOptions = {}
+        newOptions.method = 'GET'
+        
+        tokenBool = false; // 验证请求只走一次
+        const response = await fetch(url, newOptions).then((response)=>{return response.json();})
+        if(response.status == "success") {
+            const {
+            data: {
+                token=undefined
+            }
+            } = response
+            if(token) {
+            simpleStorage.set('znbhToken', {token: token}) // 1,设置-本地本地token
+            }
+        }
+        
+        clearUrlParam() // 清空地址栏参数
+        }else {
+        // 地址栏无参数或者参数不全
+        let token = simpleStorage.get('znbhToken')
+        token = token ? token.token : ''
+    
+        // 地址栏无参并且之前没有保存token则跳转403
+        if(token == '') {
+            router.push('/exception/403');
+    
+            Modal.error({
+            title: '参数错误',
+            content: '请检查参数',
+            });
+        }
+        }
+        tokenBool = false
+    }
+    ////////////////////////
+    // 只弹一次窗
+    if(tokenBool) {
+        handleGetParamRequestToken()
+    }
+    
+    // 2,获取-最新本地token
+    let token = simpleStorage.get('znbhToken')
+    token = token ? token.token : ''
+
+
+
 ant 固定表格头
     // 滚动条和缩放窗口
     handleScrollResize = () => {

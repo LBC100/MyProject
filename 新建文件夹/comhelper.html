@@ -448,13 +448,25 @@ export const myMoment = (props={}) => {
       }
       
 
-      console.log('欢迎来到myMoment', startTime)
       return [startTime, endTime]
   }else {
       // 不传参则返回当天时间
       return [moment(), moment()]
   }
 }
+
+// 格式化SUK
+export const formatSKU = (value='') => {
+  let newSku = []
+  if(value !== '') {
+      value.split('\n').map((e, i)=> { if(e != '') { let sku = e.toString().trim(); newSku.push(sku)}})
+      newSku = newSku.filter((e)=>e !== '')
+  }
+  return newSku
+}
+
+
+
 
 
 
