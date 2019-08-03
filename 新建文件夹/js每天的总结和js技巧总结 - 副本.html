@@ -3809,7 +3809,7 @@ umi + dva + ant.design
             this.childNewForm1.add()
         }
 
-                
+<input ref={(input) => {this.textInput = input;}} type="text" />
             
     // 在新的标签页打开网页/新窗口/新标签页
         handleOpenInNewTab = (url) => {
@@ -3873,7 +3873,7 @@ Checkbox 默认值需要initialValue和valuePropName配合使用. 因为Checkbox
         <OneCheckbox />
     )}
 
-隐藏
+隐藏输入框
     <InputExtend type='hidden'/>
 
 props 存在的时候更新
@@ -3946,7 +3946,7 @@ dva loading
             loading={this.props.loading.effects['packingbox/getproductbycode'] ? true : false}
         模块的loading
             this.props.loading.models.phxlistformdata ? true : false
-            this.props.loading.models.phxlistformdata ? true : false
+        全局
             this.props.loading.global ? true : false
 
         <Spin spinning={this.props.loading.effects['common/GetNegativeById'] ? true : false}></Spin>
@@ -4013,6 +4013,22 @@ React dangerouslySetInnerHTML - 将HTML字符串解析为html
 空格符号
     &nbsp;
 
+import Qs from 'qs';
+    解析参数
+        // url: 地址.
+        const i = url.lastIndexOf('?')
+        if(i !== -1) {
+            // 有参数
+            const param = Qs.parse(url.slice(i + 1)) // 如: Qs.parse(isedit=true&OrderSourceSku=123,321)
+            return param
+        }else{
+            // 没有参数
+            return undefined
+        }
+    格式化参数
+        Qs.stringify(params);
+
+
 // 取url参数
     import Qs from 'qs';
     const filterUrlParam = (url=window.location.href) => {
@@ -4077,7 +4093,7 @@ Form.Item 前面不显示描述文字
 转换默认的 value 给控件，一个选择全部的例子 过滤值
     options.normalize
     normalize: (value, prevValue, allValues)=>{
-        if(value === undefined) return 1
+        if(value === undefined || value === null) return 0
         return value
     }
 
@@ -4469,10 +4485,47 @@ InputNumber 怎么不显示右侧的步距？
     当本地开发完毕之后，如果服务器的接口满足之前的约定，那么只需要关闭 mock 数据或者代理到服务端的真实接口地址即可。
     npm run start:no-mock
 
+umi.js 如何访问到 store 或 dispatch 方法？
+    window.g_app._store
+    window.g_app._store.dispatch
 
 
+input输入框延时发送请求问题
+    clearTimeout(this.t1)
+    this.t1 = setTimeout(() => {
+        alert(e)
+      }, 3000);
+      
+    var timeout;　　
+    document.querySelector(".btn").onkeyup = function(event) {
+        clearTimeout(timeout);　　
+        timeout = setTimeout(function() {　　
+            console.log(document.querySelector(".btn").value)　
+        }, 1000);　　
+    };
+    
+超出省略
+    <!-- 
+        <EllipsisExtend>{text}</EllipsisExtend>
+    -->
+// 判断网页是否在iframe中打开
+    windowTop: window.self != window.top, // 判断网页是否在iframe中打开. true是在iframe中打开
 
 
+table行错误时包一层div并固定宽度
+    <!-- 
+        { title: '备注', dataIndex: 'remark', align: 'center', /* width: 230, */
+            render: (text,) => {
+            return <div style={{width: 480, margin: '0 auto'}}>{text}</div>
+            }
+        }
+     -->
+
+弹窗页脚
+    <!-- 
+        footer={[<Button key="back" onClick={this.handleOnClear}>关闭</Button>, <Button key="submit" type="primary" onClick={this.handleOnClear}>确定</Button>]}
+    -->
+    
 
 
 

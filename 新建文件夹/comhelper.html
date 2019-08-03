@@ -3,8 +3,9 @@ import {
   Divider, Button, Select, message, Spin,
   Modal, Radio, Checkbox, Tabs, Anchor, DatePicker, TimePicker, InputNumber
 } from 'antd';
-import {isEqual} from 'lodash';
+import { isEqual } from 'lodash';
 import Qs from 'qs';
+import simpleStorage from 'simplestorage.js'
 
 import moment from 'moment';
 import { getTimeDistance } from '@/utils/utils';
@@ -104,7 +105,7 @@ export function getLocaleDay(param) {
       dateformat = 'LLL'
   }
   if (!param) {
-      return "";         
+      return "";
   }
   return moment(param).format(dateformat);
 }
@@ -225,54 +226,54 @@ export function getValueFromUrl(urlParam, key) {
 }
 
 // 取url参数
-export const filterUrlParam = (url=window.location.href) => {
+export const filterUrlParam = (url = window.location.href) => {
   // url: 地址.
   const i = url.lastIndexOf('?')
-  if(i !== -1) {
-    // 有参数
-    const param = Qs.parse(url.slice(i + 1)) // 如: Qs.parse(isedit=true&OrderSourceSku=123,321)
-    return param
-  }else{
-    // 没有参数
-    return undefined
+  if (i !== -1) {
+      // 有参数
+      const param = Qs.parse(url.slice(i + 1)) // 如: Qs.parse(isedit=true&OrderSourceSku=123,321)
+      return param
+  } else {
+      // 没有参数
+      return undefined
   }
 }
 
 // 清除url参数
-export const clearUrlParam = (url=window.location.href, arrKey=[]) => {
+export const clearUrlParam = (url = window.location.href, arrKey = []) => {
   /* 
     url: 默认window.location.href
     arrKey: [] 需要删除的参数
     参数1: null 则使用默认url
     用法: 
-          window.location.href = clearUrlParam() // 清空地址栏参数
+          clearUrlParam() // 清空地址栏参数
   */
   url = (url === null) ? window.location.href : url
-
   // console.log('i1', url)
   const i = url.lastIndexOf('?')
-  if(i !== -1) {
-    // 有参数
-    const urlFirst = url.slice(0, i) // http://localhost:8001/#/PhxNegationStrategy
-    const param = Qs.parse(url.slice(i + 1)) // 如: Qs.parse(isedit=true&OrderSourceSku=123,321)
-    
-    if(arrKey.length > 0) {
-      arrKey.map((e, i) => {
-        // console.log(e, '序列化2')
-        delete param[e]
-      })
-      // 删除指定参数后还有没有参数
-      if(!!Qs.stringify(param)) {
-        return `${urlFirst}?${Qs.stringify(param)}`
-      }else{
-        return urlFirst
+  if (i !== -1) {
+      // 有参数
+      const urlFirst = url.slice(0, i) // http://localhost:8001/#/PhxNegationStrategy
+      const param = Qs.parse(url.slice(i + 1)) // 如: Qs.parse(isedit=true&OrderSourceSku=123,321)
+
+      if (arrKey.length > 0) {
+          arrKey.map((e, i) => {
+              // console.log(e, '序列化2')
+              delete param[e]
+          })
+          // 删除指定参数后还有没有参数
+          if (!!Qs.stringify(param)) {
+              return `${urlFirst}?${Qs.stringify(param)}`
+          } else {
+              return urlFirst
+          }
       }
-    }
-    // 不传arrKey则把url参数全部删除
-    return urlFirst
-  }else{
-    // 没有参数
-    return url
+      // 不传arrKey则把url参数全部删除
+      history.pushState(null, null, urlFirst); // 不刷新改变地址栏
+      return urlFirst
+  } else {
+      // 没有参数
+      return url
   }
 }
 
@@ -302,29 +303,29 @@ export function isUrl(path) {
 export const errMessage = (err) => {
   let messageData = []
   for (const key in err) {
-    // console.log(err[key], 888)
-    if (err.hasOwnProperty(key)) {
-      const element = err[key];
-      element.errors.map((e, i) => {
-        messageData.push(e.message)
-      })
-      // console.log(element, 999)
-    }
+      // console.log(err[key], 888)
+      if (err.hasOwnProperty(key)) {
+          const element = err[key];
+          element.errors.map((e, i) => {
+              messageData.push(e.message)
+          })
+          // console.log(element, 999)
+      }
   }
 
-  messageData = <div>{messageData.map((e, i)=><div>{e}</div>)}</div>
-  
+  messageData = <div>{messageData.map((e, i) => <div>{e}</div>)}</div>
+
   Modal.error({
-    title: '错误信息',
-    content: messageData,
+      title: '错误信息',
+      content: messageData,
   });
 }
 
 // 全等0
 export const EqualTo = (value) => {
-  if(value === 0 || value === undefined || value === null || value === '') {
+  if (value === 0 || value === undefined || value === null || value === '') {
       return true
-  }else{
+  } else {
       return false
   }
 }
@@ -334,12 +335,12 @@ export const EqualTo = (value) => {
 // 合并style
 export const handleMergeStyle = (localStyle, propsStyle) => {
   let mergeStyle = {}
-  if(propsStyle) {
+  if (propsStyle) {
       mergeStyle = {
           ...localStyle,
           ...propsStyle,
       }
-  }else{
+  } else {
       return localStyle
   }
   return mergeStyle
@@ -348,7 +349,7 @@ export const handleMergeStyle = (localStyle, propsStyle) => {
 // js判断数组是否有重复值 有重复返回true否则返回false
 // (浅度判断)
 export const equalArr = (arr) => {
-  if((new Set(arr)).size != arr.length){
+  if ((new Set(arr)).size != arr.length) {
       return true
   }
   return false
@@ -357,26 +358,26 @@ export const equalArr = (arr) => {
 
 // (深度判断)
 export const equalArrDeep = (arr) => {
-  var bool=false;
-  for(var i=1,len=arr.length;i<len;i++){
-      if(isEqual(arr[0], arr[i])) {bool=true}
+  var bool = false;
+  for (var i = 1, len = arr.length; i < len; i++) {
+      if (isEqual(arr[0], arr[i])) { bool = true }
   }
   return bool
 }
 
 // 随机生成范围内的数字. 保留几位数(前面补零)
-export const rndNum = (min, max, length) =>{
+export const rndNum = (min, max, length) => {
   const PrefixInteger = (num, length) => {
       return (Array(length).join('0') + num).slice(-length);
   }
   const num = (min + Math.floor(Math.random() * (max - min + 1)))
-  if(length) { return PrefixInteger(num, length) }
+  if (length) { return PrefixInteger(num, length) }
   return num
 }
 
 // 提示选择行
 export const selectLine = (rowData, text, cb) => {
-  if(rowData.length == 0) {
+  if (rowData.length == 0) {
       message.warning(text);
       // Modal.info({
       //     title: '提示',
@@ -385,22 +386,22 @@ export const selectLine = (rowData, text, cb) => {
       //     okText: '关闭',
       // });
       return
-  }else{
+  } else {
       cb && cb()
   }
 }
 
 // 过滤字符串 超出字数提示
-export const normalizeValue = (value, text, num, tips=true, modal=false, title='提示', ) => {
-  if(value && value.length > num) {
-      if(tips) {
+export const normalizeValue = (value, text, num, tips = true, modal = false, title = '提示', ) => {
+  if (value && value.length > num) {
+      if (tips) {
           modal ? Modal.info({
               title: title,
               content: `${text}不能超过${num}个字符`,
-              onOk() {},
+              onOk() { },
           })
-          :
-          message.warning(`${text}不能超过${num}个字符`);
+              :
+              message.warning(`${text}不能超过${num}个字符`);
       }
       return value.slice(0, num)
   }
@@ -417,53 +418,233 @@ export const normalizeValue = (value, text, num, tips=true, modal=false, title='
       theMonth: true, // 当月1号到当天时间
   }
 */
-export const myMoment = (props={}) => {
-  if((JSON.stringify(props) !== "{}")) {
+export const myMoment = (props = {}) => {
+  if ((JSON.stringify(props) !== "{}")) {
       // 有参数
       const {
-          type='add',
-          num=0,
-          timeType='days',
-          customStart=undefined, // 自定义
-          theMonth=false, // 当月1号到当天时间
+          type = 'add',
+          num = 0,
+          timeType = 'days',
+          customStart = undefined, // 自定义
+          theMonth = false, // 当月1号到当天时间
       } = props
 
       let startTime, endTime
 
-      if(theMonth) {
+      if (theMonth) {
           // 当月1号到当天时间
           const y = moment().year();
           const m = moment().month() + 1
 
           startTime = moment(`${y}-${m}-1 00:00`);
           endTime = moment()
-      }else if(customStart) {
+      } else if (customStart) {
           // 自定义开始时间
           startTime = type == 'add' ? moment(customStart) : moment(customStart)[type](num, timeType)
           endTime = type == 'add' ? moment(customStart)[type](num, timeType) : moment(customStart)
-      }else {
+      } else {
           // 开始时间为今天
           startTime = type == 'add' ? moment() : moment()[type](num, timeType)
           endTime = type == 'add' ? moment()[type](num, timeType) : moment()
       }
-      
+
 
       return [startTime, endTime]
-  }else {
+  } else {
       // 不传参则返回当天时间
       return [moment(), moment()]
   }
 }
 
 // 格式化SUK
-export const formatSKU = (value='') => {
+export const formatSKU = (value = '') => {
   let newSku = []
-  if(value !== '') {
-      value.split('\n').map((e, i)=> { if(e != '') { let sku = e.toString().trim(); newSku.push(sku)}})
-      newSku = newSku.filter((e)=>e !== '')
+  if (value !== '') {
+      value.split('\n').map((e, i) => { if (e != '') { let sku = e.toString().trim(); newSku.push(sku) } })
+      newSku = newSku.filter((e) => e !== '')
   }
   return newSku
 }
+
+// 判断是否是数字
+export const isNotANumber = (inputData) => {
+　　//isNaN(inputData)不能判断空串或一个空格 
+　　//如果是一个空串或是一个空格，而isNaN是做为数字0进行处理的，而parseInt与parseFloat是返回一个错误消息，这个isNaN检查不严密而导致的。 
+　　if (parseFloat(inputData).toString() == 'NaN') { 
+　　　　//alert(“请输入数字……”); 
+　　　　return false; 
+　　} else { 
+　　　　return true; 
+　　} 
+}
+//深复制
+export const deepCopy = (obj = {}) => { //深复制
+  let result = Array.isArray(obj) ? [] : {};
+  for (let key in obj) {
+      if (obj.hasOwnProperty(key)) {
+          if (typeof obj[key] === 'object' && obj[key] !== null) {
+              result[key] = deepCopy(obj[key]);
+          }
+          else {
+              result[key] = obj[key];
+          }
+      }
+  }
+  return result;
+}
+
+// 表格排序
+/* 
+  用法sorter: (a, b) => tableSorter(a.stockDays, b.stockDays),
+*/
+export const tableSorter = (a, b) => {
+  const isNum1 = isNotANumber(a)
+  const isNum2 = isNotANumber(b)
+  if((isNum1 && isNum2) || (a == undefined) || (b == null)) {
+      return a - b
+  }else {
+      return a.localeCompare(b, 'zh-CN')
+  }
+}
+//反射对象初始化类型
+const reflectObjValueType = (value, targetValue) => {
+
+  if (!value) {
+      switch (typeof (targetValue)) {
+          case "string":
+              return "";
+          case "number":
+              return 0;
+          case "boolean":
+              return false;
+          case "object":
+              return Array.isArray(targetValue) ? [] : {};
+          default:
+              return "";
+      }
+  }
+  else {
+      return value;
+  }
+}
+
+//反射对象赋值
+export const reflectObjectValue = (sourceObj, targetObj) => {
+  let obj = {};
+  try {
+      for (let key in targetObj) {
+
+          if (targetObj.hasOwnProperty(key)) {
+              if (typeof targetObj[key] === 'object' && targetObj[key] !== null && !Array.isArray(targetObj[key])) {
+                  obj[key] = reflectObjectValue(sourceObj, targetObj[key]);
+              }
+              else {
+                  obj[key] = reflectObjValueType(sourceObj[key], targetObj[key])
+              }
+          }
+
+      }
+  }
+  catch (error) {
+      console.log(error, 'error');
+  }
+  return obj;
+}
+
+
+export const getToken = (str='znbhToken') => {
+  // 2,获取-最新本地token
+  let token = simpleStorage.get(str)
+  token = token ? token.token : ''
+  return token
+}
+
+// 初始化token的时候走一次这个函数
+/* 
+  用法: 
+  componentDidMount() {
+      if(getToken()) { 初始化方法 } // 有token则运行这里
+  }
+  render() {
+      rederInitTokenData(this, ()=>{ 初始化方法 }) // 第一次登陆时运行一次
+  }
+  
+*/
+export const rederInitTokenData = (_this, fn) => {
+  const { common: { token } } = _this.props
+  if(token == 1 && !_this.state.rederInitDataBool2) {
+      fn && fn()
+      _this.setState({ rederInitDataBool2: true });
+  }
+}
+
+
+// 验证权限
+export const verifyPermissions = (arr=[]) => {
+  const {
+    common: {
+      authorizeCurrentuser,
+      authorizeCurrentuser: {
+        permissions=[]
+      }
+    }
+  } = window.g_app._store.getState()
+  
+  let bool = true
+  permissions.map((e) => {
+    arr.map((ej) => {
+      if(e == ej) {
+        bool = false
+      }
+    })
+  })
+  
+  // return false // 清除限制权限
+  return bool
+}
+
+
+// js 加减乘除精度不准的问题
+// 加法
+export const floatAdd = (arg1,arg2) => { 
+  var r1,r2,m; 
+  try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0} 
+  try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0} 
+  m=Math.pow(10,Math.max(r1,r2)); 
+  return (arg1*m+arg2*m)/m; 
+}
+
+// 减法
+export const floatSub = (arg1,arg2) => { 
+  var r1,r2,m,n; 
+  try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0} 
+  try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0} 
+  m=Math.pow(10,Math.max(r1,r2)); 
+  //动态控制精度长度 
+  n=(r1>=r2)?r1:r2; 
+  return ((arg1*m-arg2*m)/m).toFixed(n); 
+}
+
+// 乘法
+export const floatMul = (arg1,arg2) => { 
+  var m=0,s1=arg1.toString(),s2=arg2.toString(); 
+  try{m+=s1.split(".")[1].length}catch(e){} 
+  try{m+=s2.split(".")[1].length}catch(e){} 
+  return Number(s1.replace(".",""))*Number(s2.replace(".",""))/Math.pow(10,m); 
+} 
+
+// 除法
+export const floatDiv = (arg1,arg2) => { 
+  var t1=0,t2=0,r1,r2; 
+  try{t1=arg1.toString().split(".")[1].length}catch(e){} 
+  try{t2=arg2.toString().split(".")[1].length}catch(e){} 
+    
+  r1=Number(arg1.toString().replace(".","")); 
+  
+  r2=Number(arg2.toString().replace(".","")); 
+  return (r1/r2)*Math.pow(10,t2-t1); 
+}
+
 
 
 
