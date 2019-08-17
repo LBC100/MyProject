@@ -1344,7 +1344,7 @@ while
         本身的，一般需要使用返回值（赋值返回值）。
 
 12-14号
-    array.splice() 返回值为删除的内容
+    array.splice() 返回值为删除的内容  该方法会改变原始数组。
         删除、添加、替换。
         参数：
             第一个参数：
@@ -4264,55 +4264,116 @@ TreeSelect树选择
 
 
 ant 固定表格头
-    // 滚动条和缩放窗口
+    // 新 滚动条和缩放窗口
     handleScrollResize = () => {
-        // 1.滚动距离  2.表格头id  3.表格体id  4.距离头部触发 5.固定在头部的距离
-        const scrollTopStart = (scrollTop, headAutoKey, bodyAutoKey, triggerNum, topNum) => {
+        const {
+            stockanalysis: {
+                tabsActiveKey,
+            },
+        } = this.props
+        const _this = this
+        // 1.监听的滚动元素  2.表格头  3.表格体  4,表格头元素集合  5,表格第一行元素集合  6.距离头部触发 7.固定在头部的距离
+        const scrollTopStart = (scrollTop, headEle, bodyEle, headArr, bodyArr, className, triggerNum, topNum) => {
             // 获取表格
-            const handleTabs = (headAutoKey, bodyAutoKey, topNum, num) => {
-                let headEle = document.getElementById(headAutoKey)
-                let headChild
+            const handleTabs = (headEle, headArr, bodyEle, bodyArr, topNum, num) => {
 
-                let bodyEle = document.getElementById(bodyAutoKey)
-                let bodyChild
-                
-                if(bodyEle && headEle) {
-                    headChild = headEle.children[0].children
-                    bodyChild = bodyEle.children
+                if(!_this.state[className]) {
+                    for (let i = 0; i < headArr.length; i++) {
+                        headArr[i].style.width = window.getComputedStyle(bodyArr[i]).width
+                        bodyArr[i].style.width = window.getComputedStyle(bodyArr[i]).width
+                    }
+                    _this.setState({ [className]: true });
                 }
-
-                if(headChild) {
-
-                    for (let i = 0; i < headChild.length; i++) {
-                        headChild[i].style.width = window.getComputedStyle(bodyChild[i]).width
-                    }
-
-                    if(num == 1) {
-                        headEle.style.position = 'fixed'
-                        headEle.style.width = bodyEle.clientWidth
-                        headEle.style['z-index'] = 999
-                        headEle.style['top'] = `${topNum}px`
-                        headEle.style['border-top'] = '1px solid #e8e8e8'
-                    }else {
-                        headEle.style.position = 'inherit'
-                        headEle.style['border-top'] = 0
-                    }
                 
+
+                if(num == 1) {
+                    console.log('冻结6')
+                    headEle.style.position = 'fixed'
+                    headEle.style.width = bodyEle.clientWidth
+                    headEle.style['z-index'] = 999
+                    headEle.style['top'] = `${topNum}px`
+                    headEle.style['border-top'] = '1px solid #e8e8e8'
+                    headEle.style['background-color'] = '#fff'
+                }else {
+                    headEle.style.position = 'inherit'
+                    headEle.style['border-top'] = 0
+
+                    _this.setState({ [className]: false });
                 }
             }
             //////////////////////
             if(scrollTop > triggerNum) {
-                handleTabs(headAutoKey, bodyAutoKey, topNum, 1)
+                handleTabs(headEle, headArr, bodyEle, bodyArr, topNum, 1)
             }else{
-                handleTabs(headAutoKey, bodyAutoKey, topNum, 2)
+                handleTabs(headEle, headArr, bodyEle, bodyArr, topNum, 2)
             }
         }
 
+        const getTrs = (className) => {
+            let obj = {}
+            let headArr = undefined
+            let bodyArr = undefined
+            let headEle = undefined
+            let bodyEle = undefined
+            
+
+            const activeEle = document.getElementsByClassName('ant-tabs-tabpane-active')[0]
+            
+            
+            const f = activeEle.getElementsByClassName(className)[0]
+            if(f) {
+                console.log('冻结6', f)
+                let head = f.getElementsByClassName('ant-table-thead')
+                let body = f.getElementsByClassName('ant-table-tbody')
+
+                if(head[0] && body[0] && body[0].children.length != 0) {
+                    head = head[0]
+                    body = body[0]
+                    headEle = head
+                    bodyEle = body
+    
+                    console.log('冻结6', body.children.length,)
+                    headArr = head.children[0].children
+                    bodyArr = body.children[0].children
+                }
+            }
+            
+
+            
+            
+
+            obj = {
+                headArr: headArr,
+                bodyArr: bodyArr,
+                headEle: headEle,
+                bodyEle: bodyEle,
+            }
+            return obj
+        }
+
         //////////////////////////
-        // 滚动元素
-        let scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
-        scrollTopStart(scrollTop, 'headAutoKey', 'bodyAutoKey', 200, 64)
+        let tables = [
+            { key: 'fixedHeadbdc' },
+            { key: 'fixedHeadhwc' },
+            { key: 'fixedHeadfbac' },
+        ]
+
+        tables.map((e) => {
+            const trs = getTrs(e.key)
+            const { headArr, bodyArr, headEle, bodyEle } = trs
+    
+            if(headArr && bodyArr && bodyEle) {
+                let scrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+                // console.log('冻结1', bodyEle, headArr, bodyArr)
+                if(process.env.NODE_ENV === 'production') {
+                    scrollTopStart(scrollTop, headEle, bodyEle, headArr, bodyArr, e.key, 300, 0)
+                }else {
+                    scrollTopStart(scrollTop, headEle, bodyEle, headArr, bodyArr, e.key, 300, 50)
+                }
+            }
+        })
     }
+
 
     componentDidMount() {
         window.addEventListener('scroll', this.handleScrollResize) //监听滚动
@@ -4342,6 +4403,8 @@ ant 固定表格头
           },
         }
     };
+
+    <Table components={components} />
 
 获取元素精确宽度
     console.log(window.getComputedStyle(document.getElementById("test")));
@@ -4525,6 +4588,23 @@ table行错误时包一层div并固定宽度
     <!-- 
         footer={[<Button key="back" onClick={this.handleOnClear}>关闭</Button>, <Button key="submit" type="primary" onClick={this.handleOnClear}>确定</Button>]}
     -->
+
+先保存数据, 再获取最新数据
+    handleSaveData = async () => {
+        await this.handleGatherData()
+
+        const {
+            purchasePlanEdit: { PurchasePlanEditVisible, GetByIdFormData, }
+        } = this.props
+    }
+
+
+
+
+
+
+
+
     
 
 
