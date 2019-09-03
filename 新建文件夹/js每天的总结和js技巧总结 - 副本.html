@@ -305,6 +305,25 @@ react生命周期
 
 7、shouldComponentUpdate(nextProps, nextState)
     react性能优化非常重要的一环。组件接受新的state或者props时调用，我们可以设置在此对比前后两个props和state是否相同，如果相同则返回false阻止更新，因为相同的属性状态一定会生成相同的dom树，这样就不需要创造新的dom树和旧的dom树进行diff算法对比，节省大量性能，尤其是在dom结构复杂的时候。不过调用this.forceUpdate会跳过此步骤。
+    使用immutable库进行比较.  或者seamless-immutable
+        import Immutable from 'immutable';
+        shouldComponentUpdate(nextProps, nextState) {
+            nextProps, this.props
+        }
+        
+        const map1 = Immutable.fromJS({a:1, b:1, fn: ()=>{}});
+        const map2 = Immutable.fromJS({a:1, b:1, fn: ()=>{}});
+        const b = Immutable.is(map1, map2);  // fales
+
+        const map1 = Immutable.fromJS({a:1, b:1});
+        const map2 = Immutable.fromJS({a:1, b:1});
+        const b = Immutable.is(map1, map2);  // true
+
+    编写更快的 React 代码
+        https://www.jianshu.com/p/b123bbe0330c
+
+    虚拟列表
+        https://github.com/bvaughn/react-window
 
 8、componentWillUpdate(nextProps, nextState)
     组件初始化时不调用，只有在组件将要更新时才调用，此时可以修改state
@@ -815,6 +834,9 @@ react组件获取history
     withRouter高阶组件，提供了history让你使用~
     import {withRouter} from "react-router-dom";
     export default withRouter(MyComponent);
+
+高阶组件
+    https://www.cnblogs.com/zhuanzhuanfe/p/9778823.html
 
 某个字符串是否包含另一个字符串。字符串是否包含
     var str = "123"
@@ -4557,7 +4579,7 @@ input输入框延时发送请求问题
     clearTimeout(this.t1)
     this.t1 = setTimeout(() => {
         alert(e)
-      }, 3000);
+    }, 3000);
       
     var timeout;　　
     document.querySelector(".btn").onkeyup = function(event) {
