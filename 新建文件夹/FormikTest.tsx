@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
-import { Formik, withFormik } from 'formik';
+import { Formik, withFormik, Form } from 'formik';
 import {
   BackTop,
-  Form,
+  // Form,
   Row,
   Col,
   Modal,
@@ -47,7 +47,7 @@ const Basic = () => (
         isSubmitting,
         /* and other goodies */
       }) => (
-        <form onSubmit={handleSubmit}>
+        <Form>
           <input
             type="email"
             name="email"
@@ -67,7 +67,7 @@ const Basic = () => (
           <button type="submit" disabled={isSubmitting}>
             Submit
           </button>
-        </form>
+        </Form>
       )}
     </Formik>
   </div>
@@ -124,7 +124,7 @@ class AntForm extends React.Component<AntFormProps, AntFormState> {
     return (
       <div>
         ant表单
-        <form onSubmit={this.props.handleSubmit}>
+        <Form>
           用户名: 
           <Input
             onChange={this.props.handleChange}
@@ -141,7 +141,11 @@ class AntForm extends React.Component<AntFormProps, AntFormState> {
           />
           {this.props.errors.name && this.props.touched.name && <div id="feedback">{this.props.errors.name}</div>}
           <Button type="primary" htmlType="submit">提交</Button>
-        </form>
+          <Button type="primary" onClick={this.props.handleReset}>重置</Button>
+          <Button type="primary" onClick={()=>{
+            this.props.setFieldValue('name', 999)
+          }}>设置</Button>
+        </Form>
         {/* <form onSubmit={this.props.handleSubmit}>
           用户名: <Input name="name" />
           密码: <Input name="ps"/>
@@ -154,7 +158,8 @@ class AntForm extends React.Component<AntFormProps, AntFormState> {
 }
 
 const AntFormNew = withFormik({
-  mapPropsToValues: () => ({ name: '', ps: '' }),
+  // mapPropsToValues: () => ({ name: '', ps: '' }),
+  // mapPropsToValues: () => ({ name: '', }),
 
   // Custom sync validation
   validate: values => {
