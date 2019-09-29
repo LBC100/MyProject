@@ -325,6 +325,13 @@ react生命周期
     虚拟列表
         https://github.com/bvaughn/react-window
 
+        
+        https://github.com/wubostc/virtualized-table-for-antd
+            let components = {components: VTComponents({
+                id: tableIdObj[tabsActiveKey],
+                overscanRowCount: 20, // 设置数字太小切换页数的时候头几条信息会变空白
+                // destory: true,
+            })}
 8、componentWillUpdate(nextProps, nextState)
     组件初始化时不调用，只有在组件将要更新时才调用，此时可以修改state
 
@@ -509,6 +516,9 @@ react全家桶
     
     安装dva-loading
         npm i dva-loading --save
+
+    集成dva
+        https://www.cnblogs.com/axel10/p/10120431.html
 
     dva安装antd
         npm install antd babel-plugin-import --save
@@ -842,6 +852,11 @@ react组件获取history
 某个字符串是否包含另一个字符串。字符串是否包含
     var str = "123"
     console.log(str.indexOf("2") != -1); // true
+
+Formik 表单库
+    https://blog.csdn.net/weixin_33901843/article/details/85055391
+    https://blog.csdn.net/weixin_34376562/article/details/85023030
+    https://blog.csdn.net/weixin_33785108/article/details/85023039
 
 
 js技巧结束
@@ -4078,6 +4093,13 @@ import Qs from 'qs';
 一个简单的javascript实用程序，用于有条件地将classNames连接在一起
     https://github.com/JedWatson/classnames
 
+
+设置滚动条
+    html.scrollTo({ 
+        top: topNum, 
+        behavior: "smooth" // 平滑滚动
+    })
+
 React 监听浏览器窗口大小改变、监听浏览器滚动条滚动
     componentDidMount() {
         window.addEventListener('scroll', this.handleScroll.bind(this)) //监听滚动
@@ -4230,6 +4252,10 @@ TreeSelect树选择
     csrf_protect  给单个视图必须校验
     process_request
         从请求的cookie中获取csrftoken的值   ——》csrf_token   ——》request.META['CSRF_COOKIE']
+
+
+css 判断浏览器
+    https://www.cnblogs.com/Nigel/articles/10412799.html
 
 
 // 获取参数并请求获取Token
@@ -4434,12 +4460,20 @@ ant 固定表格头
 
 内嵌网页
 <!-- 
-    <iframe 
+    <iframe
         style={{width:'100%', height:500, overflow:'visible'}}
         frameBorder="0"
         src='http://192.168.200.215:100/?#/providedToThirdParties/AutoPriceAdjustmentDetails?OrderSourceId=8253&OrderSourceSku=DECEN033LO83G09Y117OJL14&PlanType=2'
     />
  -->
+
+ 隐藏iframe标签地址栏传递的参数方法
+    服务端制作一个页面用来302重定向, 重定向的地址就是带参数的地址. 如: http://192.168.200.215:100/?#/providedToThirdParties/AutoPriceAdjustmentDetails?OrderSourceId=8253&OrderSourceSku=DECEN033LO83G09Y117OJL14&PlanType=2
+    最好请求上加https
+
+ // 判断网页是否在iframe中打开
+    windowTop: window.self != window.top, // 判断网页是否在iframe中打开. true是在iframe中打开
+
 
  ant 
     时间范围限制
@@ -4594,8 +4628,7 @@ input输入框延时发送请求问题
     <!-- 
         <EllipsisExtend>{text}</EllipsisExtend>
     -->
-// 判断网页是否在iframe中打开
-    windowTop: window.self != window.top, // 判断网页是否在iframe中打开. true是在iframe中打开
+
 
 
 table行错误时包一层div并固定宽度
