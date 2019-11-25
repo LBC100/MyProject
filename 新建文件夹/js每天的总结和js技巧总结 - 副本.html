@@ -324,6 +324,8 @@ react生命周期
 
     虚拟列表
         https://github.com/bvaughn/react-window
+        
+        "virtualizedtableforantd": "^0.5.4"
 
         
         https://github.com/wubostc/virtualized-table-for-antd
@@ -848,6 +850,90 @@ react组件获取history
 高阶组件HOC
     https://www.cnblogs.com/zhuanzhuanfe/p/9778823.html
     https://codesandbox.io/s/github/thewindsword/FormComponent
+
+    HOC模板
+    let HOC = (param={}) => (WrappedComponent) => {
+        return class HOC extends PureComponent {
+          render() {
+            const { ...otherProps } = this.props;
+            
+            return (
+              <WrappedComponent
+                {...otherProps}
+              />
+            );
+          }
+        }
+      }
+      
+      HOC = HOC({text: '123'})(A)
+      
+      
+      let HOC = (param={}) => (WrappedComponent) => {
+        return (props) => {
+          const { ...otherProps } = props;
+            
+          return (
+            <WrappedComponent
+              {...otherProps}
+            />
+          );
+        }
+      }
+      
+      HOC = HOC({text: '123'})(A)
+
+      shouldComponentUpdate(nextProps, nextState) {
+        const {handleShouldComponentUpdate} = nextProps
+        return handleShouldComponentUpdate(nextProps, this.props)
+      }
+      let HOCShouldComponentUpdate = (param={}) => (WrappedComponent) => {
+        return class HOC extends PureComponent {
+          handleShouldComponentUpdate = (nextProps, thatProps) => {
+            const {dispatch} = nextProps
+            
+            if(
+              tableLoadingBool || leftBoxWidthBool || heightBool || columnsBool
+            ) {
+              return true
+            }
+            
+            return false
+          }
+          render() {
+            const { ...otherProps } = this.props;
+            
+            return (
+              <WrappedComponent
+                {...otherProps}
+              />
+            );
+          }
+        }
+      }
+      
+      HOCShouldComponentUpdate = connect()(HOCShouldComponentUpdate({})(Index))
+
+    HOC走一遍
+        let HOCTest = (param={}) => (WrappedComponent) => {
+            let bool = true
+            return (props) => {
+            
+            const { columns, ...otherProps } = props;
+            if(columns.length != 0 && bool) {
+                console.log('测试hoc2')
+                bool=false
+            }
+            console.log('测试hoc1', props)
+            return (
+                <WrappedComponent
+                {...otherProps}
+                />
+            );
+            }
+        }
+        
+        HOCTest = HOCTest()(Index)
 
 某个字符串是否包含另一个字符串。字符串是否包含
     var str = "123"
@@ -1558,13 +1644,36 @@ while
             _.uniq([2, 1, 2]);
             // => [2, 1]
         (深去重)
-        const uniqDeep = (arr) => {
-            let newArr = [arr[0]]
-            for(let i=1,len=arr.length;i<len;i++){
-                if(!isEqual(arr[0], arr[i])) {newArr.push(arr[i])}
+        <!-- 
+            const uniqDeep = (arr) => {
+                let newArr = [arr[0]]
+                for(let i=1,len=arr.length;i<len;i++){
+                    if(!isEqual(arr[0], arr[i])) {newArr.push(arr[i])}
+                }
+                return newArr
+            } 
+        -->
+        
+
+        //Es6 + ES5去重办法
+        function Es6duplicate(arr,type){
+            if(arr.length == 0){
+                return arr;
+            }else{
+                if(type){
+                    var obj = {}
+                    var newArr = arr.reduce((cur,next) => {
+                        obj[next.name] ? "" : obj[next.name] = true && cur.push(next);
+                        return cur;
+                    },[])
+                    return newArr;
+                }else{
+                    return Array.from(new Set(arr));
+                }
             }
-            return newArr
         }
+        console.log('ES6去重',Es6duplicate(arr));
+        console.log('ES6去重',Es6duplicate(person,"name"));
 
     git和github
         git 工具
@@ -3988,7 +4097,13 @@ dva loading
             this.props.loading.global ? true : false
 
         <Spin spinning={this.props.loading.effects['common/GetNegativeById'] ? true : false}></Spin>
-    
+        @connect(({
+            loading: {effects, models},
+        })=>({
+            columnLoading: (effects['commonSelect/GetStockColumn']) ? true : false,
+            warehouseLoading: (models.stockAnalysisWarehouse ? true : false),
+        }))
+
 
     
     
@@ -4501,6 +4616,8 @@ ant 表格分页
         };
 
         pagination={paginationProps(p)}
+
+    表格组件放方法HOC, 过滤数据和全选, 放父组件
 
 表单提交导致应用重新加载
     默认的提交按钮就是会刷新页面，相当于发起了一个get请求。只需要
