@@ -4778,11 +4778,142 @@ table行错误时包一层div并固定宽度
 
 
 
+谷歌统计 Google Analytics
+    react
+        安装 yarn add react-ga
+        // 统计 开始
+            import ReactGA from "react-ga";
+            const reactGAInit = () => {
+                ReactGA.initialize('UA-153500659-1', { debug:true }); //开启debug模式利于调试
+                ReactGA.pageview(window.location.pathname + window.location.search);
+                
+                ReactGA.timing({
+                    category: 'JS Libraries',
+                    variable: 'load',
+                    value: 20, // in milliseconds
+                    label: 'CDN libs'
+                }); // 统计用户计时
+                console.log('统计开始了1')
+            }
+            reactGAInit()
+        // 统计 结束
+
+        // 多跟踪器统计 开始
+            import ReactGA from "react-ga";
+            const reactGAInit = () => {
+                ReactGA.initialize([{
+                    trackingId: 'UA-153500659-1',
+                    gaOptions: { name: 'tracker1' }
+                }, {
+                    trackingId: 'UA-153525252-1',
+                    gaOptions: { name: 'tracker2' }
+                }], { debug: true, alwaysSendToDefaultTracker: false, /* standardImplementation: true */ });
 
 
+                ReactGA.timing({
+                    category: 'JS Libraries',
+                    variable: 'load',
+                    value: 20, // in milliseconds
+                    label: 'CDN libs'
+                }, ['tracker1', 'tracker2']); // 统计用户计时
+                console.log('统计开始了1')
+            }
+            reactGAInit()
+        // 多跟踪器统计 结束
+        弹窗类页面统计(未改变路由)
+            ReactGA.modalview('/about/查看日志'); // 弹窗浏览量
+            ReactGA.modalview('/StockAnalysis/查看日记', ['tracker1', 'tracker2']); // 弹窗(路由不变化)
+        事件监控
+            ReactGA.event({
+                category: '智能备货分析页面',
+                action: '查看日志',
+                label: '头部操作=>日志',
+                value: 666
+              }); // 事件监控
+              // 多跟踪器
+                ReactGA.event({
+                    category: '智能备货分析页面',
+                    action: '查看日志',
+                    label: '头部操作=>日志',
+                    value: 666
+                }, ['tracker1', 'tracker2']); // 事件监控
+        外部链接(新窗口打开外部链接)
+        <!-- 
+            <div>
+                <ReactGA.OutboundLink
+                  eventLabel="myLabel"
+                  to="http://www.example.com"
+                  target="_blank"
+                  trackerNames={['tracker2']}
+                >
+                  My Link
+                </ReactGA.OutboundLink>
+            </div>
+        -->
+            
+
+    直接导入
+        登录 https://analytics.google.com/analytics/web/#/a153500659w216776899p207071014/admin/tracking/tracking-code/
+        管理->跟踪信息->跟踪代码
+        粘贴到head标签下
+        文档: https://developers.google.com/analytics/devguides/collection/gtagjs/setting-values
+
+        事件
+            gtag('event', '查看日志', {
+                'event_category': '智能备货分析页面', // 页面名称
+                'event_label': '头部操作=>日志',
+                'value': 666, // 整数类型. 可选的。一种记录事件数值的方法。例如评分，分数等。
+            })
+
+        应用/屏幕衡量
+            gtag('event', 'screen_view', { 'screen_name': '智能备货分析', 'app_name': 'smartStocking'}); // 页面浏览量
+            https://developers.google.com/analytics/devguides/collection/gtagjs/screens
+
+        // 统计用户计时 开始
+            // Feature detects Navigation Timing API support.
+            if (window.performance) {
+            // Gets the number of milliseconds since page load
+            // (and rounds the result since the value must be an integer).
+            var timeSincePageLoad = Math.round(performance.now());
+            
+            // Sends the timing event to Google Analytics.
+            gtag('event', 'timing_complete', {
+                'name': 'load',
+                'value': timeSincePageLoad,
+                'event_category': 'JS Dependencies'
+            });
+            }
+        // 统计用户计时 结束
+    停用
+        window['ga-disable-GA_MEASUREMENT_ID'] = true;
 
     
+js 路由监听
+    // 监听路由 开始
+        /* These are the modifications: */
+        history.pushState = ( f => function pushState(){
+        var ret = f.apply(this, arguments);
+        window.dispatchEvent(new Event('pushstate'));
+        window.dispatchEvent(new Event('locationchange'));
+        return ret;
+        })(history.pushState);
 
+        history.replaceState = ( f => function replaceState(){
+        var ret = f.apply(this, arguments);
+        window.dispatchEvent(new Event('replacestate'));
+        window.dispatchEvent(new Event('locationchange'));
+        return ret;
+        })(history.replaceState);
+
+        window.addEventListener('popstate',()=>{
+        window.dispatchEvent(new Event('locationchange'))
+        });
+
+
+        window.addEventListener('locationchange', function(){
+        console.log('改变路由1');
+        })
+    // 监听路由 结束
 
 
 
