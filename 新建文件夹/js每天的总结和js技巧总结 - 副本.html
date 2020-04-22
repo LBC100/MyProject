@@ -4919,7 +4919,14 @@ js 路由监听
 当其监听到目标元素的可见部分穿过了一个或多个阈(thresholds)时，会执行指定的回调函数。
     @researchgate/react-intersection-observer
 
-
+小程序
+    获取元素信息
+        componentDidMount() {
+            const query = Taro.createSelectorQuery().in(this.$scope);
+            query.select('#box-x-1').boundingClientRect(rect => {
+                console.log('rect', rect);
+            }).exec();
+        }
 
 </body>
 </html>
