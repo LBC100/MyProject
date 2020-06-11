@@ -841,6 +841,13 @@ vue全家桶
         jieshou (msg) {
             this.msg = msg;
         }
+    https://www.cnblogs.com/mophy/p/8630953.html
+
+    自定义属性
+        currentTarget 当前点击的对象
+        :data-kk="index"
+        e.currentTarget.dataset.kk
+vue结束
 
 react组件获取history
     withRouter高阶组件，提供了history让你使用~
@@ -1016,6 +1023,12 @@ js技巧结束
     前++ 前-- 后++ 后--
 
     图片切换
+
+    图片预览 图片放大
+    https://github.com/Caldis/react-zmage
+    https://github.com/MinJieLiu/react-photo-view#readme
+
+    
 
 11-27号
     听写答案
@@ -3505,7 +3518,33 @@ es5 和 es6 继承的区别。
         .roadhogrc.mock.js Mock配置文件
         .webpackrc 自定义的webpack配置文件，JSON格式，如果需要 JS 格式，可修改为 .webpackrc.js
 
+mock
+    模拟数据
+    npm install mocker-api --save-dev
+    项目根目录新建mock文件夹
+    步骤1
+        // 自定义模拟数据 index.jsx
+        const testMock = require('./testMock.jsx')
+        const delay = require('mocker-api/utils/delay'); // 模拟api 运行yarn mock. server.jsx反向代理本地端口3721
+        const noProxy = process.env.NO_PROXY === 'true';
 
+        const proxy = {
+            'POST /api/user/login/': testMock.login,
+        }
+        module.exports = (noProxy ? {} : delay(proxy, 500)); // 延时返回数据
+        // testMock.jsx
+        let testMock = {}
+        testMock.login = {
+        data: {dl: '登录数据'}
+        }
+        module.exports = testMock
+    步骤2 添加命令行
+        "scripts": {
+            "mock": "mocker ./mock/index.jsx",
+        }
+    带任何参数
+        'GET /personalized(.*)': cloudMusic.personalized, // 带任何参数
+    
     namespace
         model 的命名空间，同时也是他在全局 state 上的属性，只能用字符串，不支持通过 . 的方式创建多层命名空间。
     
@@ -4619,6 +4658,13 @@ ant 表格分页
 
     表格组件放方法HOC, 过滤数据和全选, 放父组件
 
+表格中文排序
+    sorter: (a, b) => a.a4.localeCompare(b.a4, 'zh-CN'),
+
+表格组件
+    https://github.com/rsuite/rsuite-table
+    https://github.com/alibaba/ali-react-table
+
 表单提交导致应用重新加载
     默认的提交按钮就是会刷新页面，相当于发起了一个get请求。只需要
         handleSubmit = (e) => {
@@ -4638,8 +4684,7 @@ ant 表格分页
         }
     }
 
-表格中文排序
-    sorter: (a, b) => a.a4.localeCompare(b.a4, 'zh-CN'),
+
 
 
 循环生成元素的时候加上key否则有时候会数据错乱
@@ -4927,6 +4972,43 @@ js 路由监听
                 console.log('rect', rect);
             }).exec();
         }
+
+    多行省略 
+        写成内联样式
+            style={{
+                display: '-webkit-box',
+                overflow: 'hidden',
+                '-webkit-line-clamp': 2,
+                '-webkit-box-orient': 'vertical',
+            }}
+    背景图片
+    :style="{backgroundImage: `url(${picUrl})`
+
+css3 旋转
+    @keyframes mymove {
+        0% {
+                transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    @-webkit-keyframes mymove {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    .turn {
+        animation:mymove 20s linear infinite;
+        -webkit-animation:mymove 20s linear infinite;
+    }
 
 </body>
 </html>
