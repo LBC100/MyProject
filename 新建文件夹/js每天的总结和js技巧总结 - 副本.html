@@ -569,6 +569,39 @@ react naative环境搭建
     导出：export { A1, A2 }
     放在顶行导入：import  { A1, A2 }  from '../../components/aaa';
 
+    // 导出表格 XLSX
+    const onOperating_2 = () => {
+      const opt = [
+        {
+          test: '测试',
+          abc: '哈哈1',
+          时间: '2020-06-10 19:49:00按客户发动机',
+        },
+        {
+          test: '测试',
+          时间: '2020-06-10 19:49',
+        },
+      ];
+      const slsx = XLSX.utils.json_to_sheet(opt);
+  
+      slsx['!cols'] = [
+        { wch: 10 },
+        { wch: 10 },
+        { wch: 20 },
+        { wch: 10 },
+        { wch: 10 },
+        { wch: 10 },
+        { wch: 10 },
+      ];
+      /* 新建空workbook，然后加入worksheet */
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, slsx, 'People');
+  
+      /* 生成xlsx文件 */
+      XLSX.writeFile(wb, 'sheetjs.xlsx');
+      console.log(slsx, '表格1');
+    };
+
 bindActionCreators 用来包装绑定Actions
     import { bindActionCreators } from 'redux';
     import * as actions from '../../actionCeators/actionCeators.js'; //action的集合，不推荐
@@ -1027,6 +1060,40 @@ js技巧结束
     图片预览 图片放大
     https://github.com/Caldis/react-zmage
     https://github.com/MinJieLiu/react-photo-view#readme
+
+    图片地址错误 加载默认图片
+    https://www.jianshu.com/p/84b2833a1079
+
+    hooks 库
+        https://github.com/streamich/react-use
+
+    <!-- 
+        import { useImage } from 'react-image';
+        /**
+        * 图片加载失败就显示默认图片
+        * 使用hook方式
+        * @param {*} url  图片路径
+        * @param {*} style  图片样式
+        * @param {*} defaultUrl  默认显示的图片路径
+        * <Suspense fallback="加载中...">
+            <MyZmagePlus
+                style={{ width: 80 }}
+                url={`http://113.108.151.178:38086/${e.pic}`}
+            />
+            </Suspense>
+        */
+        export const MyZmagePlus = (props) => {
+        const {
+            url = '',
+            defaultUrl = 'http://113.108.151.178:38086/2020/7/10/7844_12352903787772.jpg',
+        } = props;
+        const { src } = useImage({
+            srcList: [url, defaultUrl],
+        });
+
+        return <Zmage {...props} src={src} />;
+        };
+     -->
 
     
 
@@ -2211,6 +2278,40 @@ while
 
 18-1-15号
     github分支
+
+
+手机正则
+<!-- 
+
+    <Form.Item
+labelCol={{ span: 5 }}
+name="phoneNumber"
+label="用户电话"
+rules={[
+  {
+    required: true,
+    message: '不能为空',
+  },
+  {
+    pattern: /^1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8]|8[0-9]|9[1,8,9])\d{8}$/,
+    message: '手机号格式错误!',
+  },
+]}
+>
+<InputNumberExtend size="small" placeholder="请输入" />
+</Form.Item>
+
+ -->
+
+ 邮箱正则
+ <!-- 
+    {
+        pattern: /^[A-Za-zd0-9]+([-_.][A-Za-zd]+)*@([A-Za-zd]+[-.])+[A-Za-zd]{2,5}$/,
+        message: '邮箱格式错误!',
+    },
+  -->
+
+
 
 18-1-24号
     正则:
@@ -5009,6 +5110,89 @@ css3 旋转
         animation:mymove 20s linear infinite;
         -webkit-animation:mymove 20s linear infinite;
     }
+
+    
+JS截取两个字符串之间及字符串前后内容的方法
+    1、js截取两个字符串之间的内容：
+    
+    var str = "aaabbbfff";
+    str = str.match(/aaa(\S*)fff/)[1];
+    alert(str);
+    
+    结果bbb
+    
+     
+    
+    2、js截取某个字符串前面的内容：
+    
+    var str = "aaafff";
+    str = str.match(/(\S*)fff/)[1];
+    alert(str);
+    
+    //结果aaa
+    
+     
+    
+    3、js截取某个字符串后面的内容：
+    
+    var str = "aaafff";
+    str = str.match(/aaa(\S*)/)[1];
+    alert(str);
+    
+    //结果fff
+
+<!-- 
+    react-iframe-comm
+    iframe 传值
+
+    const Index = () => {
+        const [str, setStr] = useState("1");
+
+        console.log(size, "宽度9");
+        useEffect(() => {
+            const if1 = document.getElementById("if1");
+            console.log("流程图1", if1);
+        }, []);
+
+        const onMessage = (e, opt) => {
+            console.log("父级数据1", e, opt, e.data);
+
+            try {
+            const data = JSON.parse(e.data);
+            console.log("父级数据2", e.data, data);
+            data.ok && setStr(data.str);
+            } catch (error) {}
+        };
+
+        useEffect(() => {
+            window.addEventListener("message", onMessage, false);
+            return () => {
+            window.addEventListener("message", onMessage, false);
+            };
+        }, []);
+
+        const onClick1 = () => {
+            window.parent.postMessage("子页面消息收到", "http://localhost:8000/");
+        };
+
+        console.log(window, "父级2");
+        return (
+            <div>
+            <Button onClick={onClick1}>1</Button>
+            123-{str}
+            <iframe
+                name="if1"
+                id="if1"
+                src="http://113.108.151.178:28083/wtflowable/#/processes/"
+                width={"100%"}
+                // height={document.documentElement.clientHeight - 140}
+                height={1000}
+                scrolling="yes"
+            />
+            </div>
+        );
+        };
+ -->
 
 </body>
 </html>
