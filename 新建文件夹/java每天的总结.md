@@ -265,6 +265,7 @@
 	- 有stati方法是绑在类上的.
 2. **没有static关键字修饰的方法怎么调用: 引用.方法名(实参);**
 	- 没有static方法是绑在引用上的.
+3. static方法调用不上对象去调用, 是一个类名去调用, 执行过程中没有"当前对象"(this). 因此static方法访问不了实例变量.
 
 
 ## java类中的构造方法
@@ -294,7 +295,22 @@
 1. this是一个关键字, 翻译为: 这个
 2. this是一个引用, this是一个变量, **this变量中保存了内存地址指向了自身**, this存储在JVM堆内存java对象内部.
 3. 创建100个java对象, 每一个对象都有this, 也就说有100个不同的this.
-4. ![image](https://user-images.githubusercontent.com/38514123/96090116-57a55d00-0efa-11eb-89bd-7304a5f18877.png)
+4. this可以出现在"实例方法"当中, this指向当前正在执行这个动作的对象.
+5.  this出现在实例对象当中.
+6. 构造方法调用构造方法. 实现不传参则使用默认值的功能.
+		
+		public Date(int y, int m, int d) {
+			this.y = y;
+			this.m = m;
+			this.d = d;
+		}
+		public Date() {
+			this.Date(1970, 1, 1); // 实现不传参则使用默认值的功能.
+		}
+6. ![image](https://user-images.githubusercontent.com/38514123/96090116-57a55d00-0efa-11eb-89bd-7304a5f18877.png)
+
+## "this."什么时候不能省略?
+1. 用来区分局部变量和实例变量的时候 this 不能省略.
 
 ## 栈
 1. https://www.bilibili.com/video/BV1Rx411876f?p=92
