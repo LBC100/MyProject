@@ -281,7 +281,7 @@
 	- **当一个类显示的将构造方法定义出来了, 那么系统则不再默认为这个类提供缺省构造器. 建议开发找那个手动的为当前类提供无参构造方法.因为无参数构造方法太常用了.**
 	- 构造方法支持重载机制.
 	
-![image](https://user-images.githubusercontent.com/38514123/96090116-57a55d00-0efa-11eb-89bd-7304a5f18877.png)
+
 
 
 ## 对象和引用的概念?
@@ -294,6 +294,7 @@
 1. this是一个关键字, 翻译为: 这个
 2. this是一个引用, this是一个变量, **this变量中保存了内存地址指向了自身**, this存储在JVM堆内存java对象内部.
 3. 创建100个java对象, 每一个对象都有this, 也就说有100个不同的this.
+4. ![image](https://user-images.githubusercontent.com/38514123/96090116-57a55d00-0efa-11eb-89bd-7304a5f18877.png)
 
 ## 栈
 1. https://www.bilibili.com/video/BV1Rx411876f?p=92
