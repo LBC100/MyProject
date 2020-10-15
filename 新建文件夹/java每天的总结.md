@@ -307,7 +307,7 @@
 		public Date() {
 			this.Date(1970, 1, 1); // 实现不传参则使用默认值的功能.
 		}
-6. ![image](https://user-images.githubusercontent.com/38514123/96090116-57a55d00-0efa-11eb-89bd-7304a5f18877.png)
+7. ![image](https://user-images.githubusercontent.com/38514123/96090116-57a55d00-0efa-11eb-89bd-7304a5f18877.png)
 
 ## "this."什么时候不能省略?
 1. 用来区分局部变量和实例变量的时候 this 不能省略.
