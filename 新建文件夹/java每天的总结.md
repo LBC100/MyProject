@@ -604,12 +604,252 @@
 
 ## 关于数组的拓容
 1. 先新建一个大容量的数组, 然后将小容量的数组汇总的数据一个一个拷贝到大数组当中.
+2. 拷贝
+	- System.arraycopy();
 2. 结论: 数组拓容效率较低. 因为涉及到拷贝的问题. 所以在以后的开发中请注意: 尽可能少的进行数组拷贝
 	
+## 字符串频繁拼接, 会有什么问题?
+1. 因为Java中字符串是不可变的, 每一次拼接都会产生新字符串. 这样会占用大量的方法区内存. 造成内存空间浪费.
+
+
+		String s = "abc";
+		s += "hello";
+		以上代码导致在方法区字符串常量池中创建了3个对象
+		"abc"
+		"hello"
+		"abchello"
+2. 如果需要进行大量字符串的拼接操作, 建议使用JDK中自带的:
+	- java.lang.StringBuffer  	是线程安全的
+	- java.lang.StringBuilder 	是非线程安全的
+
+## 包装类
+1. 8种基本数据类型对应8中包装类
 	
+		基本数据类型			包装类型
+		------------------------------
+		byte					java.lang.Byte (父类Number)
+		short				java.lang.Short (父类Number)
+		int					java.lang.Integer (父类Number)
+		long					java.lang.Long (父类Number)
+		float				java.lang.Float (父类Number)
+		double				java.lang.Double (父类Number)		boolean				java.lang.Boolean (父类Object)
+		char				java.lang.Character (父类Object)
+2. 装箱, 拆箱.
+	- 基本数据类型 - (转换为) -> 引用数据类型 (装箱)
+	- 将引用数据类型 -- (转换为) -> 基本数据类型 (拆箱)
+3. 在JDK1.5之后, 支持自动拆箱和自动装箱了
+	- Integer x = 100; // 自动装箱
+	- int y = x; // 自动拆箱
+	- 例子
+		- Integer x = 100; System.out.println(z + 1); // 直接加法运算.  自动拆箱
+4. Integer面试题
+	- Java中为了提高程序的执行效率, 将[-128到127]之间所有的包装对象提前创建好, 放到了一个方法区的"整数型常量池"当中了, 目的是只有用这个区间的数据不需要在new了, 直接从整数型常量池当中取出来.
+		
+		Integer x = 127;
+		Integer y = 127;
+		System.out.println(a == b); true
+
+## 日期 Date
+1. 获取系统当前时间 (精确到毫秒的系统当前时间)
+	- Date nowTime = new Date();
+2. 日期格式化
+
+		Date nowTime = new Date(); 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss SSS");  
+		String nowTimeStr = sdf.format(nowTime);
+
+## 数字格式化
+1. 加入千分位. 如1,234.56
+
+## 异常处理的方式
+1. 在方法声明的位置上, 使用throws关键字, 抛给上一级.
+2. 使用try.. catch语句进行异常捕捉
+3. 打印异常堆栈信息
+	- e.printStackTrace()
+4. 异常在实际开发中的作用
+	- https://www.bilibili.com/video/BV1Rx411876f?p=655
+
+## finally 面试题
+1. 代码
+
+		m(); // 100
+		public stati int m() {
+			int i = 100;
+			try {
+				return i;
+			} finally {
+				i++;
+			}
+		}
+2. 反编译后的代码
+
+		public static int m() {
+			int i =100;
+			int j = i;
+			i++;
+			return j;
+		}
+	
+		
+3. 结论: Java语法规则不能破坏
+	- 方法体中的代码必须遵循自上而下顺序依次逐行执行 (亘古不变的语法!)
+	- retrun 语句一旦执行, 整个方法必须结束
 
 
 
+
+
+## 精度高的数据类型 BigDecimal
+
+## 枚举类型
+1. https://www.bilibili.com/video/BV1Rx411876f?p=628
+
+## 集合
+1. 在Java中集合分为两大类
+	- 单个方式存储元素:
+		- 以单个方式存储元素, 这一类集合中超级父接口: java.util.Collection;
+	- 键值对方式存储元素:
+		- 以键值对方式存储元素, 这一类集合中超级父接口: java.util.Map;
+2. 集合继承结构图
+	- https://www.bilibili.com/video/BV1Rx411876f?p=664
+	- https://www.bilibili.com/video/BV1Rx411876f?p=665 
+3. 例子
+	
+		Collection c = new ArrayList();
+		c.add(1200);
+		c.add(3.14); // 自动装箱
+
+
+## 关于集合 遍历/迭代
+1. 遍历方式/迭代方式, 是所有Collection通用的一种方式. 在Map集合中不能用. 在所有Collection以及子类中使用.
+2. 迭代器最初并没有指向第一个元素.
+3. 遍历/迭代
+
+		while(it.hasNext()) {
+			Object obj = itnext();
+			system.out.println(obj);
+		}
+4. HashSet
+	- 无序, 不可重复
+5. 放在集合里的元素要重写equals方法
+6. 当集合结构发生了改变, 迭代器需要重新获取. 否则会出现异常
+	- 在迭代集合元素的过程中, 不能调用集合对象的remove方法删除元素: c2.remove(o)
+	- 可以使用迭代器来删除. it.remove();
+
+## List
+1. 特点
+	- 有序 List集合中的元素有下标
+	- 可重复
+	- 特有遍历方式
+			
+			for(int i = 0; i < list.size(); i++) {
+				Object obj = list.get(i);
+			}
+2. 指定对象第一次出现处的索引
+	- myList.indexOf("A");
+	- myList.lastIndexOf 最后一次出现处的索引
+3. 删除指定位置的元素
+	- remove();
+
+## HashSet
+1. 无序, 不可重复
+
+## TreeSet 集合 (可排序集合)
+1. 无序不可重复的, 但是存储的元素可以自动按照大小顺序排序
+2. Set<String> strs = new TreeSet<>();
+
+## 链表数据结构
+1. 基本的单元是节点node 
+	- 单向链表 https://www.bilibili.com/video/BV1Rx411876f?p=684
+2. 对于单链表来说, 任何一个节点node都有两个属性:
+	- 第一: 存储的数据
+	- 下一节点的内存地址
+3. 链表优缺点
+	- 优点: 随机增删元素较高 (因为增删元素不涉及到大量元素位移)
+	- 缺点: 查询效率较低, 每一次查某个元素的时候都需要从头节点开始往下遍历
+4. Java的链表是双向链表
+
+## 泛型
+1. 使用泛型 List<Animal> 之后, 表示List 集合中只允许存储Animal类型的数据. 使用泛型之后, 每一次迭代返回的数据都是Animal类型.
+2. 泛型的优缺点
+	- 优点
+		- 第一: 集合中存储的元素类型统一了.
+		- 第二: 从集合中取出的元素类型是泛型指定的类型, **不需要进行大量的"向下转型"**
+	- 缺点
+		- 导致集合中存储的元素缺乏多样性!
+3. 大多数业务中, 集合中的类型还是统一的.
+4. 自动类型推断机制 (又称为钻石表达式)
+	- List<Animal> myList = new ArrayList<>();
+
+## foreach
+1.   语法
+		
+		for(int data : arr) {
+			System.out.println(data);
+		}
+2. 缺点: 没有下标
+
+
+## Map
+1. Map接口中常用方法:
+	- V put(K key, V value) 向Map集合中添加键值对
+	- V get(Object key) 通过key获取value
+	- void clear() 清空Map集合
+	- boolean containsKey(Object key) 判断Map中是否包含某个key
+	- boolean containsValue(Object value) 判断Map中是否包含某个value
+		- **contains方法底层调用的都是equals进行对比的, 所以自定义的类型需要重新equals方法**
+	- boolean isEmpty() 获取Map集合中元素个数是否为0
+	- Set<K> keySet() 获取Map集合所有的key (所有的键是一个set集合)
+	- V remove(Object key) 通过key删除键值对
+	- int size() 获取Map集合中键值对的个数
+	- Collection<V> values() 获取Map 集合中所有的value, 返回一个Collection
+	- Set<Map.Entry<K, V>> entrySet() 将Map集合转换成Set集合
+	- https://www.bilibili.com/video/BV1Rx411876f?p=696
+2. 语法
+	
+		Map <Integer, String> map = new HashMap<>();
+		map.put(1, "张三");
+
+3. Map集合的遍历
+	- 第一种: 获取所有key, 通过遍历key, 来遍历value
+			
+			for(Integer key : keys) {
+				map.get(ket);
+			}
+	- 第二种
+			
+			
+		    Map<Integer, String> map = new HashMap<>();
+		
+		    map.put(1, "张三");
+		    map.put(2, "李四");
+		
+		    Set<Map.Entry<Integer, String>> set = map.entrySet();
+		
+		    // 获取迭代器
+		    Iterator<Map.Entry<Integer, String>> it2 = set.iterator();
+		    while (it2.hasNext()) {
+		      Map.Entry<Integer, String> node = it2.next();
+		      Integer key = node.getKey();
+		      String value = node.getValue();
+		
+		      System.out.println(key + "=" + value);
+		    }
+		    
+		    // 或者 用 foreach
+		        for (Map.Entry<Integer, String> node : set) {
+			      System.out.println(node.getKey() + "=" + node.getValue());
+			    }
+
+	
+		
+			
+
+
+
+
+## 回顾
+1. https://www.bilibili.com/video/BV1Rx411876f?p=633
 
 
 ## 栈
