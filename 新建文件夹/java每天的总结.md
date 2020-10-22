@@ -888,7 +888,48 @@
 	- 所有流都实现了: java.io.Closeable 接口, 都是可关闭的, 都有close() 方法. 养成好习惯, 用完流一定要关闭.
 	- 所有的输出流都实现了: java.io.Flushable 接口, 都是可刷新的, 都有flush() 方法. 养成好习惯, 输出流在最终输出之后, 一定要记得flush() 刷新一下. 这个刷新
 表示将 管道 当中剩余未输出的数据强行输出完 (清空管道), 刷新的作用就是清空管道.
-		
+5. java.io包下需要掌握的流有16个
+	- 文件专属
+		- FileInputStream;
+			- https://www.bilibili.com/video/BV1Rx411876f?p=727
+			- https://www.bilibili.com/video/BV1Rx411876f?p=729
+		- FileOutputStream;
+			- https://www.bilibili.com/video/BV1Rx411876f?p=733
+		- FileReader;
+		- FileWriter;
+	- 转换流 (将字节流转换成字符串)
+		- InputStreamReader;
+		- OutputStreamWriter;
+	- 缓冲流
+		- 使用以下流的时候不需要自定义char数组, 或者说不需要自定义byte数组. 自带缓冲.
+		- BufferedReader;
+		- BufferedWriter;
+		- BufferedInputStream;
+		- BufferedOutputStream;
+	- 数据流
+		- DataInputStream;
+		- DataOutputStream;
+	- 标准输出流
+		- PrintWriter;
+		- PrintStream
+	- 对象流
+		- ObjectInputStream;
+		- ObjectOutputStream;
+
+6. **节点流 / 包装流**
+	- 当一个流的构造方法中需要一个流的时候, 这个被传进来的流叫做: 节点流. 
+	- 外部负责包装的这个流叫做: 包装流, 还有一个名字叫做: 处理流.
+	- 对于包装流来说, 只需要关闭最外层流就行, 里面的节点流会自动关闭.
+	
+## 文件复制
+1. https://www.bilibili.com/video/BV1Rx411876f?p=734	
+
+## File 文件和目录路径名的抽象表示形式
+1. 表现形式 https://www.bilibili.com/video/BV1Rx411876f?p=743
+	- C : \Drivers 这是一个File对象
+2. 常用方法
+	-  https://www.bilibili.com/video/BV1Rx411876f?p=745
+	
 
 
 
