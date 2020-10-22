@@ -816,7 +816,7 @@
 			for(Integer key : keys) {
 				map.get(ket);
 			}
-	- 第二种
+	- 第二种: 这种方式比较高, 因为获取key和value都是直接从node对象获取的属性值.
 			
 			
 		    Map<Integer, String> map = new HashMap<>();
@@ -841,9 +841,54 @@
 			      System.out.println(node.getKey() + "=" + node.getValue());
 			    }
 
-	
+## HashMap 集合
+1. 哈希表是一个数组和单向链表的结合体
+2. 数组: 在查询方面效率很高, 随机增删方面效率很低. 单向链表: 在随机增删方面效率较高, 在查询方面效率很低. 哈希表将以上的两种数据结构融合在一起, 充分发挥它们各自的优点
+3. HashMap集合的key特点
+	- 无序, 不可重复
+	- 为什么无序? 因为不一定挂到哪个单向链表上.
+	- 不可重复是怎么保证的? equals方法来保证 HashMap集合的key不可重复
+4. https://www.bilibili.com/video/BV1Rx411876f?p=701
+5. 结论: 放在HashMap 集合key部分的, 以及放在HashSet集合中的元素, 需要同时重写hashCode方法和equals方法
+6. 在JDK8之后, 如果哈希表单向链表中元素超过8个, 单向链表这种数据结构会变成红黑树数据结构. 当红黑树上的节点数量小于6时, 会重新把红黑树变成单向链表数据结构. 初始容量是16, 加载因子是0.75
+
+
+## Properties 是一个Map 集合
+1. Properties 的key和value都是String类型. Properties 被称为属性类对象.
+
+## TreeSet 集合
+1. TreeSet 集合中的元素: 无序不可重复, 但是可以按照元素的大小顺序自动排序. 称为: 可排序集合.
+2. 放到TreeSet 或者 TreeMap集合 key 部分的元素要想做到排序, 包括两种方式:
+	- 第一种: 放在集合中的元素实现java.lang.Comparable接口
+	- 第二种: 在构造TreeSet 或者 TreeMap集合 的时候给它传一个比较器对象
+
+## 自平衡二叉树
+1. 比较器 https://www.bilibili.com/video/BV1Rx411876f?p=714
 		
-			
+## IO流
+1. 什么是IO?
+	- I  : Input
+	- O : Output
+	- 通过IO可以完成硬盘文件的读和写
+2. IO流的分类
+	- 按照流的方向进行分类
+		- 往内存中去, 叫做输入. 读
+		- 从内存中出来, 叫做输出. 写
+	- 有的按照字节的方式读取数据, 一次读取1个字节byte, 等同于一次读取8个二进制位. 这种流失万能的, 什么类型的文件都可以读取. 包括: 文件文件, 图片, 声音文件, 视频文件.
+	- 有点流是按照字符的方式读取的, 一次读取一个字符, 这种流是为了方便读取普通文本文件而存在的, 这种流不能读取: 图片, 声音, 视频 等. 如: txt文件
+	- 流的分类: 输入流, 输出流, 字节流, 字符流
+3. Java IO流 四大家族
+	- java.io.InputStream    字节输入流
+	- java.io.OutputStream  字节输出流
+	- java.io.Reader           字符输入流
+	- java.io.Writer             字符输出流
+	- 四大家族的首领都是抽象类 (abstract class)
+	- **注意: 在Java中只要"类名"以Stream结尾的都是字节流. 已"Reader/Writer"结尾的都是字符流**
+4. 特点
+	- 所有流都实现了: java.io.Closeable 接口, 都是可关闭的, 都有close() 方法. 养成好习惯, 用完流一定要关闭.
+	- 所有的输出流都实现了: java.io.Flushable 接口, 都是可刷新的, 都有flush() 方法. 养成好习惯, 输出流在最终输出之后, 一定要记得flush() 刷新一下. 这个刷新
+表示将 管道 当中剩余未输出的数据强行输出完 (清空管道), 刷新的作用就是清空管道.
+		
 
 
 
