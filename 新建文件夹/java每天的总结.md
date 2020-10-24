@@ -930,6 +930,106 @@
 2. 常用方法
 	-  https://www.bilibili.com/video/BV1Rx411876f?p=745
 	
+## 序列化和反序列化
+1. 序列化: 拆分对象.  反序列化: 组装对象.
+2. 参与序列化和反序列化的对象, 必须实现Serializalble 接口
+3. transient 关键字表示游离的, 不参与序列化.
+	- private transient String name; // 不参与序列化操作
+4. 序列号版本号的作用
+	- 如果不手动写序列号, 会自动生成序列号.
+	- 如果源码改动序列号也会改变
+	- **最好手动填写序列号版本号, 这样即使改变源码也可以反序列化**
+	- privat static final long serialVersionUID = 3429873294;
+
+## 多线程
+1. 什么是进程? 什么是线程?
+	- 进程是一个应用程序 (1个进程是一个软件)
+	- 线程是一个进程中的执行场景/执行单元. 一个进程可以启动多个线程
+2. 注意
+	- 进程A和进程B的内存独立不共享.
+	- 在Java中线程A和线程B
+		- 线程A和线程B, 堆内存和方法区内存共享. 但是栈内存独立, 一个线程一个栈.
+3. 对于多核的CPU电脑来说, 真正的多线程并发是没问题的. 单核的CPU不能够做到真正的多线程并发.
+4. Java语言中, 实现线程有两种方式
+	- 第一种: 编写一个类, 直接继承java.lang.Thread, 重写run方法
+		- MyThread myThread = new MyThread(); myThread.start();
+		- https://www.bilibili.com/video/BV1Rx411876f?p=762
+	- 第二种: 编写一个java.lang.Runnable接口, 实现run方法
+			
+			public class MyRunnable implements Runnable {
+				public void run() {
+				}
+			}
+			
+			// 创建线程对象
+			Thread t = new Thread(new MyRunnable());
+			// 启动线程
+			t.start();
+5. 线程图
+	 - t.run() 单线程
+	 - t.start() 启用多线程. 分配栈空间, 瞬间完成.
+	 - https://www.bilibili.com/video/BV1Rx411876f?p=763
+6. 线程的生命周期
+	- https://www.bilibili.com/video/BV1Rx411876f?p=766
+	- 新建状态
+	- 就绪状态
+	- 运行状态
+	- 阻塞状态
+	- 死亡状态
+7. 设置线程
+	- 设置线程名字: t.setName(""ttt");
+	- 获取线程名字: String tName = t.getName();
+8. 获取当前线程对象
+	- Thread currentThread = Thread.currentThread();
+9. 休眠 线程
+	- sleep. Thread.sleep(1000);
+	- 叫醒一个睡眠的线程
+		- t.interrupt();
+		- 这种终断睡眠的方式, 利用了Java的异常机制
+10. **怎么合理的终止一个线程的执行**
+	- 打一个布尔标记. https://www.bilibili.com/video/BV1Rx411876f?p=774
+11. 线程合并
+	- https://www.bilibili.com/video/BV1Rx411876f?p=779
+
+## 线程安全
+1. 当多线程并发的环境下, 有共享数据, 并且这个数据还会被修改, 此时就存在线程安全问题, 怎么解决这个问题?
+	- 线程排队执行. 这种机制被称为: 线程同步机制.
+	- synchronized.  https://www.bilibili.com/video/BV1Rx411876f?p=786
+	- synchronized.  https://www.bilibili.com/video/BV1Rx411876f?p=788
+2. synchronized 的写法
+	- 第一种: 同步代码块
+		
+			// 灵活
+			synchronized (线程共享对象) {
+				同步代码块
+			}
+	- 第二种: 在实例方法上使用synchronized
+		- 表示共享对象一定是this, 并且同步代码块是整个方法体
+	- 第三种: 在静态方法上使用synchronized, 表示类锁.
+		- 保证静态变量安全
+3. synchronized 出现在静态方法上是找类锁.
+	- 类锁只有一把.
+4. **synchronized 面试题**
+	- https://www.bilibili.com/video/BV1Rx411876f?p=794
+	- https://www.bilibili.com/video/BV1Rx411876f?p=795
+	- https://www.bilibili.com/video/BV1Rx411876f?p=796
+	
+
+## 开发中应该怎么解决线程安全问题
+1. 尽量使用局部变量代替"实例变量"和"静态变量"
+2. 如果必须是实例变量, 那么可以考虑创建多个对象, 这样实例变量的内存就不共享了. (一个线程对应一个对象, 就没有数据安全问题了)
+3. 如果不能使用局部变量, 对象也不能创建多个, 这个时候就只能选择synchronized 了. 线程同步机制
+
+## 守护进程
+1. https://www.bilibili.com/video/BV1Rx411876f?p=801
+
+## 定时任务
+1. https://www.bilibili.com/video/BV1Rx411876f?p=803
+
+
+## 死锁
+1. synchronized 最好不要嵌套使用.
+2. https://www.bilibili.com/video/BV1Rx411876f?p=797
 
 
 
