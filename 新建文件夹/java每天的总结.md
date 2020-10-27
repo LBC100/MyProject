@@ -991,6 +991,57 @@
 11. 线程合并
 	- https://www.bilibili.com/video/BV1Rx411876f?p=779
 
+## 有返回结果的线程 FutureTask
+1. 实现线程的第三种方式
+	- 实现Callable接口
+	- 这种方式的优点: 可以获取到线程的执行结果.
+	- 这种方式的缺点: 效率比较低, 在获取t线程执行结果的时候, 当前线程受阻塞, 效率较低.
+	- 代码
+			
+			package ioTest;
+
+			import java.util.concurrent.Callable;
+			import java.util.concurrent.ExecutionException;
+			import java.util.concurrent.FutureTask;
+			
+			public class start {
+			  public static void main(String[] args) {
+			    Callable callable;
+			    FutureTask task =
+			        new FutureTask<>(
+			            new Callable<Object>() {
+			              @Override
+			              public Object call() throws Exception {
+			                System.out.println("开始");
+			                Thread.sleep(1000 * 10);
+			                System.out.println("结束");
+			                int a = 100;
+			                int b = 200;
+			                return a + b; // 自动装箱
+			              }
+			            });
+			
+			    // 创建线程对象
+			    Thread t = new Thread(task);
+			
+			    // 启动线程
+			    t.start();
+			
+			    // 获取线程的返回结果. get(); get() 方法会导致当前线程阻塞
+			    Object obj = null;
+			    try {
+			      obj = task.get();
+			    } catch (InterruptedException e) {
+			      e.printStackTrace();
+			    } catch (ExecutionException e) {
+			      e.printStackTrace();
+			    }
+			    System.out.println("线程执行结果:" + obj);
+			    System.out.println("hello world");
+			  }
+	}
+
+
 ## 线程安全
 1. 当多线程并发的环境下, 有共享数据, 并且这个数据还会被修改, 此时就存在线程安全问题, 怎么解决这个问题?
 	- 线程排队执行. 这种机制被称为: 线程同步机制.
@@ -1027,15 +1078,183 @@
 1. https://www.bilibili.com/video/BV1Rx411876f?p=803
 
 
+## 关于Object类中的wait和notify方法. (生产者和消费者模式)
+1. wait和notify方法不是线程对象的方法, 是Java中任何一个Java对象都有的方法, 因为这两个方法是Object类中自带的
+2. wait()方法作用
+	- Object o new Object();  o.wait();
+	- 表示: 让正在o对象上活动的线程进入等待状态, 无限期等待, 直到被唤醒为止.
+3. notify() 方法作用?
+	- Object o = new Object(); o.notify();
+	- 表示: 唤醒正在o对象上等待的线程.
+	- ontifyAll() 方法: 这个方法是唤醒o对象上处于等待的所有线程.
+4. wait和notify方法 建立在synchronized线程同步的基础之上
+5. 锁
+	- https://www.bilibili.com/video/BV1Rx411876f?p=807
+	- 生产者 和 消费者 https://www.bilibili.com/video/BV1Rx411876f?p=807
+
+
 ## 死锁
 1. synchronized 最好不要嵌套使用.
 2. https://www.bilibili.com/video/BV1Rx411876f?p=797
 
+## 反射机制
+1. 反射机制有什么用?
+	- 通过Java语言的反射机制可以操作字节码文件, 可以操作代码片段 (class文件)
+	- 反射机制可以让程序更灵活
+2. 反射机制相关的重要的类有哪些?
+	- java.lang.Class: 代表整个字节码, 代表一个类型. 代表整个类
+	- java.lang.reflect.Method: 代表字节码中的方法字节码. 代表类找那个的方法
+	- java.lang.reflect.Constructor: 代表字节码中的构造方法字节码. 代表类中的构造方法
+	- java.lang.reflect.Field: 代表字节码中的属性字节码. 代表类中的成员
+		- https://www.bilibili.com/video/BV1Rx411876f?p=823
+3. 获取 Class 的三种方式
+	- https://www.bilibili.com/video/BV1Rx411876f?p=811
+	- 1. Class c = Class.forName("完整类名带包名");
+	- 2. Class c = 对象.getClass();
+	- 3. Class c = 任何类型.class; // 如 String.class;
+4. 反射机制创建对象
+	- https://www.bilibili.com/video/BV1Rx411876f?p=814
+	- 注意: newInstance() 方法内部实际上调用了无参数构造方法, 必须保证无参构造存在才可以
+5. **回顾反射机制** https://www.bilibili.com/video/BV1Rx411876f?p=822  
 
+
+## 可变长度参数
+1. int... args
+2. 可变长度参数在参数列表中必须在最后一个位置上, 而且可变长度参数只能有1个
+3. 可以将可变长度参数当做一个数组.
+3. https://www.bilibili.com/video/BV1Rx411876f?p=827
+
+
+## 只让静态代码块执行可以使用class.forName()
+1. https://www.bilibili.com/video/BV1Rx411876f?p=816
+
+## 获取类路径下的文件绝对路径
+1. https://www.bilibili.com/video/BV1Rx411876f?p=817
+2. 获取文件以流的方式直接返回
+	- https://www.bilibili.com/video/BV1Rx411876f?p=818
+
+
+## 资源绑定器
+1. 资源绑定器, 只能绑定xxx.properties文件. 并且这个文件必须在类路径下. 文件拓展名必须是properties. 并且写路径的时候, 路径后面的拓展名不能写.
+2. 代码
+
+		ResourceBundle bundle = ResourceBundle.getBundle("classinfo2");
+		String s = bundle.getString("className");	
 
 
 ## 回顾
 1. https://www.bilibili.com/video/BV1Rx411876f?p=633
+
+## 注解  @
+1. 注解, 英文单词是: Annotation
+2. 自定义注解
+	
+		[修饰符列表] @interface 注解类型名 {
+		
+		}
+3. 元注解
+	- 用来"标注"注解类型的"注解", 被称为元注解
+4. 注解类型
+	- @Deprecated 不鼓励程序员使用这样的元素, 通常是因为它危险或者存在更好的选中
+		- 已过时
+	- Override 表示一个方法声明打算重写超类中的方法
+	-  Target
+		- 此注解是元注解. 用来标注"被标注的注解"可以出现在哪些位置上
+		- 如: @ Target(ElementType.METHOD): 表示"被标注的注解"只能出现在方法上.
+5. 注解属性
+		
+		public @interface MyAnnotation {
+			String name();
+		}
+		
+		@ MyAnnotation(name = "张三")
+		
+		// 指定value可以省略key值
+		public @interface MyAnnotation {
+			String value();
+		}
+		
+		@ MyAnnotation("张三")
+7. 注解的作用
+	- https://www.bilibili.com/video/BV1Rx411876f?p=844
+
+## spring 开始
+
+## spring 学习路线
+1. IOC (容器)
+	- Struts2
+	- Hibernate
+	- MyBatis
+2. AOP (面向切面编程)
+	- 声明式事务 (交互数据库)
+3. IOC 控制反转
+	- 控制: 资源的获取方式;
+		- 主动式 (要什么资源都自己创建即可)
+		- 被动式 (资源的获取都不是自己创建, 而是交给容器来创建和设置)
+4. 容器
+	- 管理所有的组件 (有功能的类)
+	- 主动的new 资源变为被动的接受资源
+5. DI (Dependency Injection) 依赖注入
+	- 容器能知道哪个组件 (类) 运行的时候, 需要另一个类 (组件); 容器通过反射的形式, 将容器中准备好的 "对象" 注入到 (利用反射机制赋值) 指定的 "对象"中. 
+
+
+## 容器
+1. 组件的创建工作, 是容器完成
+2. 容器对象的创建在容器创建完成的时候就已经创建好了
+3. 同一个组件在ioc容器中是单例的, 容器启动完成都已经创建准备好的
+4. 容器中如果没有这个组件, 获取组件会报异常
+5. ioc容器在创建这个组件的时候(property) 会利用setter方法为jvavBean 的属性进行赋值
+6. jvavBean的属性名是: getter/setter 方法名. set 后面的字母决定属性名
+7. 有参构造器创建bean
+		
+		<bean id="person03" class="com.atguigu.bean.Person">
+	        <constructor-arg name="name" value="李四"></constructor-arg>
+	        <constructor-arg name="sex" value="男"></constructor-arg>
+	        <constructor-arg name="age" value="19"></constructor-arg>
+	    </bean>
+	- https://www.bilibili.com/video/BV1d4411g7tv?p=19
+
+## 名称空间
+1. 名称空间是防止标签重复的
+
+## bean 赋值
+1. 在 propet 标签体里进行复杂赋值
+2. 赋 null 值
+		
+		<propet name="name">
+			<null />
+		</property>
+3. 引用其他类型 ref (引用)
+
+		<bean id="car01" class="com....Car">
+			<propet name="carName" value="宝马"></propet>
+		</bean>
+		<propet name="car" ref="car01"></property>
+4. 使用 new 来创建 并赋值. (内部创建). 内部bean不能获取到, 只能内部使用
+
+		<propet name="car" >
+			<bean class="com...Car"></bean>
+		</property>
+5. util名称空间创建一个可以外部引用的集合
+
+		<util:map id="myMap">
+
+    		</util:map> 		
+6. 级联属性赋值. 注意: 原来的bean也可能会被修改
+ 	
+ 		<bean id="person05" class="com...Person">
+ 			<property name="car" ref="car01"></property>
+ 			<property name="car.price" value="900000"></property>
+		</bean>		
+ ## 通过继承实现bean**配置信息的重用**
+ 1. parent
+ 		
+ 		<bean id="person06" class="com...Person" perent="person05">
+ 			<property name="name" value="李四"></property>
+ 		</bean>
+
+## 通过abstract属性创建一个模板bean
+1. 这个bean的配置是一个抽象的, 不能获取它的实例, 只能被别人用来继承. abstract="true"
 
 
 ## 栈
