@@ -1256,6 +1256,214 @@
 ## 通过abstract属性创建一个模板bean
 1. 这个bean的配置是一个抽象的, 不能获取它的实例, 只能被别人用来继承. abstract="true"
 
+## bean的依赖关系 depends-on
+
+## 测试bean的作用域，分别创建单实例和多实例的bean★
+1. scope  <bean scope=""
+	- prototype: 多实例
+		- 容器默认不会创建bean实例
+		- 获取的时候创建bean实例
+		- 每次获取都会创建一个bean实例
+	- singleton: 单实例. 默认的
+		- 在容器启动完成之前就已经创建好对象, 保存在容器中了
+		- 任何时候获取都是或QQ之前创建好的那个对象
+	- request: 在web环境下, 同一次请求创建一个bean实例
+	-session: 在web环境下, 同一次请求创建一个bean实例
+
+## 静态工厂与实例工厂
+1. 静态工厂
+	- 工厂本身不用创建对象. 通过静态方法调用, 对象 = 工厂类.工厂方法();
+2. 实例工厂: 工厂本身需要创建对象. 
+
+
+		工厂类工厂对象 = new 工厂类();
+		工厂对象.getAirPlane("张三");
+
+## 配置通过静态工厂方法创建的bean
+1. factory-method="getAirPlane"
+
+
+		<bean id="airPlane01" class="com...工厂类" factory-method="getAirPlane">
+			<constructor-arg name="name" value="李四"></constructor-arg>
+		</bean>
+2.  步骤
+	- class: 指定静态工厂全类名
+	- factory-method: 指定工厂方法
+	- constructor-arg : 可以为方法传参
+3. https://www.bilibili.com/video/BV1d4411g7tv?p=34
+
+## 使用实例工厂创建bean
+1. 配置出实例工厂对象.
+
+		<bean id="airPlaneInstanceFactory" class="com...实例工厂类名"></bean>
+2. 配置我们要创建的对象, 并把factory-bean 和 factory-method 绑定好
+	- factory-bean: 使用哪个工厂bean创建对象
+	- 工厂bean的工厂创建方法 
+
+			<bean id ="airPlane02" class="com...AirPlane" fictory-bean="airPlaneInstanceFactory" factory-method="getAirPlane"
+3. https://www.bilibili.com/video/BV1d4411g7tv?p=35
+
+
+## 实现FactoryBean的工厂
+1. 实现了 FactoryBean 接口的类是Spring可以认识的工厂类. Spring会自动调用创建对象
+	- getObject: 返回创建的对象
+	- getObjectType: 返回创建对象的类型
+	- isSingleton: 是否单例
+			
+			public class MyFactoryBeanImple implements FactoryBean
+2. 使用
+
+		<bean id="myFactoryBean" class="com... MyFactoryBeanImple"></bean>
+3. FactoryBean工厂ioc 容器启动的时候不会创建实例, 获取的时候才创建实例
+
+## 创建带有生命周期方法的bean
+1. ioc 容器中注册的bean 
+	- 单例bean, 容器启动的时候就会创建好, 容器关闭也会销毁创建的bean
+	- 多实例bean, 获取的时候才创建
+2. 生命周期方法
+	- 单例
+		- init-method: 初始化
+		- destroy-method: 销毁
+			- ioc.close(); 容器关闭会调用销毁生命周期
+	- 多实例
+		- 容器关闭不会调销毁生命周期
+		- 容器获取的时候调用初始化生命周期
+
+## 测试bean的后置处理器
+1. Spring有一个接口, 后置处理器. 可以在bean的初始化前后调用方法
+2. (容器启动) 构造器 ---> 后置处理器 before ---> 初始化方法 (生命周期) ---> 后置处理器 after ---> bean 初始化完成
+3. https://www.bilibili.com/video/BV1d4411g7tv?p=38
+
+## spring管理连接池
+1. 数据库连接池作为单实例是最好的. 一个项目就一个连接池, 连接池里面管理很多连接. 连接是直接从连接池中拿
+2. 加载外部配置文件 固定写法classpath: 表示引用类路径下的一个资源
+3. username是Spring的key中的一个关键字
+4. https://www.bilibili.com/video/BV1d4411g7tv?p=39
+5. https://www.bilibili.com/video/BV1d4411g7tv?p=41
+
+## 基于XML的自动装配 (自定义类型赋值)
+1. autowire
+	- autowire="default"  不自动装配
+	- autowire="byName" 按照名字
+		- 以属性名 (car) 作为id去容器中找到这个组件给它赋值; 如果找不到就装配null
+	- autowire="byName"
+	- autowire="constructor"
+
+## SpEL (Spring表达式语言)
+1. #{}
+2. 调用静态方法
+	
+		#{T(全类名).静态方法名(1, 2)}
+3. https://www.bilibili.com/video/BV1d4411g7tv?p=44
+
+## 通过注解分别创建Dao、Service、Controller★
+1. https://www.bilibili.com/video/BV1d4411g7tv?p=45
+
+## 使用context：exclude-filter指定扫描包时不包含的类
+1. https://www.bilibili.com/video/BV1d4411g7tv?p=47
+
+## 使用@Autowired注解实现根据类型实现自动装配★
+1. https://www.bilibili.com/video/BV1d4411g7tv?p=49
+2. 依赖注入
+
+## Spring的单元测试
+1. https://www.bilibili.com/video/BV1d4411g7tv?p=56
+
+## AOP (Aspect Oriented Programming) 面向切面编程
+1. 指在程序运行期间, **将某段代码** **动态的切入** 到 **指定方法** 的 **指定位置** 进行运行的这种编程方式, 面向切面编程
+2. 代理对象
+	- https://www.bilibili.com/video/BV1d4411g7tv?p=62
+3. jdk默认的动态代理, 如果目标对象没有实现任何接口, 是无法为他创建代理对象的
+	- 代理对象和被代理对象唯一能产生的关联就是实现了同一个接口
+
+## AOP 的专业术语
+1. 切面类
+	- 通知方法
+	- 通知方法可以抽成静态方法放在切面类里
+2. 横切关注点. 如:
+	- 前置通知
+	- 返回通知
+	- 异常通知
+	- 后置通知
+	- 环绕通知
+3. 连接点
+	- 横切关注点和通知方法交集的地方
+4. 切入点
+	- 希望**通知方法**调用的**连接点**就是切入点
+5. https://www.bilibili.com/video/BV1d4411g7tv?p=65
+6. 导包, AOP简单配置
+	- https://www.bilibili.com/video/BV1d4411g7tv?p=66
+	- 通知注解
+	- 切入点表达式
+7. 从ios容器中拿到目标对象; 注意 如果想要用类型, 一定用它的接口类型, 不要用它本类
+	- AOP的底层就是动态代理, 容器中保存的组件是它的代理对象; $Proxy12 当然不是本类的类型
+
+## AOP细节一：补充；cglib为没有接口的组件也可以创建代理对象
+1. https://www.bilibili.com/video/BV1d4411g7tv?p=69
+
+## 切入点表达式
+1. https://www.bilibili.com/video/BV1d4411g7tv?p=70
+
+## 通知方法的执行顺序
+1. 正常执行: @Befort (前置通知) -> @After (后置通知) -> @AfterReturning (正常返回)
+2. 异常执行: @Befort (前置通知) -> @After (后置通知) -> @AfterThrowing (方法异常)
+3. https://www.bilibili.com/video/BV1d4411g7tv?p=71
+
+## 【AOP细节四】：JoinPoint获取目标方法的信息信息
+1. 需要为通知方法的参数列表上写一个参数:
+	- JoinPoint joinPoint 封装了当前目标方法的详细信息
+
+## 【AOP细节五】：throwing、returning来指定哪个参数用来接受异常、返回值
+1. https://www.bilibili.com/video/BV1d4411g7tv?p=73
+
+## 抽取可重用的切入点表达式
+1. 随便声明一个没有实现的返回void的空方法
+2. 给方法上标注@Pointcut 注解. 如: @Pointcut(切入点表达式)
+3. 引用: value="方法名()"
+
+
+## Spring 动态代理
+1. 
+
+## MySQL
+1. DB: DataBase (数据库, 数据库实际上在硬盘上以文件的形式存在)
+2. DBMS: DataBase Management System (数据库管理系统)
+3. SQL: 结构化查询语言, 是一门标准通用的语言. 标准sql适合于所有的数据库产品. 
+	- SQL属于高级语言. 只有能看懂英语单词的, 写出来的sql语句, 可以读懂什么意思
+	- SQL语句在执行的时候, 实际上内部也会先进行编译, 然后再执行sql. (sql语句的编译由DBMS完成)
+4. DBMS负责执行sql语句, 通过执行sql语句来操作DB当中的数据
+	- DBMS (执行) -> SQL (操作) -> DB
+
+## 什么是表?
+1. 表: table 是数据库的基本组成单元, 所有的数据都以表格的形式组织, 目的是可读性强
+2. 一个表包括行和列:
+	- 行: 被称为数据/记录 (data)
+	- 列: 被称为字段 (column)
+3. 每一个字段应该包含哪些属性?
+	- 字段名
+	- 数据类型
+	- 相关的约束
+
+## SQL语句怎么分类?
+1. DQL (数据查询语言) :
+	- 查询语句, 凡是select语句都是DQL
+2. DML (数据操作语言) :
+	- insert delete update, 对表中数据进行增删改
+3. DDL (数据定义语言) :
+	- create drop alter, 对表结构的增删改
+4. TCL (事务控制语言) : commit 提交事务, rollback 回滚事务
+5. DCL (数据控制语言) : grant 授权, revoke撤销权限等
+
+## 对SQL脚本的理解
+1. 文件以sql结尾, 这样的文件被称为"sql脚本". 什么是sql脚本呢? 当一个文件的拓展名是.sql, 并且该文件中编写了大量的sql语句, 我们称这样的文件为"sql脚本"
+
+## 环绕通知
+1. 动态代理
+2. https://www.bilibili.com/video/BV1d4411g7tv?p=78
+
+## 多切面运行顺序
+1. 使用Order改变切面顺序
+	- @Order(1) 数值越小优先级越高
 
 ## 栈
 1. https://www.bilibili.com/video/BV1Rx411876f?p=92
