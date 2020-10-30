@@ -1464,6 +1464,201 @@
 ## 多切面运行顺序
 1. 使用Order改变切面顺序
 	- @Order(1) 数值越小优先级越高
+	
+## AOP 使用场景
+1. AOP加日志保存到数据库
+2. AOP做权限验证
+3. 安全检查
+4. 事务控制
+
+## 基于注解的AOP步骤
+1. 将目标类和切面类都加入到ioc容器中. @Component
+2. 告诉Spring哪个是切面类. @Aspect
+3. 在切面类中使用五个通知注解来配置切面中的这些通知方法都何时何地运行
+4. 开启基于注解的AOP功能.
+
+## 基于注解的AOP功能
+1. https://www.bilibili.com/video/BV1d4411g7tv?p=82
+
+## 重要的用配置, 不重要的用注解
+
+## SpringMVC
+
+## SpringMVC 配置
+1. web.xml 指定配置
+2. 指定WEB-INF 目录下的
+
+		<context-param>
+	        <param-name>contextConfigLocation</param-name>
+	        <param-value>/WEB-INF/applicationContext.xml</param-value>
+	    </context-param>
+3. 设置url-pattern
+	- https://www.bilibili.com/video/BV1d4411g7tv?p=129
+
+			<servlet-mapping>
+		        <servlet-name>dispatcher</servlet-name>
+		        <!--<url-pattern>*.form</url-pattern>-->
+		        <url-pattern>/</url-pattern>
+		    </servlet-mapping>
+4. 开启扫描 controller
+	
+		<conext:component-scan base-package="com.atguigu.controller"></conext:component-scan>
+5. 开启扫描组件
+
+		<context:component-scan base-package="com.atguigu"></context:component-scan>
+
+## 编写处理器
+1. https://www.bilibili.com/video/BV1d4411g7tv?p=124
+
+## SpringBoot开始
+1. 创建一个maven工程
+2. 导入依赖
+	
+		<parent>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-parent</artifactId>
+	        <version>1.5.9.RELEASE</version>
+	    </parent>
+	    <dependencies>
+	        <dependency>
+	            <groupId>org.springframework.boot</groupId>
+	            <artifactId>spring-boot-starter-web</artifactId>
+	        </dependency>
+	    </dependencies>
+3. 编写一个主程序. 启动 SpringBoot 应用
+	
+		/** @SpringBootApplication 来标注一个主程序类, 说明这是一个SpingBoot应用 */
+		@SpringBootApplication
+		public class StartMainApplication {
+		  public static void main(String[] args) {
+		    SpringApplication.run(StartMainApplication.class, args);
+		  }
+		}
+4. 编写相关的Controller, Service
+		
+		@Controller
+		public class HelloController {
+		  @ResponseBody
+		  @RequestMapping("hello")
+		  public String hello() {
+		
+		    return "hello world!";
+		  }
+		}
+5. 简化部署
+
+		    <build>
+		        <plugins>
+		            <!--这个插件可以将应用打包成一个可执行的jar包-->
+		            <plugin>
+		                <groupId>org.springframework.boot</groupId>
+		                <artifactId>spring-boot-maven-plugin</artifactId>
+		            </plugin>
+		        </plugins>
+		    </build>
+
+## POM文件
+1. 父项目 (管理SpringBoot应用里的所有依赖版本). SpringBoot 的版本仲裁中心.
+	- 以后我们导入依赖默认是不需要写版本. (没有在dependencies里面管理的依赖自然需要声明版本号)
+	
+			<parent>
+		        <groupId>org.springframework.boot</groupId>
+		        <artifactId>spring-boot-starter-parent</artifactId>
+		        <version>1.5.9.RELEASE</version>
+		    </parent>
+		    它的父项目
+			<parent>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>1.5.9.RELEASE</version>
+				<relativePath>../../spring-boot-dependencies</relativePath>
+			</parent>
+2. 导入的依赖
+1. spring-boot-starter-web
+	- spring-boot-starter: springBoot 场景启动器. 帮我们导入web模块正常运行所依赖的组件.
+2. springBoot 将所有的功能场景都抽取出来, 做成一个个的starters (启动器), 只需要在项目里面引入这些starter, 相关场景的所有依赖都会导入进来. 要用什么功能就导入什么场景启动器
+
+## 主程序类, 主入口类
+1. @SpringBootApplication: 标注在某个类上说明这个类是SpringBoot的主配置类, SpringBoot就应该运行这个类的main方法来启动springBoot应用
+
+##  SpringBoot配置文件
+1. SpringBoot 使用一个全局的配置文件
+	- 配置文件的作用: 修改SpringBoot自动配置的默认值. SpringBoot在底层都给我们自动设置好了.
+1. 配置文件
+	- application.properties
+	- application.yml
+
+## YAML
+1. 以前的配置文件, 大多都使用的是xxx.xml文件.
+2. YAML : 以数据为中心, 比json, xml 等更适合做配置文件
+3. 固定的文件名: application.yml
+4. 基本语法
+	- k (**空格**) v: (值) 空格必需有
+	- 以**空格**的缩进来控制层级关系, 只要是左对齐的一列数据, 都是同一个层级的
+	- 属性和值也是大小写敏感
+		
+			server:
+ 				 port: 8081
+5. 值的写法
+	- 字面量: 普通的值  
+		- k: v 字面直接来写
+		- 字符串默认不用加引号
+		- "": 双引号. 不会转义字符串里面的特殊字符. 
+		- '': 单引号. 会转义特殊字符
+	- 对象, Map (键值对写法)
+		- 对象还是k: v的方式
+		- k: v 在下一行来写对象的属性和值的关系. 注意缩进
+		
+				friends:
+					name: zhangsan
+					age: 20
+				// 行内写法
+				friends: {name: zhangsan, age: 18}
+	- 数组
+		- 用- 值表示数组中的一个元素
+		
+				pets: 
+					- cat
+					- dog
+				
+				// 行内写法
+				pets: [cat, dog]
+				
+## 配置-yaml配置文件值获取
+1. @ConfigurationProperties
+2. 导包提示
+		
+		<!--导入配置文件处理器, 配置文件进行绑定就会有提示-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+2. https://www.bilibili.com/video/BV1Et411Y7tQ?p=10
+
+## yaml 配置-properties配置文件编码问题
+1. https://www.bilibili.com/video/BV1Et411Y7tQ?p=11
+
+## yaml @ConfigurationProperties与@Value区别
+1. https://www.bilibili.com/video/BV1Et411Y7tQ?p=12
+2. ![image](https://user-images.githubusercontent.com/38514123/97654339-a546cb80-1a9d-11eb-9823-3f6c32d42717.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 栈
 1. https://www.bilibili.com/video/BV1Rx411876f?p=92
