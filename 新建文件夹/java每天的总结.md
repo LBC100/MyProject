@@ -7,7 +7,7 @@
 1. 数据类型的作用是什么?
   - 程序中有很多数据, 没一个数据都是有相关类型的, 不同数据类型的数据占用空间大小不同.
   - 数据类型的作用是指导JVM在运行程序的时候给该数据分配多大的内存空间
-        
+  
 2. 基本数据类型
     - 基本数据类型包括四大类八小种
       - 第一类: 整数型
@@ -38,9 +38,9 @@
 
 ## static 成员变量 会有默认值
     static int k;  // 默认为0
-
-	局部变量不会有默认值
-	    int k = 1000;
+    
+    局部变量不会有默认值
+        int k = 1000;
 
 ## 引用数据类型
   - 类
@@ -65,9 +65,9 @@
 
 	    long x = 100L;
 	    int y = x; // 编译报错
-		
+	    
 	    int y = (int)x; // 强制类型转换, 可能会损失精度
-		
+	    
 	    例子: 
 	      long k = 2147473648L;
 	      int e = (int)k;
@@ -90,11 +90,11 @@
 	默认被当做double类型来处理, 要想该字面值当做float类型来处理, 需要在字面值后面添加F/f
 	
 	    float f = 5.1 // 报错
-	
+	    
 	    解决方案
 	      1.
 	        float f = (float)5.1; // 强制类型转换
-	
+	    
 	      2.
 	        float f = 5.1F; // 没有类型转换
 
@@ -104,6 +104,7 @@
 1. 八种基本数据类型当中除布尔类型之外, 其他7种类型都可以互相转换
 2. 容量排序
   byte < short, char < int < long < float < double
+  
   - 注: 任何浮点类型不管占用多少个字节, 都比整数型容量大.
 3. 大容量转换成小容量需要加类型转换符. 可能会损失精度, 所有谨慎使用
 4. 当整数字面值没有超出byte, short, char的取值范围, 可以直接赋值.
@@ -134,7 +135,6 @@
 		        (true ^ true)   false
 		        (false ^ false) false
 		
-	   
 	4. 什么时候使用短路与?
 		- &&  短路与
 		- ||  短路或
@@ -170,7 +170,7 @@
 			for(初始化表达式; 布尔表达式; 更新表达式) {
 				循环体
 			}				
-		
+	
 2. while循环
 3. do..while循环
 	- 先循环一次再判断
@@ -200,7 +200,7 @@
 			    System.out.println(123);
 			  }
 		}
- 
+
 ## 方法在执行过程中, 在JVM中的内存四如何分配的?内存是如何变化的?
 1. 方法只定义, 不调用, 是不会执行的, 并且在jvm中页不会给该方法分配"运行所属"的内存空间.只有在调用这个方法的时候, 才会动态的给这个方法分配所属的内存空间.
 2. 在jvm内存划分有这样三块主要的内存空间(当然除了这三块之外还有其他的内存空间):
@@ -240,6 +240,7 @@
 4. 对象创建没赋值, 会有默认值
 5. https://www.bilibili.com/video/BV1Rx411876f?p=115 对象的创建
 6. 实例变量必须先创建对象, 通过引用.的方式访问, 不能直接使用类名.的方式访问
+	
 	- System.out.println(Product.productNo); // 编译报错
 7. **重点: 没有static关键字的方法被称为"实例方法"**
 8. **重点: 没有static关键字的变量被称为"实例变量"**
@@ -250,6 +251,7 @@
 1. 封装的步骤
 	- 所有属性私有化, 使用private关键字进行修饰, 修饰后所有数据只能在本类访问.
 	- 对外提供简单的操作入口.
+		
 		- 对外提供两个公开的方法, 分别是set方法和get方法.
 	- get, set方法命名规范.
 		
@@ -281,6 +283,7 @@
 2. 静态代码块在类加载时执行, 并且只执行一次.
 3. 静态代码块在一个类中可以编写多个, 并且遵循自上而下的顺序依次执行.
 4. **静态代码块的作用是什么? 怎么用? 什么时候用?**
+	
 	- 1
 
 ## 什么时候成员变量声明为实例变量呢?
@@ -350,7 +353,7 @@
 			静态方法
 			实例方法
 		}
-		
+
 ## 继承
 1. 	继承是面向对象的三大特征之一, 三大特征分别是: 封装, 继承, 多态
 2. 继承"基本"的作用是: 代码复用. 但是继承最"重要"的作用是: 有了继承才有了以后"方法的覆盖"和"多态机制".
@@ -358,6 +361,7 @@
 
 		[修饰符列表] class 类名 extends 父类名 {
 		
+	
 		}
 4. java 语言当中只支持单继承, 一个类不能同时继承很多类, 只能继承一个类.
 5. 关于继承中的一些术语:
@@ -463,10 +467,11 @@
 		protected	同包, 子类
 		缺省		   同包
 		private		表示私有的, 只能在本类中访问
-		
+
 ## 抽象类 (面向抽象编程)
 1. 抽象类无法实例化的, 无法创建对象的, 所以抽象类是用来被子类继承的.
 2. 什么是抽象类?
+	
 	- 类和类之间具有共同特征, 将这些共同特征提取出来, 形成的就是抽象类.
 3. 语法
 
@@ -547,6 +552,7 @@
 
 ## 匿名内部类
 1. 什么是内部类?
+	
 	- 内部类: 在类的内部又定义了一个新的类. 被称为内部类
 2. 内部类的分类:
 	- 静态内部类: 类似于静态变量
@@ -596,7 +602,7 @@
 			int[] array = new int[5]; // 这里的5表示数组的元素个数. 
 			
 			String[] names = new String[6]; // 初始化6个长度的String类型数组, 每个元素默认值null
-									
+		
 
 ## 数组中存储的类型为引用数据类型
 1. 利用多态, 数组可以放不同的对象
@@ -651,6 +657,7 @@
 
 ## 日期 Date
 1. 获取系统当前时间 (精确到毫秒的系统当前时间)
+	
 	- Date nowTime = new Date();
 2. 日期格式化
 
@@ -690,7 +697,6 @@
 			return j;
 		}
 	
-		
 3. 结论: Java语法规则不能破坏
 	- 方法体中的代码必须遵循自上而下顺序依次逐行执行 (亘古不变的语法!)
 	- retrun 语句一旦执行, 整个方法必须结束
@@ -730,6 +736,7 @@
 			system.out.println(obj);
 		}
 4. HashSet
+	
 	- 无序, 不可重复
 5. 放在集合里的元素要重写equals方法
 6. 当集合结构发生了改变, 迭代器需要重新获取. 否则会出现异常
@@ -820,26 +827,26 @@
 			
 			
 		    Map<Integer, String> map = new HashMap<>();
-		
+		    
 		    map.put(1, "张三");
 		    map.put(2, "李四");
-		
+		    
 		    Set<Map.Entry<Integer, String>> set = map.entrySet();
-		
+		    
 		    // 获取迭代器
 		    Iterator<Map.Entry<Integer, String>> it2 = set.iterator();
 		    while (it2.hasNext()) {
 		      Map.Entry<Integer, String> node = it2.next();
 		      Integer key = node.getKey();
 		      String value = node.getValue();
-		
+		    
 		      System.out.println(key + "=" + value);
 		    }
 		    
 		    // 或者 用 foreach
 		        for (Map.Entry<Integer, String> node : set) {
-			      System.out.println(node.getKey() + "=" + node.getValue());
-			    }
+		          System.out.println(node.getKey() + "=" + node.getValue());
+		        }
 
 ## HashMap 集合
 1. 哈希表是一个数组和单向链表的结合体
@@ -980,6 +987,7 @@
 	- 设置线程名字: t.setName(""ttt");
 	- 获取线程名字: String tName = t.getName();
 8. 获取当前线程对象
+	
 	- Thread currentThread = Thread.currentThread();
 9. 休眠 线程
 	- sleep. Thread.sleep(1000);
@@ -987,8 +995,10 @@
 		- t.interrupt();
 		- 这种终断睡眠的方式, 利用了Java的异常机制
 10. **怎么合理的终止一个线程的执行**
+	
 	- 打一个布尔标记. https://www.bilibili.com/video/BV1Rx411876f?p=774
 11. 线程合并
+	
 	- https://www.bilibili.com/video/BV1Rx411876f?p=779
 
 ## 有返回结果的线程 FutureTask
@@ -1055,10 +1065,13 @@
 				同步代码块
 			}
 	- 第二种: 在实例方法上使用synchronized
+		
 		- 表示共享对象一定是this, 并且同步代码块是整个方法体
 	- 第三种: 在静态方法上使用synchronized, 表示类锁.
+		
 		- 保证静态变量安全
 3. synchronized 出现在静态方法上是找类锁.
+	
 	- 类锁只有一把.
 4. **synchronized 面试题**
 	- https://www.bilibili.com/video/BV1Rx411876f?p=794
@@ -1151,8 +1164,10 @@
 	
 		[修饰符列表] @interface 注解类型名 {
 		
+	
 		}
 3. 元注解
+	
 	- 用来"标注"注解类型的"注解", 被称为元注解
 4. 注解类型
 	- @Deprecated 不鼓励程序员使用这样的元素, 通常是因为它危险或者存在更好的选中
@@ -1176,6 +1191,7 @@
 		
 		@ MyAnnotation("张三")
 7. 注解的作用
+	
 	- https://www.bilibili.com/video/BV1Rx411876f?p=844
 
 ## spring 开始
@@ -1241,14 +1257,14 @@
 
     		</util:map> 		
 6. 级联属性赋值. 注意: 原来的bean也可能会被修改
- 	
+
  		<bean id="person05" class="com...Person">
  			<property name="car" ref="car01"></property>
  			<property name="car.price" value="900000"></property>
 		</bean>		
  ## 通过继承实现bean**配置信息的重用**
  1. parent
- 		
+
  		<bean id="person06" class="com...Person" perent="person05">
  			<property name="name" value="李四"></property>
  		</bean>
@@ -1575,6 +1591,7 @@
 			</parent>
 2. 导入的依赖
 1. spring-boot-starter-web
+	
 	- spring-boot-starter: springBoot 场景启动器. 帮我们导入web模块正常运行所依赖的组件.
 2. springBoot 将所有的功能场景都抽取出来, 做成一个个的starters (启动器), 只需要在项目里面引入这些starter, 相关场景的所有依赖都会导入进来. 要用什么功能就导入什么场景启动器
 
@@ -1623,7 +1640,7 @@
 				
 				// 行内写法
 				pets: [cat, dog]
-				
+			
 ## 配置-yaml配置文件值获取
 1. @ConfigurationProperties
 2. 导包提示
@@ -1664,7 +1681,7 @@
 		    return new HelloService();
 		  }
 		}
-		
+	
 ## 配置文件占位符
 1. properties 文件
 	- ![](https://raw.githubusercontent.com/LBC100/myImgsHaha/main/20201030151935.png)	
@@ -1675,6 +1692,7 @@
 	- 在application.properties 配置文件中指定激活文件
 	- spring.profiles.active=dev
 3. **利用yml 文档块实现激活指定配置文件**
+	
 	- ![](https://raw.githubusercontent.com/LBC100/myImgsHaha/main/20201030153637.png)
 4. **可以直接在运行jar包的时候, 配置传入命令行参数**
 	
@@ -1695,7 +1713,7 @@
 1. https://www.bilibili.com/video/BV1Et411Y7tQ?p=19
 2. ![](https://raw.githubusercontent.com/LBC100/myImgsHaha/main/20201030170233.png)
 3. 自动配置类必须在一定的条件下才能生效
-	- 我们可以通过启用 debug=true 属性, 来让控制台打印自动配置报告, 这个我们可以很方便的知道哪些自动配置类生效
+  - 我们可以通过启用 debug=true 属性, 来让控制台打印自动配置报告, 这个我们可以很方便的知道哪些自动配置类生效
 
 ## 日志框架
 1. 日志门面. 日志框架选择
@@ -1752,6 +1770,78 @@
 
 ## docker 开始
 
+## docker 核心概念
+1. docker主机 (Host) : 安装了docker程序的机器
+2. docker客户端 (client) : 连接docker进行操作
+3. docker仓库 (registry) : 用来保存各种打包好的软件镜像
+4. docker镜像 (images) : 软件打包好的镜像, 放在docker参考中
+5. docker容器 (container) : 镜像启动后的实例称为一个容器. 容器是独立运行的一个或一组应用
+
+## 使用docker的步骤
+1. 安装docker
+2. 去docker仓库找到这个软件对应的镜像
+3. 使用docker运行这个镜像, 这个镜像就会生成一个docker容器
+4. 对容器的启动停止就是对软件的启动停止
+
+## 在linux系统上安装docker
+1. 检查内核版本, 必须是3.10及以上. uname -r
+2. 安装docker
+	- yum install docker
+	- 输入y, 确认安装
+3. 启动docker
+	
+		systemctl start docker
+		docker -v
+4. 开机启动
+	- systemctl enable docker
+5. 停止
+	- systemctl stop docker
+
+## 镜像操作
+1. 检索
+	- docker search 关键字
+2. 拉取
+	- docker pull 镜像名:tag
+	- :tag是可选的, tag表示标签, 多为软件的版本, 默认是latest
+3. 列表
+	- docker images
+	- 查看所有本地镜像
+4. 删除
+	- docker rmi image-id  
+	- 删除指定的本地镜像
+
+## 容器操作
+1. 软件镜像 (QQ安装程序) --- 运行镜像 --- 产生容器 (运行的软件)
+2. 运行
+	
+		docker run --name 自定义名称 -d 镜像名:tag
+		--name: 自定义名称
+		-d: 后台运行
+		image-name: 镜像名称
+		tag: 版本
+3. 查看运行列表
+	- docker ps
+	- 加上-a  可以查看所有容器
+4. 停止
+	
+		docker stop 容器名/容器id
+5. 启动
+	
+		docker start 容器名/容器id
+6. 删除指定容器
+	
+		docker rm 容器id
+7. 端口映射
+	
+		-p 6379:6379
+8. 容器日志
+
+		docker logs 容器名/容器id	
+
+
+## docker安装MySQL
+1. https://www.bilibili.com/video/BV1Et411Y7tQ?p=58
+
 ## SpringBoot 数据访问开始
 1. JDBC
 	- 导入依赖
@@ -1784,42 +1874,76 @@
 	            <artifactId>druid</artifactId>
 	            <version>1.1.20</version>
 	        </dependency>
-
-		// 设置
-		spring:
-		  datasource:
-		    username: root
-		    password: 123456
-		    url: jdbc:mysql://localhost:3306/eesy_mybatis
-		    driver-class-name: com.mysql.cj.jdbc.Driver
-		    #    driver-class-name: com.mysql.jdbc.Driver
-		    type: com.alibaba.druid.pool.DruidDataSource
+    
+	    // 设置
+	    spring:
+	      datasource:
+	        username: root
+	        password: 123456
+	        url: jdbc:mysql://localhost:3306/eesy_mybatis
+	        driver-class-name: com.mysql.cj.jdbc.Driver
+	        #    driver-class-name: com.mysql.jdbc.Driver
+	        type: com.alibaba.druid.pool.DruidDataSource
 2. 配置类
 
-		package com.atguigu.springboot.config;
-
-		import com.alibaba.druid.pool.DruidDataSource;
-		import org.springframework.boot.context.properties.ConfigurationProperties;
-		import org.springframework.context.annotation.Bean;
-		import org.springframework.context.annotation.Configuration;
-		
-		import javax.sql.DataSource;
-		
+	
 		@Configuration
 		public class DruidConfig {
 		
+		  // 配置
 		  @ConfigurationProperties(prefix = "spring.datasource")
 		  @Bean
 		  public DataSource druid() {
 		    return new DruidDataSource();
 		  }
+		
+		  // 配置Druid的监控
+		  // 1. 配置一个管理后台的Servler
+		  @Bean
+		  public ServletRegistrationBean statViewServle() {
+		    ServletRegistrationBean servletRegistrationBean =
+		        new ServletRegistrationBean(new StatViewServlet(), "/druid/*");
+		    // IP白名单
+		    // servletRegistrationBean.addInitParameter("allow","192.168.1.12,127.0.0.1");
+		    // IP黑名单
+		    // servletRegistrationBean.addInitParameter("deny","192.168.4.23");
+		    // 控制台用户
+		    servletRegistrationBean.addInitParameter("loginUsername", "admin");
+		    servletRegistrationBean.addInitParameter("loginPassword", "123456");
+		    // 是否能够重置数据
+		    servletRegistrationBean.addInitParameter("resetEnable", "false");
+		    return servletRegistrationBean;
+		  }
+		
+		  // 2, 配置一个web监控的filter
+		  @Bean
+		  public FilterRegistrationBean statFilter() {
+		    FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(new 		WebStatFilter());
+		
+		    Map<String, String> initParams = new HashMap<>();
+		    initParams.put("exclusions", "*.js, *.css, /druid/*");
+		
+		    // 添加过滤规则
+		    filterRegistrationBean.addInitParameter(
+		        "exclusions", "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*");
+		    return filterRegistrationBean;
+		  }
 		}
 
-
-
-
-
-
+## 数据访问-整合MyBatis（一）-基础环境搭建
+1. 安装 MyBatis
+	
+		<dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>2.1.3</version>
+        </dependency>
+        
+   
+2. 驼峰命名规则
+ 	- https://www.bilibili.com/video/BV1Et411Y7tQ?p=63
+3. 配置文件版
+	- https://www.bilibili.com/video/BV1Et411Y7tQ?p=64
 
 
 
