@@ -1641,15 +1641,179 @@
 
 ## yaml @ConfigurationProperties与@Value区别
 1. https://www.bilibili.com/video/BV1Et411Y7tQ?p=12
-2. ![image](https://user-images.githubusercontent.com/38514123/97654339-a546cb80-1a9d-11eb-9823-3f6c32d42717.png)
+2. ![](https://raw.githubusercontent.com/LBC100/myImgsHaha/main/images/1.png)
+
+## 配置-@PropertySource、@ImportResource、@Bean
+1. **@PropertySource** 加载指定的配置文件
+2. **@ImportResource** 导入Sring的配置文件让其生效
+	- 在启动类上加上注解可以识别beans.xml配置文件
+		
+			@ImportResource(locations = {"classpath:beans.xml"})
+			@SpringBootApplication
+## @ImportResource 导入 beans.xml
+
+## SpringBoot 推荐给容器添加组件的方式. 推荐使用全注解的方式
+1. 新建一个配置类
+
+		@Configuration
+		public class MyAppConfig {
+		
+		  // 将方法的返回值添加到容器中, 容器汇总这个组件的默认id就是方法名
+		  @Bean
+		  public HelloService helloService() {
+		    return new HelloService();
+		  }
+		}
+		
+## 配置文件占位符
+1. properties 文件
+	- ![](https://raw.githubusercontent.com/LBC100/myImgsHaha/main/20201030151935.png)	
+
+## 多Profile 文件
+1. 默认使用 application.properties 的配置
+2. 激活指定profile
+	- 在application.properties 配置文件中指定激活文件
+	- spring.profiles.active=dev
+3. **利用yml 文档块实现激活指定配置文件**
+	- ![](https://raw.githubusercontent.com/LBC100/myImgsHaha/main/20201030153637.png)
+4. **可以直接在运行jar包的时候, 配置传入命令行参数**
+	
+		java -jar spring.jar --spring.profiles.active=dev;
+		
+## 配置文件的加载位置. 加载优先级
+1. 优先级从高到低, 高优先级的配置覆盖低优先级的配置, 所有的配置会形成互补配置
+2. https://www.bilibili.com/video/BV1Et411Y7tQ?p=16
+
+## 外部配置加载顺序
+1. 优先级从高到低, 高优先级的配置覆盖低优先级的配置, 所有的配置会形成互补配置
+2. https://www.bilibili.com/video/BV1Et411Y7tQ?p=17
+
+## SpringBoot 自动配置原理
+1. https://www.bilibili.com/video/BV1Et411Y7tQ?p=18
+
+## 配置-@Conditional&自动配置报告
+1. https://www.bilibili.com/video/BV1Et411Y7tQ?p=19
+2. ![](https://raw.githubusercontent.com/LBC100/myImgsHaha/main/20201030170233.png)
+3. 自动配置类必须在一定的条件下才能生效
+	- 我们可以通过启用 debug=true 属性, 来让控制台打印自动配置报告, 这个我们可以很方便的知道哪些自动配置类生效
+
+## 日志框架
+1. 日志门面. 日志框架选择
+	- ![](https://raw.githubusercontent.com/LBC100/myImgsHaha/main/20201030171845.png)
+
+## SLF4J用
+1. 以后开发的时候, 日记记录方法的调用, 不应该来直接调用日志的实现类, 而是调用日志抽象层里面的方法
+	
+		import org.slf4j.Logger;
+		import org.slf4j.LoggerFactory;
+		
+		public class HelloWorld {
+		  public static void main(String[] args) {
+		    Logger logger = LoggerFactory.getLogger(HelloWorld.class);
+		    logger.info("Hello World");
+		  }
+		} 
+
+## 日志-其他日志框架统一转换为slf4j
+1. 将系统中其他日志框架先排除出去
+2. 中中间包来替换原有的日志框架
+3. 我们导入slf4j的其他实现
+4. **如果我们要引入其他框架, 一定要把这个框架的默认日志依赖移除掉**
+	- **SpringBoot 能自动适配所有的日志, 而且底层使用slf4j + logback的方式记录日志, 引入其他框架的时候, 只需要把这个框架依赖的日志框架排除掉**
+3. https://www.bilibili.com/video/BV1Et411Y7tQ?p=22
 
 
+## 记录器
+1. 例子
+	
+		// 记录器
+		  Logger logger = LoggerFactory.getLogger(getClass());
+		
+		  @Test
+		  void contextLoads() {
+		    /** 日志的级别, 由低到高 trace<debug<info<warn<error 可以调整输出日志级别 */
+		    logger.trace("这是trace日志");
+		    logger.debug("这是debug日志");
+		    logger.info("这是info日志");
+		    logger.warn("这是warn日志");
+		    logger.error("这是error日志");
+		  }
+2. SpringBoot 默认给我们使用的是info级别的
+3. 指定配置
+	- 给类路径下放上每个日志框架自己的配置文件即可. SpringBoot就不使用其他默认配置了
+	- **logback-spring.xml (推荐)**: 日志框架就不直接加载日志的配置项, 由SpringBoot 解析日志配置, 可以使用SpringBoot的**高级Profile功能**
 
 
+## 切换日志框架
+1. https://www.bilibili.com/video/BV1Et411Y7tQ?p=26
 
+## web开发-webjars&静态资源映射规则
+1. https://www.bilibili.com/video/BV1Et411Y7tQ?p=28
 
+## docker 开始
 
+## SpringBoot 数据访问开始
+1. JDBC
+	- 导入依赖
+			
+			<dependency>
+		            <groupId>org.springframework.boot</groupId>
+		            <artifactId>spring-boot-starter-jdbc</artifactId>
+		        </dependency>
+		
+		        <dependency>
+		            <groupId>mysql</groupId>
+		            <artifactId>mysql-connector-java</artifactId>
+		            <scope>runtime</scope>
+		        </dependency>
+	- yml配置
+	
+			spring:
+			  datasource:
+			    username: root
+			    password: 123456
+			    url: jdbc:mysql://localhost:3306/eesy_mybatis
+			    driver-class-name: com.mysql.cj.jdbc.Driver
+	- 效果: 默认是用 org.apache.tomcat.jdbc.pool.DataSource作为数据源
 
+## 数据访问-整合Druid&配置数据源监控
+1. 引入数据源
+	
+	        <dependency>
+	            <groupId>com.alibaba</groupId>
+	            <artifactId>druid</artifactId>
+	            <version>1.1.20</version>
+	        </dependency>
+
+		// 设置
+		spring:
+		  datasource:
+		    username: root
+		    password: 123456
+		    url: jdbc:mysql://localhost:3306/eesy_mybatis
+		    driver-class-name: com.mysql.cj.jdbc.Driver
+		    #    driver-class-name: com.mysql.jdbc.Driver
+		    type: com.alibaba.druid.pool.DruidDataSource
+2. 配置类
+
+		package com.atguigu.springboot.config;
+
+		import com.alibaba.druid.pool.DruidDataSource;
+		import org.springframework.boot.context.properties.ConfigurationProperties;
+		import org.springframework.context.annotation.Bean;
+		import org.springframework.context.annotation.Configuration;
+		
+		import javax.sql.DataSource;
+		
+		@Configuration
+		public class DruidConfig {
+		
+		  @ConfigurationProperties(prefix = "spring.datasource")
+		  @Bean
+		  public DataSource druid() {
+		    return new DruidDataSource();
+		  }
+		}
 
 
 
