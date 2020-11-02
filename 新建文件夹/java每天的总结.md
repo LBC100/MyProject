@@ -1945,7 +1945,10 @@
 3. 配置文件版
 	- https://www.bilibili.com/video/BV1Et411Y7tQ?p=64
 
-
+## Spring Security oAuth2 开始
+1. https://www.bilibili.com/video/BV1Kb411u7VP?p=2
+2. 为什么需要oAuth2
+	- ![](https://raw.githubusercontent.com/LBC100/myImgsHaha/main/20201102200850.png)
 
 
 ## 栈
