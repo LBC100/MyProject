@@ -1441,7 +1441,7 @@
 ## Spring 动态代理
 1. 
 
-## MySQL
+## MySQL开始
 1. DB: DataBase (数据库, 数据库实际上在硬盘上以文件的形式存在)
 2. DBMS: DataBase Management System (数据库管理系统)
 3. SQL: 结构化查询语言, 是一门标准通用的语言. 标准sql适合于所有的数据库产品. 
@@ -1472,6 +1472,683 @@
 
 ## 对SQL脚本的理解
 1. 文件以sql结尾, 这样的文件被称为"sql脚本". 什么是sql脚本呢? 当一个文件的拓展名是.sql, 并且该文件中编写了大量的sql语句, 我们称这样的文件为"sql脚本"
+
+## mySql登陆 / 退出
+1. mysql -uroot -p 回车  输入密码
+2. 退出  exit
+
+## 常用命令
+1. 查看有哪些数据库
+	- show databases;
+2. 创建属于我们自己的数据库
+	- create database bjpowernode;
+3. 使用某个数据库
+	- use bjpowernode;
+4. 查看当前使用的数据库中有哪些表
+	- show tables;
+5. 执行sql脚本
+	- source 脚本路径 (拖动)
+6. 当前使用的是哪个数据库
+	- select database();
+7. 删除数据库
+	- drop database bjpowernode;
+8. 查看数据库版本号
+	- select version();
+9. 查看创建表的语句
+	- show create table emp;
+10. 结束语句
+	- \c
+
+## 查看表结构以及表中的数据
+1. 查看表结构
+	- desc 表名;
+2. 查看表中的数据
+	- select * from emp;
+
+## 简单的查询语句
+1. 提示
+	- 任何一条sql语句以 ";" 结尾
+	- sql语句不区分大小写
+2. 语法格式
+	
+		select 字段名1, 字段名2, ... from 表名;
+
+	- 查询员工年薪 (字段可以参与运算)
+		- select ename, sal * 12 from emp;
+		- ename 名字
+		- sal 薪资乘以12
+3. 查询所有字段
+	- select * from emp;
+	- 工作中不建议使用, 效率太低
+
+## 给查询结果的列重命名
+1. as
+	-  select ename, sal * 12 as yearsal from emp;
+	-  as 关键字可以省略 (不推荐)
+		- select ename, sal * 12 yearsal from emp;
+2. 别名中有中文
+	- select ename, sal * 12 as 年薪 from emp; // 错误
+	- select ename, sal * 12 as '年薪' from emp; // 正确
+3. 注意: 标准sql语句中要求字符串使用单引号括起来. 虽然mysql支持双引号, 但不通用
+
+## 条件查询
+1. 条件查询运算符
+	- ![](https://raw.githubusercontent.com/LBC100/myImgsHaha/main/img/20201103113038.png)
+2. 语法格式
+
+		select
+			字段, 字段...
+		from
+			表名
+		where
+			条件;
+		执行顺序: 先from, 然后where, 最后select
+3. 查询工资等于5000的员工姓名
+
+		select ename from emp where sal = 5000;
+4. 查看某人的姓名查询他的某个字段
+	
+		// 查询SMITH的工资
+		select sal from emp where ename = 'SMITH';
+5. 找出工资高于或等于3000的员工
+
+		select ename, sal from emp where sal >= 3000;
+6. 找出工资不等于3000的员工
+
+		select ename, sal from emp where sal != 3000;
+		select ename, sal from emp where sal <> 3000;
+7. 找出工资在1100和3000之间的员工, 包括1100和3000
+	- **and : 并且** (有点类似 &&)
+	- 闭区间 **between...and...** 是闭区间 [1100 ~ 3000]. between...and... 使用的时候必须左小右大	
+			select ename, sal from emp where sal >= 1100 and sal <=3000;
+			select ename, sal from emp where sal between 1100 and 3000;
+8. 找出哪些人没有津贴
+	- **or : 或者** (有点类似||)
+		
+			select ename, sal, comm from emp where comm is null; // 找出空
+			select ename, sal, comm from emp where comm is null or comm = 0; // 找出为空或者为0的人
+9. 找出工作岗位是MANAGER和SALESMAN的员工
+
+		select ename, job from emp where job = 'MANAGER' or job = 'SALESMAN';
+10. and 和 or 联合起来用: 找出薪资大于1000的并且部门编号是20或30部门的员工.
+	- **当运算符的优先级不确定的时候加小括号**	
+
+			select ename, deptno, sal from emp where (sal > 1000) and (deptno = 20 or deptno = 30);
+11. **in等同于or**: 找出工作岗位是MANAGER和SALESMAN的员工
+	- in后面的值不是区间, 是具体的值.	
+	
+			select ename, job from emp where job = 'MANAGER' or job = 'SALESMAN';
+			select ename, job from emp where job in ('MANAGER', 'SALESMAN');
+			
+			select ename, job from emp where sal in (1000, 5000); // in后面的值不是区间, 是具体的值. 只能查出1000和5000的
+12. not in (); 不在这几个值当中
+	- select ename, job from emp where sal not in(800, 5000);
+
+## 模糊查询 like
+1. 在模糊查询当中, 必须掌握两个特殊的符号, 一个是 % , 一个是 _ 
+	- % 代表任意多个字符
+	- _ 代表一个任意字符
+2. 例子
+	- 找出名字带有 O 字母的
+			
+			select ename from emp where ename like '%O%';
+	- 找出名字中第二个字母是A的
+		
+			select ename from emp where ename like '_A%';
+	- 找出名字中有下划线的 (转义 \_)
+		
+			select ename from emp where ename like '%\_%';
+
+
+## 数据库当中的null
+1. 在数据库当中null不是一个值, 代表什么也没有, 为空
+2. 空不是一个值, 不能用等号衡量
+3. 必须使用 is null (为空) 或者 is not null (不为空)
+
+## 排序 (升序, 降序)
+1. order by 按照工资升序, 找出员工名和薪资
+
+		select
+			ename, sal
+		from
+			emp
+		order by
+			sal;
+2. 注意: 默认是升序. **指定升序或者降序**
+	- asc 表示升序 
+	
+			select ename, sal from emp order by sal asc;
+	- desc表示降序
+			
+			select ename, sal from emp order by sal desc;
+3. 按照工资的降序排序, 当工资相同的时候在按照名字的升序排列
+		
+		select ename, sal from emp order by sal desc , ename asc;
+	- 注意越靠前的字段越能起到主导作用
+4. **找出工作岗位是SALESMAN的员工, 并且要求按照薪资的降序排列**
+
+		select
+			ename, job, sal
+		from
+			emp
+		where
+			job = 'SALESMAN'
+		order by
+			sal desc;
+
+## sql语句执行顺序
+1. 表 --- 条件 --- 分组 --- 分组再过滤 --- 字段 --- 排序	
+	- ![](https://raw.githubusercontent.com/LBC100/myImgsHaha/main/img/20201103162222.png)
+
+## 分组函数 (多行处理函数)
+1. 所有的分组函数都是对"某一组"数据进行操作的
+2. 注意
+	-  **分组函数自动忽略null**
+	-  **SQL语句当中有一个语法规则, 分组函数不可直接使用在where子句当中**
+3. count 计数
+	- 找出总人数
+			
+			select count(*) from emp;
+			select count(ename) from emp;
+4. sum 求和
+	- 找出工资总和
+		
+			select sum(sal) from emp;
+			// 分组函数自动忽略null
+5. avg 平均值
+	
+		select avg(sal) from emp;
+6. max 最大值
+	- 找出最高工资
+
+			select max(sal) from emp;
+7. min 最小值
+	- 找出最低工资
+
+			select min(sal) from emp;
+8. **找出工资高于平均工资的员工** (子查询)
+	
+		select ename, sal from emp where sal > (select avg(sal) from emp); // 正确
+		
+		select ename, sal from emp where sal > avg(sal); // ERROR 1111 (HY000): Invalid use of group function
+		无效的使用了分组函数
+		
+9. 分组函数也能组合起来用:
+
+		select count(*), sum(sal), avg(sal) from emp;
+
+## group by 和 having
+1. group by : 按照某个字段或者某些字段进行分组
+	- **注意**
+		- **分组函数一般都会和group by联合使用, 这也是为什么它被称为分组函数的原因.并且任何一个分组函数(count sum avg max min) 都是在group by语句执行结束之后才会执行的**
+		- **当一条语句中有group by的话, select后面只能跟分组函数和参与分组的字段**
+			- select ename, job, max(sal) from emp group by job; // 错误
+			- select job, max(sal) from emp group by job; // 正确
+		- 当一条sql语句没有group by的话, 整张表的数据会自成一组
+	- **多个字段联合起来一块分组!!!**
+		
+			// 找出每个部门不同工作岗位的最高薪资
+			select
+				deptno, job, max(sal)
+			from
+				emp
+			group by
+				deptno, job
+			order by
+				deptno;
+			
+2. having : 对分组之后的数据进行再次过滤
+	- 找出每个部门的**平均薪资**, 要求显示薪资大于2000的数据
+		
+			select deptno,avg(sal) from emp group by deptno having avg(sal) > 2000;
+			select deptno,avg(sal) from where avg(sal) > 2000 emp group by deptno; // 报错. 分组函数不能出现在where后面
+3. 例子
+	- 找出每个工作岗位的最高薪资
+			
+			select job, max(sal) from emp group by job;
+			select ename, job, max(sal) from emp group by job; // 错误
+	- 找出每个工作岗位的平均薪资
+	
+			select job, avg(sal) from emp group by job;
+	- 找出每个部门的最高薪资, 要求显示薪资大于3000的数据
+		
+			select deptno, max(sal) from emp where sal > 3000  group by deptno; // 推荐			select deptno, max(sal) from emp  group by deptno having max(sal) > 3000; // 这种方式效率低
+
+## 查询结果集的去重
+1. distinct
+	- select distinct job from emp;
+2. distinct 只能出现所有字段的最前面
+3. 例子
+	- 统计岗位的数量
+		
+			select count(distinct job) from emp;
+
+## 连接查询
+1. 什么是连接查询?
+	- 在实际开发中, 大部分的情况下都不是从单表中查询数据, 一般都是多张表联合查询取出最终的结果
+	- 多张表的信息存储到一张表中, 数据会存在大量的重复, 导致数据的冗余
+2. 连接查询的分类
+	- 根据语法出现的年代来划分的话, 包括:
+		- SQL92 (一些老的DBA可能还在使用这种语法 DBA: 数据库管理员)
+		- SQL99 (比较新的语法)
+	- 根据表的连接方式来划分
+		- 内连接
+			- 等值连接
+			- 非等值连接
+			- 自连接
+		- 外连接
+			- 左外连接 (左连接)
+			- 右外连接 (右连接)
+		- 全连接 (很少用)
+3. 在表的连接查询方面有一种现象被称为: 笛卡尔积现象 (笛卡尔乘积现象)
+	- 当两张表进行连接查询的时候, 没有任何条件进行限制, 最终的查询结果条数是两张表记录条数的乘积
+4. 怎么避免迪卡尔积现象? 当然是加条件进行过滤
+5. 思考: 避免了笛卡尔积现象, 会减少记录的匹配次数吗?
+	- 不会, 次数还是56次. 只不过显示的是有效记录
+6. 例子
+	- 找出每一个员工的部门名称, 要求显示员工名和部门名
+		
+			select
+				e.ename, d.dname
+			from 
+				emp e, dept d
+			where
+				e.deptno = d.deptno;
+			// SQL92, 以后不用
+	
+## 内连接之等值连接
+1. 最大特点是: 条件是等量关系
+2. SQL99语法结构更清晰一些: 表的连接条件和后来的where条件分离了
+	
+		语法:
+				...
+					A
+				join
+					B
+				on
+					连接条件
+				where
+					...
+3. 例子
+	- 找出每一个员工的部门名称, 要求显示员工名和部门名		
+				
+			SQL99 (常用)
+			select
+				e.ename, d.dname
+			from
+				emp e
+			inner join
+				dept d
+			on
+				e.deptno = d.deptno;
+	
+							
+## 内连接之非等值连接			
+1. 最大特点是: 连接条件中的关系是非等量关系
+	- 找出每个员工的工资等级, 要求显示员工名, 工资, 工资等级
+			
+				select
+					e.ename, e.sal, s.grade
+				from
+					emp e
+				inner join
+					salgrade s
+				where
+					e.sal > s.losal and e.sal < s.hisal;
+	
+## 自连接
+1. 最大的特点是: 一张表看做两张表. 自己连接自己
+	- 找出每个员工的上级领导, 要求显示员工名和对应的领导名
+		
+			select
+				a.ename, b.ename
+			from
+				emp a 
+			inner join
+				emp b on a.mgr = b.empno;
+## 外连接
+1. 什么是外连接, 和内连接有什么区别?
+	- 内连接
+		- 假设A和B表进行连接, 使用内连接的话, 凡是A表和B表能够匹配上的记录查询出来, 匹配不是就不显示出来, 这就是内连接.
+		- AB两张表没有主副之分, 两张表是平等的
+	- 外连接
+		- 假设A和B表进行连接, 使用外连接的话, AB两张表中有一张表是主表, 一张表是副表, 主要查询主表中的数据, 捎带着查询副表, 当副表中的数据没有和主表中的数据匹配上, 副表自动模拟出null与之匹配
+2. 外连接的分类
+	- 左外连接 (左连接) : 表示左边的这张表是主表
+	- 右外连接 (右连接) : 表示右边的这张表是主表
+3. 左连接有右连接的写法, 右连接也会有对应的左连接的写法
+4. outer 可以省略
+5. **外连接最重要的特点是: 主表的数据无条件的全部查询出来**
+6. 例子
+	- 找出每个员工的上级领导
+	
+			// 左连接
+			select
+				a.ename '员工', b.ename '领导'
+			from
+				emp a
+			left join
+				emp b
+			on
+				a.mgr = b.empno;
+				
+			// 右连接
+			select
+				a.ename '员工', b.ename '领导'
+			from
+				emp b
+			right join
+				emp a
+			on
+				a.mgr = b.empno;
+	- 找出哪个部门没有员工
+	
+			// 传统
+			select
+				d.* 
+			from 
+				dept d  
+			left join  emp e  
+			on  
+				d.deptno = e.deptno 
+			where 
+				e.deptno is null;
+			
+			// 先分组 再查询
+			select 
+				d.* 
+			from 
+				dept d 
+			left join 
+				(select 
+				deptno edeptno
+			from 
+				emp
+			
+			group by
+				deptno) e 
+			on 
+				d.deptno = e.edeptno
+			where
+				e.edeptno is null;
+			
+## 三张表怎么连接查询
+1. 注意
+	
+		...
+			A
+		join
+			B
+		join
+			C
+		on
+			...
+		表示: A表和B表先进行连接, 连接之后A表继续和C表连接.
+1. 例子: 
+	- 找出每一个员工的部门名称以及工资等级
+		
+			SELECT
+				e.ENAME, d.DNAME, s.GRADE
+			from
+				emp e
+			left JOIN
+				DEPT d
+			ON
+				e.DEPTNO = d.DEPTNO
+			left JOIN
+				SALGRADE s
+			ON
+				 sal between s.LOSAL and s.HISAL
+			;
+	- 找出每一个员工的部门名称, 工资等级, 上级领到
+		
+			SELECT
+				e.ENAME, d.DNAME, s.GRADE, e1.ENAME
+			from
+				emp e
+			left JOIN
+				DEPT d
+			ON
+				e.DEPTNO = d.DEPTNO
+			left JOIN
+				SALGRADE s
+			ON
+				 sal between s.LOSAL and s.HISAL
+			left JOIN
+				emp e1
+			ON
+				e.MGR = e1.EMPNO
+			;
+
+## 子查询
+1. 什么是子查询?
+	- select语句当中嵌套select语句, 被嵌套的select语句是子查询
+2. 子查询可以出现在哪里?
+
+		select
+			..(select)..
+		from
+			..(select)..
+		where
+			..(select)..			
+3. 例子
+	- 找出每个部门平均薪水的薪资等级
+		
+			
+			SELECT
+				t.*, s.grade
+			FROM
+				(
+				select
+				e.DEPTNO, avg(sal) as davg
+				from
+					emp e
+				GROUP BY
+					e.DEPTNO
+			) as t
+			left JOIN
+				SALGRADE s
+			ON
+			
+				t.davg BETWEEN s.LOSAL AND s.HISAL
+			;
+4. from 后面嵌套
+	- https://www.bilibili.com/video/BV1fx411X7BD?p=38
+
+## union (可以将查询结果集相加)
+1. 例子: 
+	- 找出工资岗位是SALESMAN和MANAGER的员工
+		- select ename,job from emp where job = 'SALESMAN' or job = 'MANAGER';
+		- select ename,job from emp where job in ('SALESMAN', 'MANAGER');
+		- **union**
+			
+				select ename,job from emp where job = 'SALESMAN';
+				union
+				select ename,job from emp where job = 'MANAGER';
+
+## limit (分页) !!!
+1. limit 是mySql特有的, 其他数据库中没有, 不通用
+2. limit 取结果集中的部分数据, 这是它的作用
+3. 语法机制
+	- startIndex : 表示起始位置. 从0开始, 0待表第一个数据
+	- length : 表示取几个
+4. limit 是 sql 语句最后一个执行的语句
+5. 通用标准的分页
+	- 每页显示pageSize条记录
+	
+			第pageNo页: (pageNo - 1) * pageSize, pageSize
+	- pageSize : 每页显示多少条记录
+	- pageNo : 显示第几页
+	- limit (pageNo - 1) * pageSize, pageSize
+6. 例子
+	- 取出工资前5名的员工
+
+			select ename, sal from emp order by sal desc limit 0, 5;
+	- 找出工资排名在第4到第9名的员工
+		
+			select ename, sal from emp order by sal desc limit 3, 6;
+		
+## 表的别名
+1. 表的别名有什么好处?
+	- 执行效率高
+	- 可读性好
+2. select e.ename, d.dname from emp e, dept d;
+
+## 关于MySQL当中字段的常用数据类型
+1. int 
+	- 整数型 (Java中的int)
+2. bigint 
+	- 长整型 (Java中的long)
+3. float 
+	- 浮点型 (Java中的float double)
+4. char 
+	- 定长字符串 (String)
+5. varchar 
+	- 可变长字符串 (StringBuffer/StringBuilder)
+6. date 
+	- 日期类型 (java.sql.Data类型)
+7. BLOB 
+	- 二进制大对象 (存储图片, 视频等流媒体信息) (Object)
+8. CLOB 
+	- 字符大对象 (存储较大文本, 比如: 可以存储4G的字符串) (Object)
+
+## char 和 varchar 怎么选择?
+1. 当某个字段中的数据长度不发生改变的时候, 是定长的, 例如: 性别, 生日等都是采用char.
+2. 当一个字段的数据长度不确定, 例如: 简介, 姓名等都是采用varchar
+
+
+## 创建表
+1. 表名在数据库当中一般建议以: t_或者tbl_开始
+2. 语法格式
+		
+		create table 表名 (
+			字段1 类型,
+			字段2 类型
+			...
+		);
+3. 创建班级表
+	
+		create table t_student(
+			no bigint,
+			name varchar(255),
+			sex char(1) default 1,
+			classno varchar(255),
+			birth char(10)
+		);
+4. default 默认值
+
+
+## insert 语句插入数据
+1. 语法格式
+		
+		insert into 表名 (字段名1, 字段名2, ...) values (值1, 值2, ...);
+		insert into t_student (no,name,sex,classno,birth) values (1, 'zhangsan', '1', 'gaosan1ban', '1995-10-10');
+	- 要求: 字段的数量和值的数量相同, 并且数据类型要对应相同
+2. 一次插入多条数据
+
+		insert into t_student 
+		(no,name,sex,classno,birth) 
+		values 
+		(1, 'zhangsan', '1', 'gaosan1ban', '1995-10-10'),
+		(2, 'lisi', '1', 'gaosan1ban', '1995-10-10')
+		;
+
+## 复制表
+1. 语法
+	
+		create table 表名 as select 语句;
+		create table emp2 as select * from emp;
+		create table emp2 as select ename from emp;
+2. 将查询结果当做表创建出来
+
+## 将查询结果插入到一张表中
+1. insert into 表名 select * from dept;
+2. 列要相等
+
+## update 修改数据
+1. 语法格式
+
+		update 表名 set 字段名1=值1, 字段名2=值2 ... where 条件;
+		update emp2 set sal=8000 where ename = 'SMITH';
+	- 注意: 没有条件整张表数据全部更新
+
+## 删除数据
+1. 语法格式
+	
+		delete from 表名 where 条件;
+	- **注意: 没有条件全部删除**
+2. 删除SMITH员工
+	- delete from emp2 where ename = 'SMITH';
+3. 删除全部员工
+	- delete from emp2;
+
+## 删表
+1. drop table if exists t_student; // 当这个表存在的话删除
+2. **删除大表 (表被截断, 不可回滚. 永久丢失)**
+	- truncate table emp2;
+
+## 重点!!!: count(*) 和 count(具体的某个字段), 它们有什么区别?
+1. count(\*) :  查出总记录条数
+2. count(具体的某个字段) : 查出这个字段不为null的条数
+
+## 约束
+1. 在创建表的时候, 可以给表的字段添加相应的约束, 添加约束的目的是为了保证表中数据的合法性, 有效性, 完整性.
+2. 常见的约束
+	- 非空约束 (not null) : 字段不能为null
+		- username varchar(255) not null,
+	- 唯一约束 (unique) : 字段不能重复, **但可以为null**
+		- username varchar(255) unique,
+		- 表级约束. 给两个列或多个列添加unique. 联合起来(等于添加了一个约束)
+		
+				create table t_user(
+					id int,
+					usercode varchar(255),
+					username varchar(255),
+					unique(usercode, username)
+				);
+				// 虽然列有重复, 但是多列联合起来的值是不一样的. 表级约束是允许的
+				111zs
+				111ls
+				
+	- 主键约束 (primary key) : 字段既不能为null, 也不能重复 (简称PK)
+		- id int primary key,
+	- 外键约束 (foreign key) : 简称FK
+	- 检查约束 (Oracle数据库只有check约束, 但mysql没有, 目前mysql不支持改约束)
+
+
+
+
+## 重点!!!: 所有数据库都是这样规定的, 只有有null参与的运算结果一定时null
+1. **ifnull() 空处理函数**
+	- ifnull(a, b)
+	- 参数1: 可能为null的数据
+	- 参数2: 被当做什么处理
+2. 如果津贴为空, 当做0看待
+
+		select ename, ifnull(comm, 0) as comm from emp;
+3. 计算每个员工的年薪 (含津贴. 津贴可能为null)
+	
+		select ename, (sal +  ifnull(comm, 0)) * 12 as yearsal from emp;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 环绕通知
 1. 动态代理
