@@ -3143,6 +3143,20 @@
 				#整合mybatis
 				mybatis.mapper-locations=classpath:mybatis/mapper/*.xml
 	6. **注意: 如果使用 mybatis-config.xml, 使用config-location 绑定. 这时会和  mapper-locations 有冲突. 报错**
+	7. pom.xml文件下添加resources配置
+			
+			<!--扫描resources下的文件-->
+			
+		        <resources>
+		            <resource>
+		                <directory>src/main/java</directory>
+		                <includes>
+		                    <include>**/*.properties</include>
+		                    <include>**/*.xml</include>
+		                </includes>
+		                <filtering>false</filtering>
+		            </resource>
+		        </resources>
 3. 开启驼峰命名
 	- 新建文件MyBatisConfig
 		
