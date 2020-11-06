@@ -2842,6 +2842,345 @@
 2. 为什么需要oAuth2
 	- ![](https://raw.githubusercontent.com/LBC100/myImgsHaha/main/20201102200850.png)
 
+## 从零开始搭建SpringBoot开始
+
+## 创建项目
+1. 工具: idea
+2. file -> new -> project -> Spring Initialize
+3. java版本选择8
+	- ![](https://raw.githubusercontent.com/LBC100/myImgsHaha/main/img/20201106093428.png)
+4. 选择Spring Web
+5. 测试
+	- 启动类 目录下新建controller包
+	- 新建HelloController类
+			
+			package com.lbc.projectone.controller;
+
+			import org.springframework.web.bind.annotation.RequestMapping;
+			import org.springframework.web.bind.annotation.RestController;
+			
+			
+			@RestController
+			public class HelloController {
+			
+			  @RequestMapping("/hello")
+			  public String hello() {
+			    return "快速开始1";
+			  }
+			}
+	- 启动. 打开 http://localhost:8080/hello
+5. 点击自动导入包
+	- ![](https://raw.githubusercontent.com/LBC100/myImgsHaha/main/img/20201106094022.png)
+
+## 创建application.yml配置文件
+1. 在resources包下新建application.yml文件
+2. 使用连接符---区分不同环境配置
+	
+		#默认
+		server:
+		  port: 8080
+		  
+		#激活配置
+		#spring:
+		#  profiles:
+		#    active: dev
+		---
+		server:
+		  port: 8083
+		#开发环境
+		spring:
+		  profiles: dev
+		---
+		server:
+		  port: 8085
+		#生产环境
+		spring:
+		  profiles: prod
+
+
+## 集成热部署
+1. 配置
+	
+		<!--springboot 开发自动热部署-->
+	        <dependency>
+	            <groupId>org.springframework.boot</groupId>
+	            <artifactId>spring-boot-devtools</artifactId>
+	            <optional>true</optional>
+	        </dependency>
+2. 修改文件后点击编译
+	- ![](https://raw.githubusercontent.com/LBC100/myImgsHaha/main/img/20201106101500.png)
+3. 有时候需要手动重启
+
+## 集成mysql, jdbc, 及 druid 数据源
+1. **mysql, jdbc 导入包后需要在配置文件中配好数据库信息, 否则会报错**
+2. maven
+		
+		<dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jdbc</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.1.20</version>
+        </dependency>
+
+3. 把数据源换成 druid, 在application.yml文件添加配置
+
+		// 没有缩进
+		spring:
+		  datasource:
+		    username: root
+		    password: 123456
+		    url: jdbc:mysql://localhost:3306/eesy_mybatis
+		    driver-class-name: com.mysql.cj.jdbc.Driver
+		    #    driver-class-name: com.mysql.jdbc.Driver
+		    type: com.alibaba.druid.pool.DruidDataSource
+		
+		    initialSize: 5
+		    minIdle: 5
+		    maxActive: 20
+		    maxWait: 60000
+4. 添加DruidConfig类
+	- 在类目录下新建config包
+	- 新建DruidConfig类. 注意修改包的位置, 如: package com.atguigu.springboot.config;
+			
+			package com.atguigu.springboot.config;
+
+			import com.alibaba.druid.pool.DruidDataSource;
+			import com.alibaba.druid.support.http.StatViewServlet;
+			import com.alibaba.druid.support.http.WebStatFilter;
+			import org.springframework.boot.context.properties.ConfigurationProperties;
+			import org.springframework.boot.web.servlet.FilterRegistrationBean;
+			import org.springframework.boot.web.servlet.ServletRegistrationBean;
+			import org.springframework.context.annotation.Bean;
+			import org.springframework.context.annotation.Configuration;
+			
+			import javax.sql.DataSource;
+			
+			@Configuration
+			public class DruidConfig {
+			
+			  // 配置
+			  @ConfigurationProperties(prefix = "spring.datasource")
+			  @Bean
+			  public DataSource druid() {
+			    return new DruidDataSource();
+			  }
+			
+			  // 配置Druid的监控
+			  // 1. 配置一个管理后台的Servler
+			  @Bean
+			  public ServletRegistrationBean statViewServle() {
+			    ServletRegistrationBean servletRegistrationBean =
+			        new ServletRegistrationBean(new StatViewServlet(), "/druid/*");
+			    // IP白名单
+			    //     servletRegistrationBean.addInitParameter("allow","192.168.1.12,127.0.0.1");
+			    servletRegistrationBean.addInitParameter("allow", "127.0.0.1");
+			    // IP黑名单
+			    // servletRegistrationBean.addInitParameter("deny","192.168.4.23");
+			    // 控制台用户
+			    servletRegistrationBean.addInitParameter("loginUsername", "admin");
+			    servletRegistrationBean.addInitParameter("loginPassword", "123456");
+			    // 是否能够重置数据
+			    servletRegistrationBean.addInitParameter("resetEnable", "false");
+			    return servletRegistrationBean;
+			  }
+			
+			  // 2, 配置一个web监控的filter
+			  @Bean
+			  public FilterRegistrationBean statFilter() {
+			    FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(new WebStatFilter());
+			
+			    //    Map<String, String> initParams = new HashMap<>();
+			    //    initParams.put("exclusions", "*.js, *.css, /druid/*");
+			
+			    // 添加过滤规则
+			    filterRegistrationBean.addInitParameter(
+			        "exclusions", "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*, /api/*");
+			    return filterRegistrationBean;
+			  }
+			}
+
+4. 验证是否成功
+	- 添加测试代码
+		
+			//   测试druid 数据源
+			  @Autowired DataSource dataSource;
+			
+			  @Test
+			  void test01() throws SQLException {
+			    System.out.println(dataSource.getClass());
+			    Connection connection = dataSource.getConnection();
+			    System.out.println(connection);
+			    connection.close();
+			  }
+	- System.out.println(dataSource.getClass()); 设置断点, 调试模式运行
+	- ![](https://raw.githubusercontent.com/LBC100/myImgsHaha/main/img/20201106112236.png)
+5. 打开阿里数据源后台
+	- http://localhost:8080/druid/index.html
+  
+  
+## 集成mybatis
+1. maven
+
+		<dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>2.1.3</version>
+        </dependency>
+2. 注解版
+	- 新建bean包, 新建User类. 注意改动: package com.lbc.projectone.bean;
+		
+			package com.lbc.projectone.bean;
+	
+			public class User {
+			  private int id;
+			  private String username;
+			  private String birthday;
+			  private String sex;
+			  private String address;
+			
+			  public int getId() {
+			    return id;
+			  }
+			
+			  public void setId(int id) {
+			    this.id = id;
+			  }
+			
+			  public String getUsername() {
+			    return username;
+			  }
+			
+			  public void setUsername(String username) {
+			    this.username = username;
+			  }
+			
+			  public String getBirthday() {
+			    return birthday;
+			  }
+			
+			  public void setBirthday(String birthday) {
+			    this.birthday = birthday;
+			  }
+			
+			  public String getSex() {
+			    return sex;
+			  }
+			
+			  public void setSex(String sex) {
+			    this.sex = sex;
+			  }
+			
+			  public String getAddress() {
+			    return address;
+			  }
+			
+			  public void setAddress(String address) {
+			    this.address = address;
+			  }
+			}
+	- 新建mapper包, 新建UserMapper接口. 注意改动: package com.lbc.projectone.mapper;
+		
+			package com.lbc.projectone.mapper;
+	
+			import com.lbc.projectone.bean.User;
+			import org.apache.ibatis.annotations.Select;
+			
+			public interface UserMapper {
+			
+			  @Select("select * from user where id=#{id}")
+			  public User getUserByid(Integer id);
+			}
+	- 新建UserController
+		
+			package com.lbc.projectone.controller;
+	
+			import com.lbc.projectone.bean.User;
+			import com.lbc.projectone.mapper.UserMapper;
+			import org.springframework.beans.factory.annotation.Autowired;
+			import org.springframework.web.bind.annotation.GetMapping;
+			import org.springframework.web.bind.annotation.PathVariable;
+			import org.springframework.web.bind.annotation.RestController;
+			
+			@RestController
+			public class UserController {
+			
+			  @Autowired
+			  UserMapper userMapper;
+			
+			  @GetMapping("/api/user/{id}")
+			  public User getUser(@PathVariable("id") Integer id) {
+			    return userMapper.getUserByid(id);
+			  }
+			}
+	- 在启动类加上@MapperScan  mapper所在目录
+	
+			@MapperScan(value = "com.atguigu.springboot.mapper")
+	- 打开 http://localhost:8081/api/user/41
+3. xml配置版
+	1. 在bean包下新建实体类
+	2. 在 mapper 下新建接口 (定义查询方法, 输入参数, 返回类型)
+	3. 在resources包下新建 mapper 包. resources -> mybatis -> mapper
+	4. 在resources -> mybatis -> mapper 包下写 XXXMapper.xml
+	5. 设置包扫描
+		- yml
+				
+				mybatis:
+				  configuration:
+				    map-underscore-to-camel-case: true
+				  mapper-locations: classpath:mybatis/mapper/*.xml
+		- properties
+			
+				#整合mybatis
+				mybatis.mapper-locations=classpath:mybatis/mapper/*.xml
+	6. **注意: 如果使用 mybatis-config.xml, 使用config-location 绑定. 这时会和  mapper-locations 有冲突. 报错**
+3. 开启驼峰命名
+	- 新建文件MyBatisConfig
+		
+			package com.lbc.projectone.config;
+
+			import org.apache.ibatis.session.Configuration;
+			import org.mybatis.spring.boot.autoconfigure.ConfigurationCustomizer;
+			import org.springframework.context.annotation.Bean;
+			
+			@org.springframework.context.annotation.Configuration
+			public class MyBatisConfig {
+			
+			  @Bean
+			  public ConfigurationCustomizer configurationCustomizer() {
+			    return new ConfigurationCustomizer() {
+			
+			      public void customize(Configuration configuration) {
+			        configuration.setMapUnderscoreToCamelCase(true);
+			      }
+			    };
+			  }
+			}
+	- 开启mybatis 驼峰式命名规则自动转换功能
+		- mybatis.configuration.map-underscore-to-camel-case=true
+
+
+
+## 集成配置文件处理器
+1. maven
+		
+		<!--导入配置文件处理器, 配置文件进行绑定就会有提示-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+## 从零开始搭建SpringBoot结束
 
 ## 栈
 1. https://www.bilibili.com/video/BV1Rx411876f?p=92
